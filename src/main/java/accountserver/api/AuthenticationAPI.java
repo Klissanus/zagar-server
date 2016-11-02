@@ -72,8 +72,8 @@ public class AuthenticationAPI {
   }
 
   public static boolean validateToken(String rawToken) {
-    Token token = Token.parse(rawToken);
-    if (token==null || !ApplicationContext.instance().get(TokensStorage.class).isValidToken(token)) {
+    Token token = ApplicationContext.instance().get(TokensStorage.class).fromString(rawToken);
+    if (token==null) {
       return false;
     }
     log.info("Correct token from '{}'", ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token));

@@ -1,6 +1,8 @@
 package accountserver.api;
 
 import accountserver.database.Token;
+import accountserver.database.TokensStorage;
+import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +46,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   @Nullable
   static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
     List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
-    return Token.parse(authHeaders.get(0).substring("Bearer".length()).trim());
+    String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
+    return ApplicationContext.instance().get(TokensStorage.class).fromString(rawToken);
   }
 }

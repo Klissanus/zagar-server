@@ -21,8 +21,6 @@ public class InMemoryTokensStorage implements TokensStorage {
     private Map<Token, Integer> tokenOwners = new ConcurrentHashMap<>();
     @NotNull
     private Map<Integer, Token> userTokens = new ConcurrentHashMap<>();
-    @NotNull
-    private Map<Token, Date> tokenTimed = new ConcurrentHashMap<>();
 
     private Thread prThread;
 
@@ -37,12 +35,11 @@ public class InMemoryTokensStorage implements TokensStorage {
     public Token generateToken(int userId) {
         if (userTokens.containsKey(userId)) {
             Token t = userTokens.get(userId);
-            if (isValidToken(t)) return t;
+            if (t.isValid()) return t;
         }
         Token t = new Token();
         userTokens.put(userId,t);
         tokenOwners.put(t,userId);
-        tokenTimed.put(t,new Date());
         return t;
     }
 
@@ -61,8 +58,7 @@ public class InMemoryTokensStorage implements TokensStorage {
         if (!tokenOwners.containsKey(token)) return null;
         Integer owner = tokenOwners.get(token);
         if (owner==null) return null;
-        Date expTime = tokenTimed.get(token);
-        if (expTime==null || new Date().after(expTime)) return null;
+        if (!token.isValid()) return null;
         return owner;
     }
 
@@ -71,9 +67,17 @@ public class InMemoryTokensStorage implements TokensStorage {
     public List<Integer> getValidTokenOwners() {
         List<Integer> ret = new ArrayList<>(userTokens.size());
         userTokens.forEach((Integer key, Token value) -> {
-            if(new Date().before(tokenTimed.get(value))) ret.add(key);
+            if(value.isValid()) ret.add(key);
         });
         return ret;
+    }
+
+    @Override
+    public @Nullable Token fromString(@NotNull String rawToken) {
+        for(Token token:userTokens.values()) {
+            if (token.rawEquals(rawToken) && token.isValid()) return token;
+        }
+        return null;
     }
 
     @Override
@@ -82,7 +86,6 @@ public class InMemoryTokensStorage implements TokensStorage {
         if (owner!=null) {
             tokenOwners.remove(token);
             userTokens.remove(owner);
-            tokenTimed.remove(token);
         }
     }
 
@@ -92,14 +95,7 @@ public class InMemoryTokensStorage implements TokensStorage {
         if (token!=null) {
             userTokens.remove(userId);
             tokenOwners.remove(token);
-            tokenTimed.remove(token);
         }
-    }
-
-    @Override
-    public boolean isValidToken(@NotNull Token token) {
-        Date expDate = tokenTimed.get(token);
-        return (expDate!=null) && (new Date().before(expDate));
     }
 
     private void periodicRemover() {
@@ -108,16 +104,13 @@ public class InMemoryTokensStorage implements TokensStorage {
                 Set<Integer> invalidTokenOwners = new HashSet<>();
                 Set<Token> invalidTokens = new HashSet<>();
                 userTokens.forEach((Integer key, Token value) -> {
-                    if (new Date().after(tokenTimed.get(value))){
+                    if (value.isValid()){
                         invalidTokenOwners.add(key);
                         invalidTokens.add(value);
                     }
                 });
                 invalidTokenOwners.forEach(o -> userTokens.remove(o));
-                invalidTokens.forEach(t -> {
-                    tokenOwners.remove(t);
-                    tokenTimed.remove(t);
-                });
+                invalidTokens.forEach(tokenOwners::remove);
                 Thread.sleep(TOKEN_REMOVAL_INTERVAL.toMillis());
             }
         } catch (InterruptedException e) {

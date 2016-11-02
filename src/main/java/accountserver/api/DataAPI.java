@@ -3,7 +3,6 @@ package accountserver.api;
 import accountserver.database.TokensStorage;
 import accountserver.database.User;
 import accountserver.database.UsersStorage;
-import com.google.gson.Gson;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +40,6 @@ public class DataAPI {
     @Path("users")
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
-        Gson gson = new Gson();
         List<Integer> userIds = ApplicationContext.instance().get(TokensStorage.class).getValidTokenOwners();
         List<String> users = new ArrayList<>(userIds.size());
         userIds.forEach(id->{

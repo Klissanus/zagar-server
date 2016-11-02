@@ -1,9 +1,10 @@
 package accountserver.database;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.*;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -11,14 +12,22 @@ import java.util.Random;
  *
  * Token is a unique identifier of user
  */
+@Entity
+@Table(name = "tokens")
 public class Token {
-    public static final Duration LIFE_TIME = Duration.ofHours(2);
+    private static final Duration LIFE_TIME = Duration.ofHours(2);
 
+    @Column(name = "value",nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long token;
+    @Column(name = "issue_date", nullable = false)
+    @NotNull
+    private Date generationDate = new Date();
+
     /**
      * Generates new random token
      */
-    public Token() {
+    Token() {
         token = new Random().nextLong();
     }
 
@@ -26,26 +35,27 @@ public class Token {
         this.token = token;
     }
 
+
     /**
-     * Create token from string
-     * @param rawToken string to parse
-     * @return Token object if parse was successful, null otherwise
+     * Determine if token is valid
+     * @return true if valid, false otherwise
      */
-    @Nullable
-    public static Token parse(@NotNull String rawToken) {
-        try {
-            long token = Long.parseLong(rawToken);
-            return new Token(token);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    boolean isValid() {
+        return new Date().before(new Date(generationDate.getTime()+LIFE_TIME.toMillis()));
     }
 
+    /**
+     * Compare token value with raw string
+     * @param rawToken string to compare
+     * @return true if equals, false otherwise
+     */
+    boolean rawEquals(@NotNull String rawToken) {
+        return Long.valueOf(token).toString().equals(rawToken);
+    }
 
     @Override
     public boolean equals(Object o) {
-        return (o==this) || (o instanceof Token)
-                && ((Token)o).token==this.token;
+        return (o==this) || (o instanceof Token) && ((Token)o).token==this.token;
     }
 
     @Override

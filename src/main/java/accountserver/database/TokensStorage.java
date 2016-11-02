@@ -43,11 +43,12 @@ public interface TokensStorage {
     Integer getTokenOwner(@NotNull Token token);
 
     /**
-     * Validates token
-     * @param token token to validate
-     * @return true if token valid, false otherwise
+     * Find given raw token in storage
+     * @param rawToken token to find
+     * @return Token object if it was found and valid, null otherwise
      */
-    boolean isValidToken(@NotNull Token token);
+    @Nullable
+    Token fromString(@NotNull String rawToken);
 
     /**
      *

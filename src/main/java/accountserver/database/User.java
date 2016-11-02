@@ -4,10 +4,9 @@ import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jvnet.hk2.annotations.Optional;
 import utils.IDGenerator;
 
+import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -17,19 +16,28 @@ import java.util.Date;
  *
  * Describes user
  */
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",unique = true,nullable = false)
     private int id;
     @NotNull
     private static String digestAlg = "sha-256";
     @NotNull
     private static Logger log = LogManager.getLogger(User.class);
     @NotNull
+    @Column(name = "name",nullable = false)
     private String name;
     @NotNull
+    @Column(name = "password",nullable = false)
     private byte[] passwordHash = new byte[0];
     @NotNull
+    @Column(name = "email")
     private String email = "";
     @NotNull
+    @Column(name = "registration_date",nullable = false)
     private Date registrationDate = new Date();
 
     static {
@@ -78,7 +86,6 @@ public class User {
         log.info("User "+name+" changed name to "+newName);
         name=newName;
     }
-
 
     /**
      * Validate given password for user
