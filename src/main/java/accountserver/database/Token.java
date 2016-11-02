@@ -31,11 +31,6 @@ public class Token {
         token = new Random().nextLong();
     }
 
-    private Token(long token) {
-        this.token = token;
-    }
-
-
     /**
      * Determine if token is valid
      * @return true if valid, false otherwise
