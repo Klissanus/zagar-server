@@ -18,9 +18,9 @@ public class InMemoryTokensStorage implements TokensStorage {
     private static Logger log = LogManager.getLogger(User.class);
 
     @NotNull
-    private Map<Token, String> tokenOwners = new ConcurrentHashMap<>();
+    private Map<Token, Integer> tokenOwners = new ConcurrentHashMap<>();
     @NotNull
-    private Map<String, Token> userTokens = new ConcurrentHashMap<>();
+    private Map<Integer, Token> userTokens = new ConcurrentHashMap<>();
     @NotNull
     private Map<Token, Date> tokenTimed = new ConcurrentHashMap<>();
 
@@ -33,26 +33,26 @@ public class InMemoryTokensStorage implements TokensStorage {
     }
 
     @Override
-    public boolean addToken(@NotNull String user,@NotNull Token token) {
-        if (tokenOwners.containsKey(token) || userTokens.containsKey(user)) return false;
-        tokenOwners.put(token,user);
-        userTokens.put(user,token);
+    public boolean addToken(int userId,@NotNull Token token) {
+        if (tokenOwners.containsKey(token) || userTokens.containsKey(userId)) return false;
+        tokenOwners.put(token,userId);
+        userTokens.put(userId,token);
         tokenTimed.put(token, new Date(new Date().getTime()+Token.LIFE_TIME.toMillis()));
         return false;
     }
 
     @Override
     @Nullable
-    public Token getUserToken(@NotNull String user) {
-        if (!userTokens.containsKey(user)) return null;
-        return userTokens.get(user);
+    public Token getUserToken(int userId) {
+        if (!userTokens.containsKey(userId)) return null;
+        return userTokens.get(userId);
     }
 
     @Override
     @Nullable
-    public String getTokenOwner(@NotNull Token token) {
+    public Integer getTokenOwner(@NotNull Token token) {
         if (!tokenOwners.containsKey(token)) return null;
-        String owner = tokenOwners.get(token);
+        Integer owner = tokenOwners.get(token);
         if (owner==null) return null;
         Date expTime = tokenTimed.get(token);
         if (expTime==null || new Date().after(expTime)) return null;
@@ -61,9 +61,9 @@ public class InMemoryTokensStorage implements TokensStorage {
 
     @Override
     @NotNull
-    public List<String> getValidTokenOwners() {
-        List<String> ret = new ArrayList<>(userTokens.size());
-        userTokens.forEach((String key, Token value) -> {
+    public List<Integer> getValidTokenOwners() {
+        List<Integer> ret = new ArrayList<>(userTokens.size());
+        userTokens.forEach((Integer key, Token value) -> {
             if(new Date().before(tokenTimed.get(value))) ret.add(key);
         });
         return ret;
@@ -71,7 +71,7 @@ public class InMemoryTokensStorage implements TokensStorage {
 
     @Override
     public void removeToken(@NotNull Token token) {
-        String owner = tokenOwners.get(token);
+        Integer owner = tokenOwners.get(token);
         if (owner!=null) {
             tokenOwners.remove(token);
             userTokens.remove(owner);
@@ -80,10 +80,10 @@ public class InMemoryTokensStorage implements TokensStorage {
     }
 
     @Override
-    public void removeToken(@NotNull String user) {
-        Token token = userTokens.get(user);
+    public void removeToken(int userId) {
+        Token token = userTokens.get(userId);
         if (token!=null) {
-            userTokens.remove(user);
+            userTokens.remove(userId);
             tokenOwners.remove(token);
             tokenTimed.remove(token);
         }
@@ -98,9 +98,9 @@ public class InMemoryTokensStorage implements TokensStorage {
     public void periodicRemover() {
         try {
             while(true) {
-                Set<String> invalidTokenOwners = new HashSet<>();
+                Set<Integer> invalidTokenOwners = new HashSet<>();
                 Set<Token> invalidTokens = new HashSet<>();
-                userTokens.forEach((String key, Token value) -> {
+                userTokens.forEach((Integer key, Token value) -> {
                     if (new Date().after(tokenTimed.get(value))){
                         invalidTokenOwners.add(key);
                         invalidTokens.add(value);

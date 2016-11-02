@@ -1,8 +1,10 @@
 package accountserver.database;
 
+import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import utils.IDGenerator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
  * Describes user
  */
 public class User {
-
+    private int id;
     @NotNull
     private static String digestAlg = "sha-256";
     @NotNull
@@ -33,6 +35,7 @@ public class User {
      * @param password user password
      */
     public User(@NotNull String name, @NotNull String password) {
+        this.id= ApplicationContext.instance().get(IDGenerator.class).next();
         this.name = name;
         try {
             MessageDigest md = MessageDigest.getInstance(digestAlg);
@@ -42,7 +45,7 @@ public class User {
             e.printStackTrace();
             System.exit(1);
         }
-        log.info(String.format("Created new user %s",name));
+        log.info(String.format("Created new user %s, id %d",name,id));
     }
 
     /**
@@ -51,6 +54,13 @@ public class User {
     @NotNull
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return user`s id
+     */
+    public int getId() {
+        return id;
     }
 
     /**
@@ -98,12 +108,11 @@ public class User {
     @Override
     public boolean equals(Object o) {
         return (this==o) || (o instanceof User) &&
-                ((User) o).name.equals(name) &&
-                MessageDigest.isEqual(passwordHash,((User) o).passwordHash);
+                ((User) o).id==id;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return id;
     }
 }

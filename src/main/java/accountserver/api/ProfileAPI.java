@@ -1,6 +1,7 @@
 package accountserver.api;
 
 import accountserver.database.Token;
+import accountserver.database.TokensStorage;
 import accountserver.database.UsersStorage;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public class ProfileAPI {
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
-                ApplicationContext.instance().get(UsersStorage.class).getTokenOwner(token),newName));
+                ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token),newName));
         return ApplicationContext.instance().get(UsersStorage.class).setNewName(newName,token) ?
                 Response.ok("Username changed to "+newName).build() :
                 Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -56,11 +57,11 @@ public class ProfileAPI {
         if (token==null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        String username = ApplicationContext.instance().get(UsersStorage.class).getTokenOwner(token);
-        if (username==null) {
+        Integer userId = ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token);
+        if (userId==null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return ApplicationContext.instance().get(UsersStorage.class).changePassword(username,newpass) ?
+        return ApplicationContext.instance().get(UsersStorage.class).changePassword(token,newpass) ?
                 Response.ok().build() : Response.status(Response.Status.NOT_FOUND).build();
     }
 }

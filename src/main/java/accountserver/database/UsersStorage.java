@@ -30,11 +30,11 @@ public interface UsersStorage {
 
     /**
      * Change user password (token must belong to user and user must submit his password)
-     * @param username user who wants change his pass
+     * @param token token of user who wants change his pass
      * @param newpwd user`s new password
      * @return true if password changed, false otherwise
      */
-    boolean changePassword(@NotNull String username, @NotNull String newpwd);
+    boolean changePassword(@NotNull Token token, @NotNull String newpwd);
 
     /**
      * Removes access token from valid tokens (logout user)
@@ -51,19 +51,11 @@ public interface UsersStorage {
 
     /**
      * Finds user and creates Player object by user name
-     * @param name user name to find
-     * @return Player object if found and token valid, null otherwise
+     * @param id user id to find
+     * @return User object if found and token valid, null otherwise
      */
     @Nullable
-    User getUserByName(@NotNull String name);
-
-    /**
-     * Finds token owner
-     * @param token token to search
-     * @return username
-     */
-    @Nullable
-    String getTokenOwner(@NotNull Token token);
+    User getUserById(int id);
 
     /**
      * Finds logged in users (with valid tokens at now)

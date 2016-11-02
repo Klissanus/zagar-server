@@ -20,27 +20,27 @@ public interface TokensStorage {
 
     /**
      * Add token to storage
-     * @param user user name
+     * @param userId user`s ID
      * @param token generated access token
      * @return true if token was added, false otherwise
      */
-    boolean addToken(@NotNull String user, @NotNull Token token);
+    boolean addToken(int userId, @NotNull Token token);
 
     /**
      * Finds user`s token
-     * @param user user name which token will be searched
+     * @param userId user`s ID which token will be searched
      * @return user`s token if it`s found and it is valid, null otherwise
      */
     @Nullable
-    Token getUserToken(@NotNull String user);
+    Token getUserToken(int userId);
 
     /**
      * Finds token owner
      * @param token token which owner will be searched
-     * @return user name, null if not found
+     * @return user id, null if not found
      */
     @Nullable
-    String getTokenOwner(@NotNull Token token);
+    Integer getTokenOwner(@NotNull Token token);
 
     /**
      * Validates token
@@ -51,10 +51,10 @@ public interface TokensStorage {
 
     /**
      *
-     * @return list of user names with valid tokens
+     * @return list of user id`s with valid tokens
      */
     @NotNull
-    List<String> getValidTokenOwners();
+    List<Integer> getValidTokenOwners();
 
     /**
      * Removes token from storage
@@ -64,7 +64,7 @@ public interface TokensStorage {
 
     /**
      * Removes user`s token from storage
-     * @param user user which token will be removed
+     * @param userId user which token will be removed
      */
-    void removeToken(@NotNull String user);
+    void removeToken(int userId);
 }

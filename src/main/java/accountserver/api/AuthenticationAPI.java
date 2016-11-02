@@ -1,6 +1,7 @@
 package accountserver.api;
 
 import accountserver.database.Token;
+import accountserver.database.TokensStorage;
 import accountserver.database.UsersStorage;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
@@ -73,7 +74,7 @@ public class AuthenticationAPI {
     if (token==null || !ApplicationContext.instance().get(UsersStorage.class).isValidToken(token)) {
       return false;
     }
-    log.info("Correct token from '{}'", ApplicationContext.instance().get(UsersStorage.class).getTokenOwner(token));
+    log.info("Correct token from '{}'", ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token));
     return true;
   }
 
