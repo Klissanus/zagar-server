@@ -1,6 +1,10 @@
 package main;
 
 import accountserver.AccountServer;
+import accountserver.database.InMemoryTokensStorage;
+import accountserver.database.InMemoryUsersStorage;
+import accountserver.database.TokensStorage;
+import accountserver.database.UsersStorage;
 import matchmaker.MatchMaker;
 import matchmaker.MatchMakerImpl;
 import network.ClientConnectionServer;
@@ -37,6 +41,8 @@ public class MasterServer {
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
     Ticker ticker = new Ticker(1);
     ApplicationContext.instance().put(Ticker.class, ticker);
+    ApplicationContext.instance().put(TokensStorage.class,new InMemoryTokensStorage());
+    ApplicationContext.instance().put(UsersStorage.class,new InMemoryUsersStorage());
 
     Mechanics mechanics = new Mechanics();
     ticker.registerTickable(mechanics);

@@ -1,6 +1,6 @@
 package network.handlers;
 
-import accountserver.api.AuthenticationServlet;
+import accountserver.api.AuthenticationAPI;
 import main.ApplicationContext;
 import matchmaker.MatchMaker;
 import model.Player;
@@ -25,7 +25,7 @@ public class PacketHandlerAuth {
       e.printStackTrace();
       return;
     }
-    if (!AuthenticationServlet.validateToken(commandAuth.getToken())) {
+    if (!AuthenticationAPI.validateToken(commandAuth.getToken())) {
       try {
         new PacketAuthFail(commandAuth.getLogin(), commandAuth.getToken(), "Invalid user or password").write(session);
       } catch (IOException e) {

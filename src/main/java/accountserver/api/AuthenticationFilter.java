@@ -1,6 +1,8 @@
 package accountserver.api;
 
+import accountserver.database.Token;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -9,6 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.List;
 
 @Authorized
 @Provider
@@ -35,6 +38,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   }
 
   private boolean validateToken(@NotNull String token) {
-    return AuthenticationServlet.validateToken(token);
+    return AuthenticationAPI.validateToken(token);
+  }
+
+  @Nullable
+  static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
+    List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+    return Token.parse(authHeaders.get(0).substring("Bearer".length()).trim());
   }
 }
