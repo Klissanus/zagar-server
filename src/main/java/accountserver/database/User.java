@@ -4,10 +4,13 @@ import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Optional;
 import utils.IDGenerator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * Created by xakep666 on 23.10.16.
@@ -24,6 +27,10 @@ public class User {
     private String name;
     @NotNull
     private byte[] passwordHash = new byte[0];
+    @NotNull
+    private String email = "";
+    @NotNull
+    private Date registrationDate = new Date();
 
     static {
         log.info("Hashing passwords with "+digestAlg);
@@ -103,6 +110,30 @@ public class User {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    /**
+     * @return User email
+     */
+    @NotNull
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Update user email
+     * @param email new email
+     */
+    public void setEmail(@NotNull String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return User registration date
+     */
+    @NotNull
+    public Date getRegistrationDate() {
+        return registrationDate;
     }
 
     @Override

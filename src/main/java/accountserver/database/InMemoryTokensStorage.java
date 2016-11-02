@@ -27,24 +27,31 @@ public class InMemoryTokensStorage implements TokensStorage {
     private Thread prThread;
 
     public InMemoryTokensStorage() {
-        prThread = new Thread(()->periodicRemover());
+        prThread = new Thread(this::periodicRemover);
         log.info("In-memory tokens storage created");
         prThread.start();
     }
 
     @Override
-    public boolean addToken(int userId,@NotNull Token token) {
-        if (tokenOwners.containsKey(token) || userTokens.containsKey(userId)) return false;
-        tokenOwners.put(token,userId);
-        userTokens.put(userId,token);
-        tokenTimed.put(token, new Date(new Date().getTime()+Token.LIFE_TIME.toMillis()));
-        return false;
+    @NotNull
+    public Token generateToken(int userId) {
+        if (userTokens.containsKey(userId)) {
+            Token t = userTokens.get(userId);
+            if (isValidToken(t)) return t;
+        }
+        Token t = new Token();
+        userTokens.put(userId,t);
+        tokenOwners.put(t,userId);
+        tokenTimed.put(t,new Date());
+        return t;
     }
 
     @Override
     @Nullable
     public Token getUserToken(int userId) {
-        if (!userTokens.containsKey(userId)) return null;
+        if (!userTokens.containsKey(userId)) {
+            return null;
+        }
         return userTokens.get(userId);
     }
 
@@ -95,9 +102,9 @@ public class InMemoryTokensStorage implements TokensStorage {
         return (expDate!=null) && (new Date().before(expDate));
     }
 
-    public void periodicRemover() {
+    private void periodicRemover() {
         try {
-            while(true) {
+            while(!Thread.currentThread().isInterrupted()) {
                 Set<Integer> invalidTokenOwners = new HashSet<>();
                 Set<Token> invalidTokens = new HashSet<>();
                 userTokens.forEach((Integer key, Token value) -> {
@@ -113,8 +120,8 @@ public class InMemoryTokensStorage implements TokensStorage {
                 });
                 Thread.sleep(TOKEN_REMOVAL_INTERVAL.toMillis());
             }
-        } catch (InterruptedException ignored) {
-
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 

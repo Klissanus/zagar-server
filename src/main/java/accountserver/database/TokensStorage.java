@@ -19,12 +19,12 @@ public interface TokensStorage {
     Duration TOKEN_REMOVAL_INTERVAL = Duration.ofHours(2);
 
     /**
-     * Add token to storage
-     * @param userId user`s ID
-     * @param token generated access token
-     * @return true if token was added, false otherwise
+     * Issues a new token (if was not found or invalid) or returns alrady issued
+     * @param userId user who wants token
+     * @return found or issued token
      */
-    boolean addToken(int userId, @NotNull Token token);
+    @NotNull
+    Token generateToken(int userId);
 
     /**
      * Finds user`s token

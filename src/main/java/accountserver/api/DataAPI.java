@@ -1,5 +1,7 @@
 package accountserver.api;
 
+import accountserver.database.TokensStorage;
+import accountserver.database.User;
 import accountserver.database.UsersStorage;
 import com.google.gson.Gson;
 import main.ApplicationContext;
@@ -11,7 +13,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by xakep666 on 13.10.16.
@@ -38,7 +42,12 @@ public class DataAPI {
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
         Gson gson = new Gson();
-        List<String> users = ApplicationContext.instance().get(UsersStorage.class).getLoggedInUsers();
+        List<Integer> userIds = ApplicationContext.instance().get(TokensStorage.class).getValidTokenOwners();
+        List<String> users = new ArrayList<>(userIds.size());
+        userIds.forEach(id->{
+            User u = ApplicationContext.instance().get(UsersStorage.class).getUserById(id);
+            if (u!=null) users.add(u.getName());
+        });
         UserInfo ret = new UserInfo();
         ret.users=users.toArray(new String[0]);
         return Response.ok(gson.toJson(ret)).build();

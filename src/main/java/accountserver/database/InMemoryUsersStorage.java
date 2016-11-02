@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by xakep666 on 12.10.16.
@@ -21,98 +22,37 @@ public class InMemoryUsersStorage implements UsersStorage {
     private static Logger log = LogManager.getLogger(InMemoryUsersStorage.class);
 
     @NotNull
-    private TokensStorage ts;
-
-    @NotNull
-    private Map<String,User> users = new HashMap<>();
+    private Map<Integer,User> users = new ConcurrentHashMap<>();
 
     public InMemoryUsersStorage() {
-        this.ts= ApplicationContext.instance().get(TokensStorage.class);
         log.info("Created in-memory users storage");
     }
 
-    public boolean register(@NotNull String username, @NotNull String password){
-        if (username.equals("") || password.equals("")) return false;
-        User u = new User(username,password);
-        if (users.containsKey(username)) return false;
-        users.put(username,u);
-        log.info("User \""+username+"\" registered");
-        return true;
+    @Override
+    public void addUser(@NotNull User user) {
+        users.put(user.getId(),user);
     }
 
-    @Nullable
     @Override
-    public Token requestToken(@NotNull String username, @NotNull String password) {
-        if (username.equals("") || password.equals("")) return null;
-        if (!users.containsKey(username)) return null;
-        User user=users.get(username);
-        if (!user.validatePassword(password)) return null;
-        Token oldToken = ts.getUserToken(user.getId());
-        if (oldToken==null || !ts.isValidToken(oldToken)) {
-            Token newToken = new Token();
-            ts.addToken(user.getId(),newToken);
-            return newToken;
+    public @Nullable User getUserById(int id) {
+        return users.get(id);
+    }
+
+    @Override
+    public @Nullable User getUserByName(@NotNull String name) {
+        for(User user:users.values()) {
+            if (user.getName().equals(name)) return user;
         }
-        return oldToken;
+        return null;
     }
 
     @Override
-    public void logout(@NotNull Token token) {
-        ts.removeToken(token);
+    public void removeUser(@NotNull User user) {
+        users.remove(user.getId());
     }
 
     @Override
-    public boolean changePassword(@NotNull Token token,@NotNull String newpwd) {
-        Integer id = ts.getTokenOwner(token);
-        if(id==null) return false;
-        User u = getUserById(id);
-        if (u==null) return false;
-        u.updatePassword(newpwd);
-        return true;
-    }
-
-    @Override
-    @Nullable
-    public User getUserById(int id) {
-        User ret = null;
-        for(User u:users.values()) {
-            if (u.getId()==id) ret=u;
-        }
-        return ret;
-    }
-
-    @Override
-    public boolean isValidToken(@NotNull Token token) {
-        return ts.isValidToken(token);
-    }
-
-    @Override
-    public boolean setNewName(@NotNull String newName,@NotNull Token token) {
-        Integer userId = ts.getTokenOwner(token);
-        if (userId==null) return false;
-        User foundUser = null;
-        for (User u: users.values()) {
-            if (u.getId()==userId) {
-                foundUser=u;
-                break;
-            }
-        }
-        if (foundUser==null) return false;
-        if (!ts.isValidToken(token) || users.containsKey(newName)) return false;
-        foundUser.setName(newName);
-        return true;
-    }
-
-    @Override
-    @NotNull
-    public List<String> getLoggedInUsers() {
-        List<String> names = new ArrayList<>(users.size());
-        List<Integer> ids = ts.getValidTokenOwners();
-        users.forEach((String name, User u)->{
-            ids.forEach((Integer id)->{
-                if(u.getId()==id) names.add(u.getName());
-            });
-        });
-        return names;
+    public @NotNull List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 }

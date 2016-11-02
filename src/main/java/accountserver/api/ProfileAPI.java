@@ -2,6 +2,7 @@ package accountserver.api;
 
 import accountserver.database.Token;
 import accountserver.database.TokensStorage;
+import accountserver.database.User;
 import accountserver.database.UsersStorage;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
@@ -41,9 +42,16 @@ public class ProfileAPI {
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
                 ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token),newName));
-        return ApplicationContext.instance().get(UsersStorage.class).setNewName(newName,token) ?
-                Response.ok("Username changed to "+newName).build() :
-                Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        if (ApplicationContext.instance().get(UsersStorage.class).getUserByName(newName)!=null) {
+            Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+        Integer tokenOwner = ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token);
+        if (tokenOwner==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        User user = ApplicationContext.instance().get(UsersStorage.class).getUserById(tokenOwner);
+        if (user==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        user.setName(newName);
+        return Response.ok("Username changed to "+newName).build();
+
     }
 
     @POST
@@ -59,9 +67,13 @@ public class ProfileAPI {
         }
         Integer userId = ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token);
         if (userId==null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return ApplicationContext.instance().get(UsersStorage.class).changePassword(token,newpass) ?
-                Response.ok().build() : Response.status(Response.Status.NOT_FOUND).build();
+        User user = ApplicationContext.instance().get(UsersStorage.class).getUserById(userId);
+        if (user==null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        user.updatePassword(newpass);
+        return Response.ok().build();
     }
 }

@@ -2,6 +2,7 @@ package accountserver.api;
 
 import accountserver.database.Token;
 import accountserver.database.TokensStorage;
+import accountserver.database.User;
 import accountserver.database.UsersStorage;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
@@ -20,45 +21,46 @@ public class AuthenticationAPI {
   @Path("register")
   @Consumes("application/x-www-form-urlencoded")
   @Produces("text/plain")
-  public Response register(@FormParam("user") String user,
+  public Response register(@FormParam("user") String username,
                            @FormParam("password") String password) {
 
-    if (user == null || password == null) {
+    if (username == null || password == null) {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    if (user.equals("") || password.equals("")) {
+    if (username.equals("") || password.equals("") ||
+            ApplicationContext.instance().get(UsersStorage.class).getUserByName(username)!=null) {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
 
-    if (!ApplicationContext.instance().get(UsersStorage.class).register(user,password)) {
-      return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-    }
+    ApplicationContext.instance().get(UsersStorage.class).addUser(new User(username,password));
 
-    log.info("New user '{}' registered", user);
-    return Response.ok("User " + user + " registered.").build();
+    log.info("New user '{}' registered", username);
+    return Response.ok("User " + username + " registered.").build();
   }
 
   @POST
   @Path("login")
   @Consumes("application/x-www-form-urlencoded")
   @Produces("text/plain")
-  public Response authenticateUser(@FormParam("user") String user,
+  public Response authenticateUser(@FormParam("user") String username,
                                    @FormParam("password") String password) {
 
-    if (user == null || password == null) {
+    if (username == null || password == null) {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }
-    if (user.equals("") || password.equals("")) {
+    if (username.equals("") || password.equals("")) {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
     try {
       // Authenticate the user using the credentials provided
-      Token token = ApplicationContext.instance().get(UsersStorage.class).requestToken(user,password);
-      if (token == null) {
+      User user = ApplicationContext.instance().get(UsersStorage.class).getUserByName(username);
+      if (user==null || !user.validatePassword(password)) {
         return Response.status(Response.Status.UNAUTHORIZED).build();
       }
+
       // Issue a token for the user
+      Token token = ApplicationContext.instance().get(TokensStorage.class).generateToken(user.getId());
       log.info("User '{}' logged in", user);
 
       // Return the token on the response
@@ -71,7 +73,7 @@ public class AuthenticationAPI {
 
   public static boolean validateToken(String rawToken) {
     Token token = Token.parse(rawToken);
-    if (token==null || !ApplicationContext.instance().get(UsersStorage.class).isValidToken(token)) {
+    if (token==null || !ApplicationContext.instance().get(TokensStorage.class).isValidToken(token)) {
       return false;
     }
     log.info("Correct token from '{}'", ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token));
@@ -86,7 +88,7 @@ public class AuthenticationAPI {
     Token token = AuthenticationFilter.getTokenFromHeaders(headers);
     if (token==null)
       return Response.status(Response.Status.UNAUTHORIZED).build();
-    ApplicationContext.instance().get(UsersStorage.class).logout(token);
+    ApplicationContext.instance().get(TokensStorage.class).removeToken(token);
     return Response.ok("Logged out").build();
   }
 }

@@ -12,63 +12,36 @@ import java.util.List;
  */
 public interface UsersStorage {
     /**
-     * Generates access token for username (authorization with password)
-     * @param username user`s name
-     * @param password user`s password
-     * @return null if password is invalid or user not registered, access token otherwise
+     * Add user to storage
+     * @param user user to add
      */
-    @Nullable
-    Token requestToken(@NotNull String username, @NotNull String password);
+    void addUser(@NotNull User user);
 
     /**
-     * Register user on server
-     * @param username user`s name
-     * @param password user`s password
-     * @return true if registration successful, false otherwise
-     */
-    boolean register(@NotNull String username, @NotNull String password);
-
-    /**
-     * Change user password (token must belong to user and user must submit his password)
-     * @param token token of user who wants change his pass
-     * @param newpwd user`s new password
-     * @return true if password changed, false otherwise
-     */
-    boolean changePassword(@NotNull Token token, @NotNull String newpwd);
-
-    /**
-     * Removes access token from valid tokens (logout user)
-     * @param token token to remove
-     */
-    void logout(@NotNull Token token);
-
-    /**
-     * Checks if token is valid (exists and not expired)
-     * @param token token to check
-     * @return true if valid, false otherwise
-     */
-    boolean isValidToken(@NotNull Token token);
-
-    /**
-     * Finds user and creates Player object by user name
+     * Finds user by user id
      * @param id user id to find
-     * @return User object if found and token valid, null otherwise
+     * @return User object if found null otherwise
      */
     @Nullable
     User getUserById(int id);
 
     /**
-     * Finds logged in users (with valid tokens at now)
-     * @return list of logged in user names
+     * Find user by username
+     * @param name name of user to find
+     * @return User object if found, null otherwise
      */
-    @NotNull
-    List<String> getLoggedInUsers();
+    @Nullable
+    User getUserByName(@NotNull String name);
 
     /**
-     * Sets new name to token owner
-     * @param newName a new name
-     * @param token token of user whose name will be changed
-     * @return true if name was changed, false otherwise
+     * Remove user from base;
+     * @param user user to remove
      */
-    boolean setNewName(@NotNull String newName, @NotNull Token token);
+    void removeUser(@NotNull User user);
+
+    /**
+     * @return List of all registered users
+     */
+    @NotNull
+    List<User> getAllUsers();
 }
