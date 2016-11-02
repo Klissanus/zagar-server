@@ -8,6 +8,7 @@ import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import utils.JSONHelper;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,7 +16,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by xakep666 on 13.10.16.
@@ -50,6 +50,6 @@ public class DataAPI {
         });
         UserInfo ret = new UserInfo();
         ret.users=users.toArray(new String[0]);
-        return Response.ok(gson.toJson(ret)).build();
+        return Response.ok(JSONHelper.toJSON(ret)).build();
     }
 }
