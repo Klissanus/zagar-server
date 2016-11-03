@@ -1,8 +1,8 @@
 package main;
 
 import accountserver.AccountServer;
-import accountserver.database.InMemoryTokensStorage;
-import accountserver.database.InMemoryUsersStorage;
+import accountserver.database.HibernateTokensStorage;
+import accountserver.database.HibernateUsersStorage;
 import accountserver.database.TokenDAO;
 import accountserver.database.UserDAO;
 import matchmaker.MatchMaker;
@@ -45,8 +45,8 @@ public class MasterServer {
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
     Ticker ticker = new Ticker(1);
     ApplicationContext.instance().put(Ticker.class, ticker);
-    ApplicationContext.instance().put(TokenDAO.class,new InMemoryTokensStorage());
-    ApplicationContext.instance().put(UserDAO.class,new InMemoryUsersStorage());
+    ApplicationContext.instance().put(TokenDAO.class,new HibernateTokensStorage());
+    ApplicationContext.instance().put(UserDAO.class,new HibernateUsersStorage());
     SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
     ApplicationContext.instance().put(SessionFactory.class,sessionFactory);
 
