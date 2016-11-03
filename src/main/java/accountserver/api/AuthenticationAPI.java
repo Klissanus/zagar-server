@@ -72,7 +72,7 @@ public class AuthenticationAPI {
   }
 
   public static boolean validateToken(String rawToken) {
-    Token token = ApplicationContext.instance().get(TokenDAO.class).fromString(rawToken);
+    Token token = ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);
     if (token==null) {
       return false;
     }

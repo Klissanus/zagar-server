@@ -47,6 +47,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
     List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
     String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
-    return ApplicationContext.instance().get(TokenDAO.class).fromString(rawToken);
+    return ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);
   }
 }

@@ -14,22 +14,26 @@ import java.util.Random;
  */
 @Entity
 @Table(name = "tokens")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) //нужно для хранения дополнительных полей в одной таблице
 public class Token {
     private static final Duration LIFE_TIME = Duration.ofHours(2);
 
-    @Column(name = "value",nullable = false, unique = true)
+    @Id
+    @Column(name = "val",nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long token;
     @Column(name = "issue_date", nullable = false)
     @NotNull
     private Date generationDate = new Date();
-
     /**
      * Generates new random token
      */
-    Token() {
+    protected Token() {
         token = new Random().nextLong();
     }
+
+
+    long getTokenValue() { return token; }
 
     /**
      * Determine if token is valid

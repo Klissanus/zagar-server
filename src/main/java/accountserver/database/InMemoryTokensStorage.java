@@ -73,7 +73,7 @@ public class InMemoryTokensStorage implements TokenDAO {
     }
 
     @Override
-    public @Nullable Token fromString(@NotNull String rawToken) {
+    public @Nullable Token findByValue(@NotNull String rawToken) {
         for(Token token:userTokens.values()) {
             if (token.rawEquals(rawToken) && token.isValid()) return token;
         }

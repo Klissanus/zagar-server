@@ -146,6 +146,12 @@ public class User {
         return registrationDate;
     }
 
+
+    @Override
+    public String toString() {
+        return String.format("name: %s, id %d, email %s, registration date %s",name,id,email, registrationDate);
+    }
+
     @Override
     public boolean equals(Object o) {
         return (this==o) || (o instanceof User) &&
