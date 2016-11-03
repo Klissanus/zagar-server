@@ -1,14 +1,13 @@
 package accountserver.database;
 
-import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import utils.HibernateHelper;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,8 +26,11 @@ public class HibernateTokensStorage implements TokenDAO {
         log.info("Initialized Hibernate tokens storage");
     }
 
-    private Thread prThread = new Thread(this::periodicRemover);
-    public HibernateTokensStorage() {prThread.start();}
+    private Thread prThread;
+    public HibernateTokensStorage() {
+        prThread = new Thread(this::periodicRemover);
+        prThread.start();
+    }
 
     @Entity
     static class StoredToken extends Token {
@@ -50,7 +52,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public @NotNull Token generateToken(int userId) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             Token foundToken = getUserToken(userId);
             if (foundToken!=null) {
                 log.info("Found token for user "+userId+" , returning");
@@ -70,7 +72,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public @Nullable Token getUserToken(int userId) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Searching token for user "+userId);
             Query query = session.createQuery("from tokens t where t.owner_id = :id");
             query.setParameter("id",userId);
@@ -95,7 +97,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public @Nullable Integer getTokenOwner(@NotNull Token token) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Searching token "+token+" owner");
             Query query = session.createQuery("from tokens t where t.val = :val");
             query.setParameter("val",token.getTokenValue());
@@ -113,7 +115,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public @Nullable Token findByValue(@NotNull String rawToken) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Searching token by value" + rawToken);
             Query query = session.createQuery("from tokens t where t.val = :val");
             query.setParameter("val",Long.parseLong(rawToken));
@@ -133,7 +135,7 @@ public class HibernateTokensStorage implements TokenDAO {
     @Override
     public @NotNull List<Integer> getValidTokenOwners() {
         List<Integer> ret = new ArrayList<>();
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Getting valid token owners");
             Query query = session.createQuery("from tokens");
             List resp = query.list();
@@ -155,7 +157,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public void removeToken(@NotNull Token token) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Removing token "+token);
             Query query = session.createQuery("delete from tokens t where t.val = :val");
             query.setParameter("val",token.getTokenValue());
@@ -167,7 +169,7 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public void removeToken(int userId) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Removing token by owner "+userId);
             Query query = session.createQuery("delete from tokens t where t.owner_id = :owner_id");
             query.setParameter("owner_id",userId);
@@ -180,7 +182,7 @@ public class HibernateTokensStorage implements TokenDAO {
     private void periodicRemover() {
         log.info("Periodic removing of invalid tokens activated");
         while(!Thread.interrupted()) {
-            try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+            try (Session session = HibernateHelper.createSession()) {
                 log.info("Time to remove tokens");
                 Query query = session.createQuery("delete from tokens t where " +
                         "DATE_ADD(t.issue_date,INTERVAL ("+Token.LIFE_TIME.toMillis()+")*1000 MICROSECOND)<NOW()");

@@ -12,8 +12,6 @@ import network.ClientConnectionServer;
 import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 import replication.FullStateReplicator;
 import replication.Replicator;
@@ -47,8 +45,6 @@ public class MasterServer {
     ApplicationContext.instance().put(Ticker.class, ticker);
     ApplicationContext.instance().put(TokenDAO.class,new HibernateTokensStorage());
     ApplicationContext.instance().put(UserDAO.class,new HibernateUsersStorage());
-    SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-    ApplicationContext.instance().put(SessionFactory.class,sessionFactory);
 
     Mechanics mechanics = new Mechanics();
     ticker.registerTickable(mechanics);
@@ -62,7 +58,6 @@ public class MasterServer {
     for (Service service : services) {
       service.join();
     }
-    sessionFactory.close();
   }
 
   public static void main(@NotNull String[] args) throws ExecutionException, InterruptedException {

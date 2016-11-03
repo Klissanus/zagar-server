@@ -1,14 +1,13 @@
 package accountserver.database;
 
-import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import utils.HibernateHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class HibernateUsersStorage implements UserDAO{
 
     @Override
     public void addUser(@NotNull User user) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()){
+        try (Session session = HibernateHelper.createSession()){
             log.info("Adding user "+user+ " to database");
             Transaction transaction = session.beginTransaction();
             session.save(user);
@@ -39,7 +38,7 @@ public class HibernateUsersStorage implements UserDAO{
 
     @Override
     public @Nullable User getUserById(int id) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Searching user with id "+id);
             Query query = session.createQuery("from users u where u.id = :id");
             query.setParameter("id",id);
@@ -54,7 +53,7 @@ public class HibernateUsersStorage implements UserDAO{
 
     @Override
     public @Nullable User getUserByName(@NotNull String name) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Searching user with name "+name);
             Query query = session.createQuery("from users u where u.name = :name");
             query.setParameter("name",name);
@@ -69,7 +68,7 @@ public class HibernateUsersStorage implements UserDAO{
 
     @Override
     public void removeUser(@NotNull User user) {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Removing user "+user);
             Transaction transaction = session.beginTransaction();
             session.delete(user);
@@ -81,7 +80,7 @@ public class HibernateUsersStorage implements UserDAO{
 
     @Override
     public @NotNull List<User> getAllUsers() {
-        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+        try (Session session = HibernateHelper.createSession()) {
             log.info("Getting all users");
             Query query = session.createQuery("from users");
             List resp = query.list();
