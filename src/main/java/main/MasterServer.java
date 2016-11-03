@@ -3,12 +3,12 @@ package main;
 import accountserver.AccountServer;
 import accountserver.database.InMemoryTokensStorage;
 import accountserver.database.InMemoryUsersStorage;
-import accountserver.database.TokensStorage;
-import accountserver.database.UsersStorage;
+import accountserver.database.TokenDAO;
+import accountserver.database.UserDAO;
 import matchmaker.MatchMaker;
 import matchmaker.MatchMakerImpl;
-import network.ClientConnectionServer;
 import mechanics.Mechanics;
+import network.ClientConnectionServer;
 import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by apomosov on 14.05.16.
+ * Created by apomosov on 14.05.16
+ *
+ * Initializes all services.
  */
 public class MasterServer {
   @NotNull
@@ -41,8 +43,8 @@ public class MasterServer {
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
     Ticker ticker = new Ticker(1);
     ApplicationContext.instance().put(Ticker.class, ticker);
-    ApplicationContext.instance().put(TokensStorage.class,new InMemoryTokensStorage());
-    ApplicationContext.instance().put(UsersStorage.class,new InMemoryUsersStorage());
+    ApplicationContext.instance().put(TokenDAO.class,new InMemoryTokensStorage());
+    ApplicationContext.instance().put(UserDAO.class,new InMemoryUsersStorage());
 
     Mechanics mechanics = new Mechanics();
     ticker.registerTickable(mechanics);

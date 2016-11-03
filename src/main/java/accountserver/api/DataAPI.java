@@ -1,8 +1,8 @@
 package accountserver.api;
 
-import accountserver.database.TokensStorage;
+import accountserver.database.TokenDAO;
 import accountserver.database.User;
-import accountserver.database.UsersStorage;
+import accountserver.database.UserDAO;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,10 +37,10 @@ public class DataAPI {
     @Path("users")
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
-        List<Integer> userIds = ApplicationContext.instance().get(TokensStorage.class).getValidTokenOwners();
+        List<Integer> userIds = ApplicationContext.instance().get(TokenDAO.class).getValidTokenOwners();
         List<User> users = new ArrayList<>(userIds.size());
         userIds.forEach(id->{
-            User u = ApplicationContext.instance().get(UsersStorage.class).getUserById(id);
+            User u = ApplicationContext.instance().get(UserDAO.class).getUserById(id);
             if (u!=null) users.add(u);
         });
         return Response.ok(JSONHelper.toJSON(users)).build();

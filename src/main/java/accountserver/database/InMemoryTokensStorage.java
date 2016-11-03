@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Tokens storage based on in-memory data structures
  */
-public class InMemoryTokensStorage implements TokensStorage {
+public class InMemoryTokensStorage implements TokenDAO {
     @NotNull
     private static Logger log = LogManager.getLogger(User.class);
 

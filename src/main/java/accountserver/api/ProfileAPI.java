@@ -1,9 +1,9 @@
 package accountserver.api;
 
 import accountserver.database.Token;
-import accountserver.database.TokensStorage;
+import accountserver.database.TokenDAO;
 import accountserver.database.User;
-import accountserver.database.UsersStorage;
+import accountserver.database.UserDAO;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,13 +41,13 @@ public class ProfileAPI {
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
-                ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token),newName));
-        if (ApplicationContext.instance().get(UsersStorage.class).getUserByName(newName)!=null) {
+                ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token),newName));
+        if (ApplicationContext.instance().get(UserDAO.class).getUserByName(newName)!=null) {
             Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
-        Integer tokenOwner = ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token);
+        Integer tokenOwner = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
         if (tokenOwner==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        User user = ApplicationContext.instance().get(UsersStorage.class).getUserById(tokenOwner);
+        User user = ApplicationContext.instance().get(UserDAO.class).getUserById(tokenOwner);
         if (user==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         user.setName(newName);
         return Response.ok("Username changed to "+newName).build();
@@ -65,11 +65,11 @@ public class ProfileAPI {
         if (token==null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        Integer userId = ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token);
+        Integer userId = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
         if (userId==null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        User user = ApplicationContext.instance().get(UsersStorage.class).getUserById(userId);
+        User user = ApplicationContext.instance().get(UserDAO.class).getUserById(userId);
         if (user==null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }

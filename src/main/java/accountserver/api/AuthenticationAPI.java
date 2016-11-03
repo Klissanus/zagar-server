@@ -1,9 +1,9 @@
 package accountserver.api;
 
 import accountserver.database.Token;
-import accountserver.database.TokensStorage;
+import accountserver.database.TokenDAO;
 import accountserver.database.User;
-import accountserver.database.UsersStorage;
+import accountserver.database.UserDAO;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,11 +29,11 @@ public class AuthenticationAPI {
     }
 
     if (username.equals("") || password.equals("") ||
-            ApplicationContext.instance().get(UsersStorage.class).getUserByName(username)!=null) {
+            ApplicationContext.instance().get(UserDAO.class).getUserByName(username)!=null) {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
 
-    ApplicationContext.instance().get(UsersStorage.class).addUser(new User(username,password));
+    ApplicationContext.instance().get(UserDAO.class).addUser(new User(username,password));
 
     log.info("New user '{}' registered", username);
     return Response.ok("User " + username + " registered.").build();
@@ -54,13 +54,13 @@ public class AuthenticationAPI {
     }
     try {
       // Authenticate the user using the credentials provided
-      User user = ApplicationContext.instance().get(UsersStorage.class).getUserByName(username);
+      User user = ApplicationContext.instance().get(UserDAO.class).getUserByName(username);
       if (user==null || !user.validatePassword(password)) {
         return Response.status(Response.Status.UNAUTHORIZED).build();
       }
 
       // Issue a token for the user
-      Token token = ApplicationContext.instance().get(TokensStorage.class).generateToken(user.getId());
+      Token token = ApplicationContext.instance().get(TokenDAO.class).generateToken(user.getId());
       log.info("User '{}' logged in", user);
 
       // Return the token on the response
@@ -72,11 +72,11 @@ public class AuthenticationAPI {
   }
 
   public static boolean validateToken(String rawToken) {
-    Token token = ApplicationContext.instance().get(TokensStorage.class).fromString(rawToken);
+    Token token = ApplicationContext.instance().get(TokenDAO.class).fromString(rawToken);
     if (token==null) {
       return false;
     }
-    log.info("Correct token from '{}'", ApplicationContext.instance().get(TokensStorage.class).getTokenOwner(token));
+    log.info("Correct token from '{}'", ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token));
     return true;
   }
 
@@ -88,7 +88,7 @@ public class AuthenticationAPI {
     Token token = AuthenticationFilter.getTokenFromHeaders(headers);
     if (token==null)
       return Response.status(Response.Status.UNAUTHORIZED).build();
-    ApplicationContext.instance().get(TokensStorage.class).removeToken(token);
+    ApplicationContext.instance().get(TokenDAO.class).removeToken(token);
     return Response.ok("Logged out").build();
   }
 }
