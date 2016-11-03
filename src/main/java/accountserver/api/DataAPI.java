@@ -26,13 +26,10 @@ public class DataAPI {
     @NotNull
     private static final Logger log = LogManager.getLogger(DataAPI.class);
 
-    private static final class UserInfo {
-        String[] users;
-    }
+
 
     /**
-     * Method retrieves logged in users (with valid tokens) and serializes it to json
-     * like {users: ["user1","user2",...]}
+     * Method retrieves logged in users (with valid tokens) and serializes it to jso
      * @return serialized list
      */
     @GET
@@ -41,13 +38,11 @@ public class DataAPI {
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
         List<Integer> userIds = ApplicationContext.instance().get(TokensStorage.class).getValidTokenOwners();
-        List<String> users = new ArrayList<>(userIds.size());
+        List<User> users = new ArrayList<>(userIds.size());
         userIds.forEach(id->{
             User u = ApplicationContext.instance().get(UsersStorage.class).getUserById(id);
-            if (u!=null) users.add(u.getName());
+            if (u!=null) users.add(u);
         });
-        UserInfo ret = new UserInfo();
-        ret.users=users.toArray(new String[0]);
-        return Response.ok(JSONHelper.toJSON(ret)).build();
+        return Response.ok(JSONHelper.toJSON(users)).build();
     }
 }

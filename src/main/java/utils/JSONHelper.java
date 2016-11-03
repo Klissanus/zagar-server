@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @author apomosov
  */
 public class JSONHelper {
-  private static @NotNull Gson gson = new GsonBuilder().create();
+  private static @NotNull Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
   @NotNull
   public static String toJSON(@NotNull Object object) {

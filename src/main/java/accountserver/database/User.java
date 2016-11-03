@@ -1,5 +1,6 @@
 package accountserver.database;
 
+import com.google.gson.annotations.Expose;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +30,7 @@ public class User {
     private static Logger log = LogManager.getLogger(User.class);
     @NotNull
     @Column(name = "name",nullable = false)
+    @Expose
     private String name;
     @NotNull
     @Column(name = "password",nullable = false)
@@ -38,6 +40,7 @@ public class User {
     private String email = "";
     @NotNull
     @Column(name = "registration_date",nullable = false)
+    @Expose
     private Date registrationDate = new Date();
 
     static {
