@@ -2,202 +2,155 @@ package accountserver.database;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.HibernateHelper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by xakep666 on 03.11.16.
- *
+ * <p>
  * Stores {@link Token} in database and validates it
  */
 public class HibernateTokensStorage implements TokenDAO {
     private static final Logger log = LogManager.getLogger(HibernateUsersStorage.class);
-
-    static {
-        log.info("Initialized Hibernate tokens storage");
-    }
-
     private Thread prThread;
+
     public HibernateTokensStorage() {
         prThread = new Thread(this::periodicRemover);
+        log.info("Initialized Hibernate tokens storage");
         prThread.start();
     }
 
-    @Entity
-    static class StoredToken extends Token {
-        @Column(name = "owner_id",nullable = false)
-        private int ownerId;
-
-        protected StoredToken(){}
-        StoredToken(int owner) {
-            this.ownerId = owner;
+    @Override
+    public @NotNull Token generateToken(@NotNull User user) {
+        Token foundToken = getUserToken(user);
+        if (foundToken != null) {
+            log.info("Found token for user " + user + " , returning");
+            return foundToken;
         }
-
-        int getOwner() {
-            return ownerId;
-        }
-        void setOwner(int owner) {
-            this.ownerId = owner;
-        }
+        log.info("Valid tokens for user " + user + " not found, creating new");
+        StoredToken token = new StoredToken(new Token(), user);
+        HibernateHelper.doTransactional(session -> session.save(token));
+        return token.getToken();
     }
 
     @Override
-    public @NotNull Token generateToken(int userId) {
-        try (Session session = HibernateHelper.createSession()) {
-            Token foundToken = getUserToken(userId);
-            if (foundToken!=null) {
-                log.info("Found token for user "+userId+" , returning");
-                return foundToken;
-            }
-            log.info("Valid tokens for user "+userId+" not found, creating new");
-            Transaction transaction = session.beginTransaction();
-            StoredToken newToken = new StoredToken(userId);
-            session.save(newToken);
-            transaction.commit();
-            return newToken;
-        } catch (Exception e) {
-            e.printStackTrace();
+    public @Nullable Token getUserToken(@NotNull User user) {
+        log.info("Searching token for user " + user);
+        List response = HibernateHelper.selectTransactional(session ->
+                session.createQuery("from StoredToken t where t.owner.id = :id and " +
+                        "t.token.validUntil >= :ts and t.token.generationDate <= :ts")
+                        .setParameter("ts", new Date())
+                        .setParameter("id", user.getId())
+                        .list());
+        if (response == null) {
+            log.error("Error retrieving token for user " + user);
             return null;
         }
+        if (response.size() == 0) {
+            log.info("Valid tokens for user " + user + " not found");
+            return null;
+        }
+        return ((StoredToken) response.get(0)).getToken();
     }
 
     @Override
-    public @Nullable Token getUserToken(int userId) {
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Searching token for user "+userId);
-            Query query = session.createQuery("from tokens t where t.owner_id = :id");
-            query.setParameter("id",userId);
-            List response = query.list();
-            if (response==null || !(response.get(0) instanceof StoredToken)) {
-                log.error("Error retrieving token for user "+userId);
-                return null;
-            }
-            Token ret = null;
-            for(Object t:response) {
-                if (((Token)t).isValid()) {
-                    ret=(Token)t;
-                    break;
-                }
-            }
-            return ret;
-        } catch (Exception e) {
-            e.printStackTrace();
+    public @Nullable User getTokenOwner(@NotNull Token token) {
+        log.info("Searching token " + token + " owner");
+        List response = HibernateHelper.selectTransactional(session ->
+                session.createQuery("from StoredToken t where t.token = :val and " +
+                        "t.token.validUntil >= :ts and t.token.generationDate <= :ts")
+                        .setParameter("ts", new Date())
+                        .setParameter("val", token)
+                        .list());
+        if (response == null) {
+            log.error("Error searching token " + token + " owner");
             return null;
         }
-    }
-
-    @Override
-    public @Nullable Integer getTokenOwner(@NotNull Token token) {
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Searching token "+token+" owner");
-            Query query = session.createQuery("from tokens t where t.val = :val");
-            query.setParameter("val",token.getTokenValue());
-            List response = query.list();
-            if (response==null || !(response.get(0) instanceof StoredToken)) {
-                log.error("Error searching token "+token+" owner");
-                return null;
-            }
-            return ((StoredToken) response.get(0)).getOwner();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (response.size() == 0) {
+            log.info("Token " + token + " owner not found");
             return null;
         }
+        return ((StoredToken) response.get(0)).getOwner();
     }
 
     @Override
     public @Nullable Token findByValue(@NotNull String rawToken) {
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Searching token by value" + rawToken);
-            Query query = session.createQuery("from tokens t where t.val = :val");
-            query.setParameter("val",Long.parseLong(rawToken));
-            List resp = query.list();
-            if (resp==null || !(resp.get(0) instanceof StoredToken)) {
-                log.error("Error searching token by value"+rawToken);
-                return null;
-            }
-            Token token = (Token)resp.get(0);
-            return token.isValid() ? token : null;
-        } catch (Exception e) {
-            e.printStackTrace();
+        log.info("Searching token by value" + rawToken);
+        List response = HibernateHelper.selectTransactional(session ->
+                session.createQuery("from StoredToken t where t.token.token = :val and " +
+                        "t.token.validUntil >= :ts and t.token.generationDate <= :ts")
+                        .setParameter("ts", new Date())
+                        .setParameter("val", Long.parseLong(rawToken))
+                        .list());
+        if (response == null) {
+            log.error("Error searching token by value " + rawToken);
             return null;
         }
+        if (response.size() == 0) {
+            log.info("Token " + rawToken + " not found");
+            return null;
+        }
+
+        return ((StoredToken) response.get(0)).getToken();
     }
 
     @Override
-    public @NotNull List<Integer> getValidTokenOwners() {
-        List<Integer> ret = new ArrayList<>();
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Getting valid token owners");
-            Query query = session.createQuery("from tokens");
-            List resp = query.list();
-            if (resp==null || !(resp.get(0) instanceof StoredToken)) {
-                log.error("Error returning valid token owners");
-                return ret;
-            }
-            for(Object t:resp) {
-                if (((StoredToken)t).isValid()) {
-                    ret.add(((StoredToken)t).getOwner());
-                    break;
-                }
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
+    public @NotNull List<User> getValidTokenOwners() {
+        List resp = HibernateHelper.selectTransactional(session ->
+                session.createQuery("from StoredToken t where " +
+                        "t.token.validUntil >= :ts and t.token.generationDate <= :ts")
+                        .setParameter("ts", new Date())
+                        .list());
+        if (resp == null) {
+            log.error("Error returning valid token owners");
+            return Collections.emptyList();
         }
+
+        List<User> ret = new ArrayList<>(resp.size());
+        resp.forEach(st -> ret.add(((StoredToken) st).getOwner()));
         return ret;
     }
 
     @Override
     public void removeToken(@NotNull Token token) {
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Removing token "+token);
-            Query query = session.createQuery("delete from tokens t where t.val = :val");
-            query.setParameter("val",token.getTokenValue());
-            query.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        HibernateHelper.doTransactional(session ->
+                session.createQuery("delete from StoredToken t where t.token = :id")
+                        .setParameter("id", token)
+                        .executeUpdate());
     }
 
     @Override
-    public void removeToken(int userId) {
-        try (Session session = HibernateHelper.createSession()) {
-            log.info("Removing token by owner "+userId);
-            Query query = session.createQuery("delete from tokens t where t.owner_id = :owner_id");
-            query.setParameter("owner_id",userId);
-            query.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void removeToken(@NotNull User user) {
+        HibernateHelper.doTransactional(session ->
+                session.createQuery("delete from StoredToken t where t.owner.id = :id")
+                        .setParameter("id", user.getId())
+                        .executeUpdate());
     }
 
     private void periodicRemover() {
         log.info("Periodic removing of invalid tokens activated");
-        while(!Thread.interrupted()) {
-            try (Session session = HibernateHelper.createSession()) {
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
                 log.info("Time to remove tokens");
-                Query query = session.createQuery("delete from tokens t where " +
-                        "DATE_ADD(t.issue_date,INTERVAL ("+Token.LIFE_TIME.toMillis()+")*1000 MICROSECOND)<NOW()");
-                query.executeUpdate();
+                HibernateHelper.doTransactional(session -> session.createQuery("delete from StoredToken t where " +
+                        "t.token.validUntil <= :ts or t.token.generationDate >= :ts")
+                        .setParameter("ts", new Date())
+                        .executeUpdate());
                 Thread.sleep(TOKEN_REMOVAL_INTERVAL.toMillis());
             } catch (InterruptedException e) {
                 return;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
 
     @Override
-    public void finalize() throws Throwable{
+    public void finalize() throws Throwable {
         super.finalize();
         prThread.interrupt();
     }

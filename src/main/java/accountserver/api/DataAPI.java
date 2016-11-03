@@ -2,7 +2,8 @@ package accountserver.api;
 
 import accountserver.database.TokenDAO;
 import accountserver.database.User;
-import accountserver.database.UserDAO;
+import com.google.gson.annotations.Expose;
+import com.google.gson.reflect.TypeToken;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +26,6 @@ public class DataAPI {
     @NotNull
     private static final Logger log = LogManager.getLogger(DataAPI.class);
 
-
-
     /**
      * Method retrieves logged in users (with valid tokens) and serializes it to jso
      * @return serialized list
@@ -37,12 +35,14 @@ public class DataAPI {
     @Path("users")
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
-        List<Integer> userIds = ApplicationContext.instance().get(TokenDAO.class).getValidTokenOwners();
-        List<User> users = new ArrayList<>(userIds.size());
-        userIds.forEach(id->{
-            User u = ApplicationContext.instance().get(UserDAO.class).getUserById(id);
-            if (u!=null) users.add(u);
-        });
-        return Response.ok(JSONHelper.toJSON(users)).build();
+        UserInfo ret = new UserInfo();
+        ret.users = ApplicationContext.instance().get(TokenDAO.class).getValidTokenOwners();
+        return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {
+        }.getType())).build();
+    }
+
+    private static class UserInfo {
+        @Expose
+        List<User> users;
     }
 }

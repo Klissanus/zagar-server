@@ -3,6 +3,7 @@ package accountserver.database;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Random;
@@ -12,19 +13,22 @@ import java.util.Random;
  *
  * Token is a unique identifier of user
  */
-@Entity
-@Table(name = "tokens")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) //нужно для хранения дополнительных полей в одной таблице
-public class Token {
-    static final Duration LIFE_TIME = Duration.ofHours(2);
+@Embeddable
+public class Token implements Serializable {
+    private static final Duration LIFE_TIME = Duration.ofHours(2);
 
-    @Id
-    @Column(name = "val",nullable = false, unique = true)
+    @Column(name = "token_value", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long token;
-    @Column(name = "issue_date", nullable = false)
+    @Column(name = "token_issue_date", nullable = false)
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date generationDate = new Date();
+    @Column(name = "token_valid_until", nullable = false)
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date validUntil = new Date(generationDate.getTime() + LIFE_TIME.toMillis());
+
     /**
      * Generates new random token
      */
@@ -32,15 +36,13 @@ public class Token {
         token = new Random().nextLong();
     }
 
-
-    long getTokenValue() { return token; }
-
     /**
      * Determine if token is valid
      * @return true if valid, false otherwise
      */
     boolean isValid() {
-        return new Date().before(new Date(generationDate.getTime()+LIFE_TIME.toMillis()));
+        Date now = new Date();
+        return now.after(generationDate) && now.before(validUntil);
     }
 
     /**

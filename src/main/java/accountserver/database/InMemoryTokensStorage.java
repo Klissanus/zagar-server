@@ -18,9 +18,9 @@ public class InMemoryTokensStorage implements TokenDAO {
     private static Logger log = LogManager.getLogger(User.class);
 
     @NotNull
-    private Map<Token, Integer> tokenOwners = new ConcurrentHashMap<>();
+    private Map<Token, User> tokenOwners = new ConcurrentHashMap<>();
     @NotNull
-    private Map<Integer, Token> userTokens = new ConcurrentHashMap<>();
+    private Map<User, Token> userTokens = new ConcurrentHashMap<>();
 
     private Thread prThread;
 
@@ -32,31 +32,31 @@ public class InMemoryTokensStorage implements TokenDAO {
 
     @Override
     @NotNull
-    public Token generateToken(int userId) {
-        if (userTokens.containsKey(userId)) {
-            Token t = userTokens.get(userId);
+    public Token generateToken(@NotNull User user) {
+        if (userTokens.containsKey(user)) {
+            Token t = userTokens.get(user);
             if (t.isValid()) return t;
         }
         Token t = new Token();
-        userTokens.put(userId,t);
-        tokenOwners.put(t,userId);
+        userTokens.put(user, t);
+        tokenOwners.put(t, user);
         return t;
     }
 
     @Override
     @Nullable
-    public Token getUserToken(int userId) {
-        if (!userTokens.containsKey(userId)) {
+    public Token getUserToken(@NotNull User user) {
+        if (!userTokens.containsKey(user)) {
             return null;
         }
-        return userTokens.get(userId);
+        return userTokens.get(user);
     }
 
     @Override
     @Nullable
-    public Integer getTokenOwner(@NotNull Token token) {
+    public User getTokenOwner(@NotNull Token token) {
         if (!tokenOwners.containsKey(token)) return null;
-        Integer owner = tokenOwners.get(token);
+        User owner = tokenOwners.get(token);
         if (owner==null) return null;
         if (!token.isValid()) return null;
         return owner;
@@ -64,9 +64,9 @@ public class InMemoryTokensStorage implements TokenDAO {
 
     @Override
     @NotNull
-    public List<Integer> getValidTokenOwners() {
-        List<Integer> ret = new ArrayList<>(userTokens.size());
-        userTokens.forEach((Integer key, Token value) -> {
+    public List<User> getValidTokenOwners() {
+        List<User> ret = new ArrayList<>(userTokens.size());
+        userTokens.forEach((User key, Token value) -> {
             if(value.isValid()) ret.add(key);
         });
         return ret;
@@ -82,7 +82,7 @@ public class InMemoryTokensStorage implements TokenDAO {
 
     @Override
     public void removeToken(@NotNull Token token) {
-        Integer owner = tokenOwners.get(token);
+        User owner = tokenOwners.get(token);
         if (owner!=null) {
             tokenOwners.remove(token);
             userTokens.remove(owner);
@@ -90,10 +90,10 @@ public class InMemoryTokensStorage implements TokenDAO {
     }
 
     @Override
-    public void removeToken(int userId) {
-        Token token = userTokens.get(userId);
+    public void removeToken(@NotNull User user) {
+        Token token = userTokens.get(user);
         if (token!=null) {
-            userTokens.remove(userId);
+            userTokens.remove(user);
             tokenOwners.remove(token);
         }
     }
@@ -101,9 +101,9 @@ public class InMemoryTokensStorage implements TokenDAO {
     private void periodicRemover() {
         try {
             while(!Thread.currentThread().isInterrupted()) {
-                Set<Integer> invalidTokenOwners = new HashSet<>();
+                Set<User> invalidTokenOwners = new HashSet<>();
                 Set<Token> invalidTokens = new HashSet<>();
-                userTokens.forEach((Integer key, Token value) -> {
+                userTokens.forEach((User key, Token value) -> {
                     if (value.isValid()){
                         invalidTokenOwners.add(key);
                         invalidTokens.add(value);

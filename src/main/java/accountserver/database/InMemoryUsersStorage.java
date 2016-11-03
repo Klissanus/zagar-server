@@ -53,4 +53,9 @@ public class InMemoryUsersStorage implements UserDAO {
     public @NotNull List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
+
+    @Override
+    public void updateUser(@NotNull User user) {
+
+    }
 }

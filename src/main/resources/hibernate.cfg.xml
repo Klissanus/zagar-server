@@ -19,11 +19,12 @@
         <property name="hibernate.connection.password">atom43</property>
         <property name="hibernate.connection.url">jdbc:postgresql://54.224.37.210/atom43_tinderdb</property>
 
-
+        <!--boot boost hack-->
+        <property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
 
         <property name="connection_pool_size">1</property>
 
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">update</property>
 
         <property name="show_sql">true</property>
 
@@ -35,8 +36,8 @@
 
         <!-- Names the annotated entity class -->
         <mapping class="accountserver.database.User"/>
-        <mapping class="accountserver.database.Token"/>
-        <mapping class="accountserver.database.HibernateTokensStorage$StoredToken"/>
+        <mapping class="accountserver.database.StoredToken"/>
+        <mapping class="accountserver.database.StoredToken"/>
 
     </session-factory>
 

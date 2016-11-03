@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.jetbrains.annotations.NotNull;
 import utils.IDGenerator;
 
@@ -19,32 +21,40 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "users")
+@DynamicUpdate
+@SelectBeforeUpdate
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",unique = true,nullable = false)
-    private int id;
     @NotNull
     private static String digestAlg = "sha-256";
     @NotNull
     private static Logger log = LogManager.getLogger(User.class);
-    @NotNull
-    @Column(name = "name",nullable = false)
-    @Expose
-    private String name;
-    @NotNull
-    @Column(name = "password",nullable = false)
-    private byte[] passwordHash = new byte[0];
-    @NotNull
-    @Column(name = "email")
-    private String email = "";
-    @NotNull
-    @Column(name = "registration_date",nullable = false)
-    @Expose
-    private Date registrationDate = new Date();
 
     static {
-        log.info("Hashing passwords with "+digestAlg);
+        log.info("Hashing passwords with " + digestAlg);
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", unique = true, nullable = false)
+    private int id;
+    @NotNull
+    @Column(name = "user_name", nullable = false)
+    @Expose
+    private String name = "";
+    @NotNull
+    @Column(name = "user_password", nullable = false)
+    private byte[] passwordHash = new byte[0];
+    @NotNull
+    @Column(name = "user_email")
+    @Expose
+    private String email = "";
+    @NotNull
+    @Column(name = "user_registration_date", nullable = false)
+    @Expose
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registrationDate = new Date();
+
+    protected User() {
     }
 
     /**
@@ -75,19 +85,19 @@ public class User {
     }
 
     /**
-     * @return user`s id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
      * Change user`s name
      * @param newName a new name
      */
     public void setName(@NotNull String newName) {
         log.info("User "+name+" changed name to "+newName);
         name=newName;
+    }
+
+    /**
+     * @return user`s id
+     */
+    public int getId() {
+        return id;
     }
 
     /**

@@ -45,11 +45,10 @@ public class ProfileAPI {
         if (ApplicationContext.instance().get(UserDAO.class).getUserByName(newName)!=null) {
             Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
-        Integer tokenOwner = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
-        if (tokenOwner==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        User user = ApplicationContext.instance().get(UserDAO.class).getUserById(tokenOwner);
+        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
         if (user==null) return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         user.setName(newName);
+        ApplicationContext.instance().get(UserDAO.class).updateUser(user);
         return Response.ok("Username changed to "+newName).build();
 
     }
@@ -65,15 +64,12 @@ public class ProfileAPI {
         if (token==null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        Integer userId = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
-        if (userId==null) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        User user = ApplicationContext.instance().get(UserDAO.class).getUserById(userId);
+        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
         if (user==null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         user.updatePassword(newpass);
+        ApplicationContext.instance().get(UserDAO.class).updateUser(user);
         return Response.ok().build();
     }
 }

@@ -20,27 +20,27 @@ public interface TokenDAO {
 
     /**
      * Issues a new token (if was not found or invalid) or returns alrady issued
-     * @param userId user who wants token
+     * @param user user who wants token
      * @return found or issued token
      */
     @NotNull
-    Token generateToken(int userId);
+    Token generateToken(@NotNull User user);
 
     /**
      * Finds user`s token
-     * @param userId user`s ID which token will be searched
+     * @param user user which token will be searched
      * @return user`s token if it`s found and it is valid, null otherwise
      */
     @Nullable
-    Token getUserToken(int userId);
+    Token getUserToken(@NotNull User user);
 
     /**
      * Finds token owner
      * @param token token which owner will be searched
-     * @return user id, null if not found
+     * @return user, null if not found
      */
     @Nullable
-    Integer getTokenOwner(@NotNull Token token);
+    User getTokenOwner(@NotNull Token token);
 
     /**
      * Find given raw token in storage
@@ -52,10 +52,10 @@ public interface TokenDAO {
 
     /**
      *
-     * @return list of user id`s with valid tokens
+     * @return list of users with valid tokens
      */
     @NotNull
-    List<Integer> getValidTokenOwners();
+    List<User> getValidTokenOwners();
 
     /**
      * Removes token from storage
@@ -65,7 +65,7 @@ public interface TokenDAO {
 
     /**
      * Removes user`s token from storage
-     * @param userId user which token will be removed
+     * @param user user which token will be removed
      */
-    void removeToken(int userId);
+    void removeToken(@NotNull User user);
 }

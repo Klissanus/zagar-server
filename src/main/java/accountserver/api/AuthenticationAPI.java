@@ -17,6 +17,15 @@ import javax.ws.rs.core.Response;
 public class AuthenticationAPI {
   private static final Logger log = LogManager.getLogger(AuthenticationAPI.class);
 
+  public static boolean validateToken(String rawToken) {
+    Token token = ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);
+    if (token == null) {
+      return false;
+    }
+    log.info("Correct token from '{}'", ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token));
+    return true;
+  }
+
   @POST
   @Path("register")
   @Consumes("application/x-www-form-urlencoded")
@@ -60,24 +69,16 @@ public class AuthenticationAPI {
       }
 
       // Issue a token for the user
-      Token token = ApplicationContext.instance().get(TokenDAO.class).generateToken(user.getId());
+      Token token = ApplicationContext.instance().get(TokenDAO.class).generateToken(user);
       log.info("User '{}' logged in", user);
 
       // Return the token on the response
       return Response.ok(token.toString()).build();
 
     } catch (Exception e) {
+      e.printStackTrace();
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-  }
-
-  public static boolean validateToken(String rawToken) {
-    Token token = ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);
-    if (token==null) {
-      return false;
-    }
-    log.info("Correct token from '{}'", ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token));
-    return true;
   }
 
   @POST

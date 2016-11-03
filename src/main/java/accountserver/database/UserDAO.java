@@ -44,4 +44,11 @@ public interface UserDAO {
      */
     @NotNull
     List<User> getAllUsers();
+
+    /**
+     * Update user info in storage
+     *
+     * @param user user which info will be updated
+     */
+    void updateUser(@NotNull User user);
 }
