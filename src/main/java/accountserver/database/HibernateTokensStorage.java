@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,19 +27,23 @@ public class HibernateTokensStorage implements TokenDAO {
         log.info("Initialized Hibernate tokens storage");
     }
 
+    private Thread prThread = new Thread(this::periodicRemover);
+    public HibernateTokensStorage() {prThread.start();}
+
     @Entity
     static class StoredToken extends Token {
         @Column(name = "owner_id",nullable = false)
         private int ownerId;
 
+        protected StoredToken(){}
         StoredToken(int owner) {
             this.ownerId = owner;
         }
 
-        public int getOwner() {
+        int getOwner() {
             return ownerId;
         }
-        public void setOwner(int owner) {
+        void setOwner(int owner) {
             this.ownerId = owner;
         }
     }
@@ -74,8 +79,14 @@ public class HibernateTokensStorage implements TokenDAO {
                 log.error("Error retrieving token for user "+userId);
                 return null;
             }
-            Token ret = (Token)response.get(0);
-            return ret.isValid() ? ret : null;
+            Token ret = null;
+            for(Object t:response) {
+                if (((Token)t).isValid()) {
+                    ret=(Token)t;
+                    break;
+                }
+            }
+            return ret;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -121,16 +132,71 @@ public class HibernateTokensStorage implements TokenDAO {
 
     @Override
     public @NotNull List<Integer> getValidTokenOwners() {
-        return null;
+        List<Integer> ret = new ArrayList<>();
+        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+            log.info("Getting valid token owners");
+            Query query = session.createQuery("from tokens");
+            List resp = query.list();
+            if (resp==null || !(resp.get(0) instanceof StoredToken)) {
+                log.error("Error returning valid token owners");
+                return ret;
+            }
+            for(Object t:resp) {
+                if (((StoredToken)t).isValid()) {
+                    ret.add(((StoredToken)t).getOwner());
+                    break;
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 
     @Override
     public void removeToken(@NotNull Token token) {
-
+        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+            log.info("Removing token "+token);
+            Query query = session.createQuery("delete from tokens t where t.val = :val");
+            query.setParameter("val",token.getTokenValue());
+            query.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void removeToken(int userId) {
+        try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+            log.info("Removing token by owner "+userId);
+            Query query = session.createQuery("delete from tokens t where t.owner_id = :owner_id");
+            query.setParameter("owner_id",userId);
+            query.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void periodicRemover() {
+        log.info("Periodic removing of invalid tokens activated");
+        while(!Thread.interrupted()) {
+            try (Session session = ApplicationContext.instance().get(SessionFactory.class).openSession()) {
+                log.info("Time to remove tokens");
+                Query query = session.createQuery("delete from tokens t where " +
+                        "DATE_ADD(t.issue_date,INTERVAL ("+Token.LIFE_TIME.toMillis()+")*1000 MICROSECOND)<NOW()");
+                query.executeUpdate();
+                Thread.sleep(TOKEN_REMOVAL_INTERVAL.toMillis());
+            } catch (InterruptedException e) {
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void finalize() throws Throwable{
+        super.finalize();
+        prThread.interrupt();
     }
 }

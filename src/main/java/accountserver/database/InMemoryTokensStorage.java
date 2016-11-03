@@ -109,7 +109,7 @@ public class InMemoryTokensStorage implements TokenDAO {
                         invalidTokens.add(value);
                     }
                 });
-                invalidTokenOwners.forEach(o -> userTokens.remove(o));
+                invalidTokenOwners.forEach(userTokens::remove);
                 invalidTokens.forEach(tokenOwners::remove);
                 Thread.sleep(TOKEN_REMOVAL_INTERVAL.toMillis());
             }

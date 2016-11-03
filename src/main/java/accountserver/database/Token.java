@@ -16,7 +16,7 @@ import java.util.Random;
 @Table(name = "tokens")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //нужно для хранения дополнительных полей в одной таблице
 public class Token {
-    private static final Duration LIFE_TIME = Duration.ofHours(2);
+    static final Duration LIFE_TIME = Duration.ofHours(2);
 
     @Id
     @Column(name = "val",nullable = false, unique = true)
