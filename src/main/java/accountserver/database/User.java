@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import utils.IDGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -23,7 +24,7 @@ import java.util.Date;
 @Table(name = "users")
 @DynamicUpdate
 @SelectBeforeUpdate
-public class User {
+public class User implements Serializable {
     @NotNull
     private static String digestAlg = "sha-256";
     @NotNull
@@ -50,7 +51,7 @@ public class User {
     private String email = "";
     @NotNull
     @Column(name = "user_registration_date", nullable = false)
-    @Expose
+    @Expose(deserialize = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate = new Date();
 
@@ -156,6 +157,14 @@ public class User {
         return registrationDate;
     }
 
+    /**
+     * Clones optional profile info
+     *
+     * @param user user which profile will be cloned
+     */
+    public void cloneProfile(@NotNull User user) {
+        email = user.getEmail();
+    }
 
     @Override
     public String toString() {
