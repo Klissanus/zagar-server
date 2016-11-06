@@ -1,4 +1,4 @@
-package accountserver.api;
+package accountserver.api.auth;
 
 import accountserver.database.Token;
 import accountserver.database.TokenDAO;
@@ -44,7 +44,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   }
 
   @Nullable
-  static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
+  public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
     List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
     String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
     return ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);

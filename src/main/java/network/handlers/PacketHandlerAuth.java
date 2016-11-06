@@ -1,6 +1,6 @@
 package network.handlers;
 
-import accountserver.api.AuthenticationAPI;
+import accountserver.api.auth.AuthenticationAPI;
 import main.ApplicationContext;
 import matchmaker.MatchMaker;
 import model.Player;

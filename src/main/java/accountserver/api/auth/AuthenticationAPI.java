@@ -1,4 +1,4 @@
-package accountserver.api;
+package accountserver.api.auth;
 
 import accountserver.database.Token;
 import accountserver.database.TokenDAO;

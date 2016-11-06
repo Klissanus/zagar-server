@@ -1,5 +1,7 @@
-package accountserver.api;
+package accountserver.api.profile;
 
+import accountserver.api.auth.AuthenticationFilter;
+import accountserver.api.auth.Authorized;
 import accountserver.database.Token;
 import accountserver.database.TokenDAO;
 import accountserver.database.User;

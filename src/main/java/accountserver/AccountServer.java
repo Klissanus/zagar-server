@@ -1,6 +1,6 @@
 package accountserver;
 
-import accountserver.api.AuthenticationFilter;
+import accountserver.api.auth.AuthenticationFilter;
 import main.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

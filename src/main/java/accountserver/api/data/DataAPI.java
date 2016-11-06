@@ -1,4 +1,4 @@
-package accountserver.api;
+package accountserver.api.data;
 
 import accountserver.database.TokenDAO;
 import accountserver.database.User;

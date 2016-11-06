@@ -5,6 +5,8 @@ import accountserver.database.HibernateTokensStorage;
 import accountserver.database.HibernateUsersStorage;
 import accountserver.database.TokenDAO;
 import accountserver.database.UserDAO;
+import accountserver.database.leaderboard.JdbcLeaderboardStorage;
+import accountserver.database.leaderboard.LeaderboardDao;
 import matchmaker.MatchMaker;
 import matchmaker.MatchMakerImpl;
 import mechanics.Mechanics;
@@ -45,6 +47,7 @@ public class MasterServer {
     ApplicationContext.instance().put(Ticker.class, ticker);
     ApplicationContext.instance().put(TokenDAO.class,new HibernateTokensStorage());
     ApplicationContext.instance().put(UserDAO.class,new HibernateUsersStorage());
+    ApplicationContext.instance().put(LeaderboardDao.class, new JdbcLeaderboardStorage());
 
     Mechanics mechanics = new Mechanics();
     ticker.registerTickable(mechanics);
