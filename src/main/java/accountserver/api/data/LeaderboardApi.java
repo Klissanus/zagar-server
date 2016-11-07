@@ -50,14 +50,14 @@ public class LeaderboardApi {
 
         //get user info by leaders id
         List<User> users = new ArrayList<>();
-        for(Integer id : leaders.keySet()) {
+        leaders.forEach((Integer id, Integer score) ->
             users.add(
                     ApplicationContext
                             .instance()
                             .get(UserDao.class)
                             .getUserById(id)
-            );
-        }
+            )
+        );
 
         //объединяем имена и очки
         LeaderboardApi.UserInfo ret = new UserInfo();

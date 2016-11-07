@@ -14,8 +14,9 @@ public interface UserDao {
     /**
      * Add user to storage
      * @param user user to add
+     * @return user id
      */
-    void addUser(@NotNull User user);
+    int addUser(@NotNull User user);
 
     /**
      * Finds user by user id

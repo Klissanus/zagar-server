@@ -22,9 +22,10 @@ public class HibernateUsersStorage implements UserDao {
     }
 
     @Override
-    public void addUser(@NotNull User user) {
+    public int addUser(@NotNull User user) {
         log.info("Adding user " + user + " to database");
         HibernateHelper.doTransactional(session -> session.save(user));
+        return user.getId();
     }
 
     @Override

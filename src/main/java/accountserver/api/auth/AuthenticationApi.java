@@ -43,12 +43,10 @@ public class AuthenticationApi {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
 
-    ApplicationContext.instance().get(UserDao.class).addUser(new User(username, password));
-
-    //todo лучше сделать так, что бы AddUser в UserDao возвращал Id тогда этот запрос не нужен
     int userId = ApplicationContext.instance()
             .get(UserDao.class)
-            .getUserByName(username).getId();
+            .addUser(new User(username, password));
+
 
     //добавляем в таблицу Leaderboard
     ApplicationContext.instance()
