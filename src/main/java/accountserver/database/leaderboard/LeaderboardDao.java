@@ -1,6 +1,6 @@
 package accountserver.database.leaderboard;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Created by Klissan on 06.11.2016.
@@ -8,8 +8,9 @@ import java.util.Map;
  */
 public interface LeaderboardDao {
     void addUser(Integer userId);
+    void removeUser(Integer userId);
     void updateScore(int userId, int scoreToAdd);
     //id, score
-    Map<Integer, Integer> getTopUsers(int count);
+    SortedMap<Integer, Integer> getTopUsers(int count);
 
 }

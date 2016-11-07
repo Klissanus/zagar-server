@@ -44,6 +44,7 @@ public class MasterServer {
 
   public static void stop() {
     services.forEach(Service::interrupt);
+    services.clear();
     log.info("MasterServer stopped");
   }
 

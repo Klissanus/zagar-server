@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class AccountServer extends Service {
   private final static @NotNull Logger log = LogManager.getLogger(AccountServer.class);
   private final int port;
-
+  private org.eclipse.jetty.server.Server server;
   public AccountServer(int port) {
     super("account_server");
     this.port = port;
@@ -23,7 +23,7 @@ public class AccountServer extends Service {
     ServletContextHandler context = new ServletContextHandler();
     context.setContextPath("/");
 
-    org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(port);
+    server = new org.eclipse.jetty.server.Server(port);
     server.setHandler(context);
 
     ServletHolder jerseyServlet = context.addServlet(
@@ -45,6 +45,17 @@ public class AccountServer extends Service {
       server.start();
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void interrupt() {
+    try {
+      server.stop();
+    } catch (Exception ignored) {
+
+    } finally {
+      super.interrupt();
     }
   }
 

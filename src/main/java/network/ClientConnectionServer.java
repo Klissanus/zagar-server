@@ -17,7 +17,7 @@ public class ClientConnectionServer extends Service {
   @NotNull
   private final static Logger log = LogManager.getLogger(MasterServer.class);
   private final int port;
-
+  private Server server;
   public ClientConnectionServer(int port) {
     super("client_connection_service");
     this.port = port;
@@ -25,7 +25,7 @@ public class ClientConnectionServer extends Service {
 
   @Override
   public void run() {
-    Server server = new Server();
+    server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
     server.addConnector(connector);
@@ -42,6 +42,17 @@ public class ClientConnectionServer extends Service {
       e.printStackTrace();
     }
     log.info(getName() + " started on port " + port);
+  }
+
+  @Override
+  public void interrupt() {
+    try {
+      server.stop();
+    } catch (Exception ignored) {
+
+    } finally {
+      super.interrupt();
+    }
   }
 
   public static void main(@NotNull String[] args) throws InterruptedException {
