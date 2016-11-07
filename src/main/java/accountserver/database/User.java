@@ -51,7 +51,7 @@ public class User implements Serializable {
     private String email = "";
     @NotNull
     @Column(name = "user_registration_date", nullable = false)
-    @Expose(deserialize = false)
+    @Expose()
     @Temporal(TemporalType.TIMESTAMP)
     private Date registrationDate = new Date();
 

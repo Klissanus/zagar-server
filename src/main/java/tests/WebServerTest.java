@@ -35,7 +35,7 @@ public class WebServerTest {
                 .url(SERVICE_URL+urlPostfix+"?"+params)
                 .get()
                 .addHeader("content-type", "application/x-www-form-urlencoded")
-                .addHeader("Authorization","Bearer: "+token)
+                .addHeader("Authorization","Bearer "+token)
                 .build();
         return client.newCall(req).execute();
     }
