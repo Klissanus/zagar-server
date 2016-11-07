@@ -43,7 +43,8 @@ public class ProfileApi {
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
                 ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token), newName));
-        if (ApplicationContext.instance().get(UserDao.class).getUserByName(newName) != null) {
+        if (newName.equals("") || newName.equals("null") ||
+                ApplicationContext.instance().get(UserDao.class).getUserByName(newName) != null) {
             Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
         User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
@@ -62,7 +63,7 @@ public class ProfileApi {
     @Path("changepass")
     public Response changePassword(@Context HttpHeaders headers,
                                    @FormParam("oldpass") String oldpass, @FormParam("newpass") String newpass) {
-        if (newpass.equals("")) {
+        if (newpass.equals("") || newpass.equals("null")) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);

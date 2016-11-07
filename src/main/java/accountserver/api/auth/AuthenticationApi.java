@@ -39,6 +39,7 @@ public class AuthenticationApi {
     }
 
     if (username.equals("") || password.equals("") ||
+            username.equals("null") || password.equals("null") ||
             ApplicationContext.instance().get(UserDao.class).getUserByName(username) != null) {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
@@ -67,7 +68,7 @@ public class AuthenticationApi {
     if (username == null || password == null) {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }
-    if (username.equals("") || password.equals("")) {
+    if (username.equals("") || password.equals("") || username.equals("null") || password.equals("null")) {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
     try {

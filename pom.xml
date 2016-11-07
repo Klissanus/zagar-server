@@ -140,6 +140,11 @@
             <artifactId>zagar-protocol</artifactId>
             <version>${clientServerProtocol.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
 </project>

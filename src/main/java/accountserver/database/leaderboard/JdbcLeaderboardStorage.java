@@ -18,15 +18,10 @@ public class JdbcLeaderboardStorage
 {
     private static final Logger log = LogManager.getLogger(LeaderboardDao.class);
 
-    /*
-            UPDATE leaderboard
-            SET score = score + add
-            WHERE user = userId;
-            */
     @Override
     public void addUser(Integer userId) {
         final String query =
-                "INSERT INTO leaderboard (user) " +
+                "INSERT INTO leaderboard (user_id) " +
                         "VALUES (%d);";
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
@@ -46,7 +41,7 @@ public class JdbcLeaderboardStorage
         final String query =
                 "UPDATE leaderboard" +
                 "SET score = score + %d" +
-                "WHERE user = %d;";
+                "WHERE user_id = %d;";
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
             stm.execute(String.format(query, scoreToAdd, userId));
@@ -72,7 +67,7 @@ public class JdbcLeaderboardStorage
 
             while (rs.next()) {
                 leaders.put(
-                        rs.getInt("user"),
+                        rs.getInt("user_id"),
                         rs.getInt("score")
                 );
             }
