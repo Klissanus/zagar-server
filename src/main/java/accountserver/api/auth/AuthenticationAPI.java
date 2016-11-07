@@ -4,6 +4,7 @@ import accountserver.database.Token;
 import accountserver.database.TokenDAO;
 import accountserver.database.User;
 import accountserver.database.UserDAO;
+import accountserver.database.leaderboard.LeaderboardDao;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +44,16 @@ public class AuthenticationAPI {
     }
 
     ApplicationContext.instance().get(UserDAO.class).addUser(new User(username,password));
+
+    //todo лучше сделать так, что бы AddUser в UserDao возвращал Id тогда этот запрос не нужен
+    int userId = ApplicationContext.instance()
+            .get(UserDAO.class)
+            .getUserByName(username).getId();
+
+    //добавляем в таблицу Leaderboard
+    ApplicationContext.instance()
+            .get(LeaderboardDao.class)
+            .addUser(userId);
 
     log.info("New user '{}' registered", username);
     return Response.ok("User " + username + " registered.").build();
