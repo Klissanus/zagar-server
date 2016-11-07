@@ -37,12 +37,10 @@ public class DataApi {
         log.info("Logged in users list requested");
         UserInfo ret = new UserInfo();
         ret.users = ApplicationContext.instance().get(TokenDao.class).getValidTokenOwners();
-        return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {
-        }.getType())).build();
+        return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {}.getType())).build();
     }
-
-    private static class UserInfo {
+    public static class UserInfo {
         @Expose
-        List<User> users;
+        public List<User> users;
     }
 }

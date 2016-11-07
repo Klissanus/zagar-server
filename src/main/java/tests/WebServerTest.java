@@ -15,7 +15,7 @@ import java.io.IOException;
  *
  * Superclass for all web API tests
  */
-class WebServerTest {
+public class WebServerTest {
     private static final String SERVICE_URL = "http://localhost:" + 8080 + "/";
     private static OkHttpClient client = new OkHttpClient();
     private static MediaType mt = MediaType.parse("raw");
