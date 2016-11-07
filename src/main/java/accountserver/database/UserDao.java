@@ -10,7 +10,7 @@ import java.util.List;
  *
  * Provides an abstraction layer for databases of {@link User}
  */
-public interface UserDAO {
+public interface UserDao {
     /**
      * Add user to storage
      * @param user user to add

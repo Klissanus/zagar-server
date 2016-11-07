@@ -1,7 +1,7 @@
 package accountserver.api.auth;
 
 import accountserver.database.Token;
-import accountserver.database.TokenDAO;
+import accountserver.database.TokenDao;
 import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +18,13 @@ import java.util.List;
 @Authorized
 @Provider
 public class AuthenticationFilter implements ContainerRequestFilter {
+  @Nullable
+  public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
+    List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+    String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
+    return ApplicationContext.instance().get(TokenDao.class).findByValue(rawToken);
+  }
+
   @Override
   public void filter(@NotNull ContainerRequestContext requestContext) throws IOException {
 
@@ -40,13 +47,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
   }
 
   private boolean validateToken(@NotNull String token) {
-    return AuthenticationAPI.validateToken(token);
-  }
-
-  @Nullable
-  public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
-    List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
-    String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
-    return ApplicationContext.instance().get(TokenDAO.class).findByValue(rawToken);
+    return AuthenticationApi.validateToken(token);
   }
 }

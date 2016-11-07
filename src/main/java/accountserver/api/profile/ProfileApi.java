@@ -3,9 +3,9 @@ package accountserver.api.profile;
 import accountserver.api.auth.AuthenticationFilter;
 import accountserver.api.auth.Authorized;
 import accountserver.database.Token;
-import accountserver.database.TokenDAO;
+import accountserver.database.TokenDao;
 import accountserver.database.User;
-import accountserver.database.UserDAO;
+import accountserver.database.UserDao;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,9 +24,9 @@ import javax.ws.rs.core.Response;
  * Provides REST API for work with user profile
  */
 @Path("/profile")
-public class ProfileAPI {
+public class ProfileApi {
     @NotNull
-    private static final Logger log = LogManager.getLogger(ProfileAPI.class);
+    private static final Logger log = LogManager.getLogger(ProfileApi.class);
 
     /**
      * Change token owner`s name to given
@@ -42,17 +42,17 @@ public class ProfileAPI {
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);
         if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
-                ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token),newName));
-        if (ApplicationContext.instance().get(UserDAO.class).getUserByName(newName)!=null) {
+                ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token), newName));
+        if (ApplicationContext.instance().get(UserDao.class).getUserByName(newName) != null) {
             Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
-        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
+        User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
         if (user == null) {
             log.warn("Not found token " + token + " owner");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         user.setName(newName);
-        ApplicationContext.instance().get(UserDAO.class).updateUser(user);
+        ApplicationContext.instance().get(UserDao.class).updateUser(user);
         return Response.ok("Username changed to "+newName).build();
 
     }
@@ -69,7 +69,7 @@ public class ProfileAPI {
         if (token==null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
+        User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
         if (user==null) {
             log.warn("Not found token " + token + " owner");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -80,7 +80,7 @@ public class ProfileAPI {
         }
         log.info("User " + user.getName() + " requested change password");
         user.updatePassword(newpass);
-        ApplicationContext.instance().get(UserDAO.class).updateUser(user);
+        ApplicationContext.instance().get(UserDao.class).updateUser(user);
         return Response.ok().build();
     }
 
@@ -92,7 +92,7 @@ public class ProfileAPI {
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
+        User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
         if (user == null) {
             log.warn("Not found token " + token + " owner");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -108,7 +108,7 @@ public class ProfileAPI {
         if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        User user = ApplicationContext.instance().get(TokenDAO.class).getTokenOwner(token);
+        User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
         if (user == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
@@ -121,7 +121,7 @@ public class ProfileAPI {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
         user.cloneProfile(fromData);
-        ApplicationContext.instance().get(UserDAO.class).updateUser(user);
+        ApplicationContext.instance().get(UserDao.class).updateUser(user);
         return Response.ok("Your profile updated").build();
     }
 }

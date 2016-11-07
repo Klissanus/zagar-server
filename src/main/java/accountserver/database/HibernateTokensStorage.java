@@ -16,7 +16,7 @@ import java.util.List;
  * <p>
  * Stores {@link Token} in database and validates it
  */
-public class HibernateTokensStorage implements TokenDAO {
+public class HibernateTokensStorage implements TokenDao {
     private static final Logger log = LogManager.getLogger(HibernateUsersStorage.class);
     private Thread prThread;
 

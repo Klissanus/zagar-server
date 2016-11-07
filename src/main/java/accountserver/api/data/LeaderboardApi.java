@@ -1,7 +1,7 @@
 package accountserver.api.data;
 
 import accountserver.database.User;
-import accountserver.database.UserDAO;
+import accountserver.database.UserDao;
 import accountserver.database.leaderboard.LeaderboardDao;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
@@ -54,7 +54,7 @@ public class LeaderboardApi {
             users.add(
                     ApplicationContext
                             .instance()
-                            .get(UserDAO.class)
+                            .get(UserDao.class)
                             .getUserById(id)
             );
         }

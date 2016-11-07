@@ -14,7 +14,7 @@ import java.util.List;
  *
  * Stores {@link User} in database using Hibernate framework
  */
-public class HibernateUsersStorage implements UserDAO{
+public class HibernateUsersStorage implements UserDao {
     private static final Logger log = LogManager.getLogger(HibernateUsersStorage.class);
 
     public HibernateUsersStorage() {

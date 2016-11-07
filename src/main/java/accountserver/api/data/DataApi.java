@@ -1,6 +1,6 @@
 package accountserver.api.data;
 
-import accountserver.database.TokenDAO;
+import accountserver.database.TokenDao;
 import accountserver.database.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
@@ -22,9 +22,9 @@ import java.util.List;
  * Provides REST API for work with users
  */
 @Path("/data")
-public class DataAPI {
+public class DataApi {
     @NotNull
-    private static final Logger log = LogManager.getLogger(DataAPI.class);
+    private static final Logger log = LogManager.getLogger(DataApi.class);
 
     /**
      * Method retrieves logged in users (with valid tokens) and serializes it to jso
@@ -36,7 +36,7 @@ public class DataAPI {
     public Response loggedInUsers() {
         log.info("Logged in users list requested");
         UserInfo ret = new UserInfo();
-        ret.users = ApplicationContext.instance().get(TokenDAO.class).getValidTokenOwners();
+        ret.users = ApplicationContext.instance().get(TokenDao.class).getValidTokenOwners();
         return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {
         }.getType())).build();
     }

@@ -3,8 +3,8 @@ package main;
 import accountserver.AccountServer;
 import accountserver.database.HibernateTokensStorage;
 import accountserver.database.HibernateUsersStorage;
-import accountserver.database.TokenDAO;
-import accountserver.database.UserDAO;
+import accountserver.database.TokenDao;
+import accountserver.database.UserDao;
 import accountserver.database.leaderboard.JdbcLeaderboardStorage;
 import accountserver.database.leaderboard.LeaderboardDao;
 import matchmaker.MatchMaker;
@@ -36,6 +36,10 @@ public class MasterServer {
   @NotNull
   private final List<Service> services = new ArrayList<>();
 
+  public static void main(@NotNull String[] args) throws ExecutionException, InterruptedException {
+    MasterServer server = new MasterServer();
+    server.start();
+  }
 
   private void start() throws ExecutionException, InterruptedException {
     log.info("MasterServer started");
@@ -45,8 +49,8 @@ public class MasterServer {
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
     Ticker ticker = new Ticker(1);
     ApplicationContext.instance().put(Ticker.class, ticker);
-    ApplicationContext.instance().put(TokenDAO.class,new HibernateTokensStorage());
-    ApplicationContext.instance().put(UserDAO.class,new HibernateUsersStorage());
+    ApplicationContext.instance().put(TokenDao.class, new HibernateTokensStorage());
+    ApplicationContext.instance().put(UserDao.class, new HibernateUsersStorage());
     ApplicationContext.instance().put(LeaderboardDao.class, new JdbcLeaderboardStorage());
 
     Mechanics mechanics = new Mechanics();
@@ -61,10 +65,5 @@ public class MasterServer {
     for (Service service : services) {
       service.join();
     }
-  }
-
-  public static void main(@NotNull String[] args) throws ExecutionException, InterruptedException {
-    MasterServer server = new MasterServer();
-    server.start();
   }
 }

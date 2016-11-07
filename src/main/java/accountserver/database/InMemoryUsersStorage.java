@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * DataBase uses memory to keep user data
  */
-public class InMemoryUsersStorage implements UserDAO {
+public class InMemoryUsersStorage implements UserDao {
     @NotNull
     private static Logger log = LogManager.getLogger(InMemoryUsersStorage.class);
 

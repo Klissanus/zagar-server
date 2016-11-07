@@ -12,7 +12,7 @@ import java.util.List;
  * Provides abstraction layer for tokens storage
  * Issues, stores, validates {@link Token}
  */
-public interface TokenDAO {
+public interface TokenDao {
     /**
      * Time interval for periodic removing of invalid tokens
      */
