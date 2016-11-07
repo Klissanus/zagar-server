@@ -34,14 +34,20 @@ public class MasterServer {
   @NotNull
   private final static Logger log = LogManager.getLogger(MasterServer.class);
   @NotNull
-  private final List<Service> services = new ArrayList<>();
+  private static final List<Service> services = new ArrayList<>();
+  private static MasterServer server = new MasterServer();
+
 
   public static void main(@NotNull String[] args) throws ExecutionException, InterruptedException {
-    MasterServer server = new MasterServer();
     server.start();
   }
 
-  private void start() throws ExecutionException, InterruptedException {
+  public static void stop() {
+    services.forEach(Service::interrupt);
+    log.info("MasterServer stopped");
+  }
+
+  public static void start() throws ExecutionException, InterruptedException {
     log.info("MasterServer started");
     ApplicationContext.instance().put(MatchMaker.class, new MatchMakerImpl());
     ApplicationContext.instance().put(ClientConnections.class, new ClientConnections());
