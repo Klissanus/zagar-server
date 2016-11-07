@@ -67,6 +67,9 @@ public class TestAuthenticationApi extends WebServerTest {
             String rawToken = actual.body().string();
             Token token = ApplicationContext.instance().get(TokenDao.class).findByValue(rawToken);
             assertNotNull(token);
+            actual = postRequest(urlPostfix, String.format(loginformat, user, password),null);
+            assertEquals(Status.OK, Status.fromStatusCode(actual.code()));
+            assertEquals(rawToken,actual.body().string());
             User u = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
             assertNotNull(u);
             assertEquals(user,u.getName());
