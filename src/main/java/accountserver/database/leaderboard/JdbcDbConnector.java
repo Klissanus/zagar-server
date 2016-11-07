@@ -11,30 +11,25 @@ import java.sql.SQLException;
 class JdbcDbConnector {
     private static final Logger log = LogManager.getLogger(JdbcDbConnector.class);
 
-    private static final String ATOM = "atom43";
-    private static final String URL_TEMPLATE = "jdbc:postgresql://%s:%d/%s";
-    private static final String URL;
-    private static final String HOST = "54.224.37.210";
-    private static final int PORT = 5432;
-    private static final String DB_NAME = ATOM + "_tinderdb";
-    private static final String USER = ATOM;
-private static final String PASSWORD = ATOM;
-
+    private static final String URL = System.getProperty("hibernate.connection.url");
+    private static final String USER = System.getProperty("hibernate.connection.username");
+    private static final String PASSWORD = System.getProperty("hibernate.connection.password");
+    private static final String DRIVER = System.getProperty("hibernate.connection.driver_class");
     static {
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(DRIVER);
         } catch (ClassNotFoundException e) {
             log.error("Failed to load jdbc driver.", e);
             System.exit(-1);
         }
 
-        URL = String.format(URL_TEMPLATE, HOST, PORT, DB_NAME);
         log.info("Success. DbConnector init.");
+    }
+
+    private JdbcDbConnector() {
     }
 
     static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
-
-    private JdbcDbConnector() { }
 }
