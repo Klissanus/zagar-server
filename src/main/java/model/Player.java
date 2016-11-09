@@ -4,8 +4,10 @@ import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import utils.IDGenerator;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author apomosov
@@ -13,9 +15,9 @@ import java.util.List;
 public class Player {
   private final int id;
   @NotNull
-  private String name;
-  @NotNull
   private final List<PlayerCell> cells = new ArrayList<>();
+  @NotNull
+  private String name;
 
   public Player(int id, @NotNull String name) {
     this.id = id;
@@ -47,6 +49,13 @@ public class Player {
 
   public int getId() {
     return id;
+  }
+
+  Duration getMinTimeWithoutMovements() {
+    Optional<PlayerCell> lastmoved = cells.stream()
+            .min((c1, c2) -> Long.compare(c1.getLastMovementTime(), c2.getLastMovementTime()));
+    if (!lastmoved.isPresent()) return Duration.ZERO;
+    return Duration.ofMillis(lastmoved.get().getLastMovementTime());
   }
 
   @NotNull

@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author apomosov
@@ -13,7 +12,9 @@ public class Field {
   private final int width;
   private final int height;
   @NotNull
-  private List<Cell> cells = new ArrayList<>();
+  private List<Food> foods = new ArrayList<>();
+  @NotNull
+  private List<Virus> viruses = new ArrayList<>();
 
   public Field() {
     this.width = GameConstants.FIELD_WIDTH;
@@ -22,31 +23,28 @@ public class Field {
 
   @NotNull
   public List<Virus> getViruses() {
-    return cells.stream()
-            .filter(c -> c instanceof Virus)
-            .map(v -> (Virus) v)
-            .collect(Collectors.toList());
+    return viruses;
   }
 
   @NotNull
   public List<Food> getFoods() {
-    return cells.stream()
-            .filter(c -> c instanceof Food)
-            .map(v -> (Food) v)
-            .collect(Collectors.toList());
+    return foods;
   }
 
-  @NotNull
-  public List<Cell> getCells() {
-    return cells;
+  public void addFood(@NotNull Food food) {
+    foods.add(food);
   }
 
-  public void addCell(@NotNull Cell cell) {
-    cells.add(cell);
+  public void addVirus(@NotNull Virus virus) {
+    viruses.add(virus);
   }
 
-  public void removeCell(@NotNull Cell cell) {
-    cells.remove(cell);
+  public void removeFood(@NotNull Food food) {
+    foods.remove(food);
+  }
+
+  public void removeVirus(@NotNull Virus virus) {
+    viruses.remove(virus);
   }
 
   public int getWidth() {

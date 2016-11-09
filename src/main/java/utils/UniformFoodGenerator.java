@@ -31,7 +31,7 @@ public class UniformFoodGenerator implements FoodGenerator {
       List<Food> foods = field.getFoods();
       int toRemove = (int) (foods.size() * rand.nextDouble());
       for (int i = 0; i < toRemove; i++) {
-        field.removeCell(foods.get(i));
+        field.removeFood(foods.get(i));
       }
     }
     if (field.getFoods().size() <= threshold) {
@@ -40,7 +40,7 @@ public class UniformFoodGenerator implements FoodGenerator {
         Food food = new Food(0, 0);
         food.setX(food.getRadius() + rand.nextInt(field.getWidth() - 2 * food.getRadius()));
         food.setY(food.getRadius() + rand.nextInt(field.getWidth() - 2 * food.getRadius()));
-        field.addCell(food);
+        field.addFood(food);
       }
     }
   }

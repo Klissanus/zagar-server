@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+
 /**
  * @author apomosov
  */
@@ -15,4 +17,5 @@ public interface GameConstants {
   double FOOD_REMOVE_CHANCE = 0.3;
   int MAX_FOOD_ON_FIELD = 100;
   int NUMBER_OF_VIRUSES = 10;
+  Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
 }

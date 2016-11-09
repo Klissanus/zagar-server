@@ -22,12 +22,15 @@ public class GameSessionImpl implements GameSession {
   private final PlayerPlacer playerPlacer;
   @NotNull
   private final VirusGenerator virusGenerator;
+  @NotNull
+  private final Thread afkRemoverThread = new Thread(this::periodicAfkRemover);
 
   public GameSessionImpl(@NotNull FoodGenerator foodGenerator, @NotNull PlayerPlacer playerPlacer, @NotNull VirusGenerator virusGenerator) {
     this.foodGenerator = foodGenerator;
     this.playerPlacer = playerPlacer;
     this.virusGenerator = virusGenerator;
     virusGenerator.generate();
+    afkRemoverThread.start();
   }
 
   @Override
@@ -45,4 +48,22 @@ public class GameSessionImpl implements GameSession {
   public List<Player> getPlayers() {
     return new ArrayList<>(players);
   }
+
+  private void periodicAfkRemover() {
+    try {
+      while (!Thread.interrupted()) {
+        Thread.sleep(GameConstants.MOVEMENT_TIMEOUT.toMillis() / 2);
+        players.removeIf(p -> p.getMinTimeWithoutMovements().compareTo(GameConstants.MOVEMENT_TIMEOUT) > 0);
+      }
+    } catch (InterruptedException ignored) {
+
+    }
+  }
+
+  @Override
+  public void finalize() throws Throwable {
+    afkRemoverThread.interrupt();
+    super.finalize();
+  }
+
 }
