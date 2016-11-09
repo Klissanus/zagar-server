@@ -25,6 +25,7 @@ public class SimplePlayerPlacer implements PlayerPlacer {
     for (PlayerCell playerCell : player.getCells()) {
       playerCell.setX(5);
       playerCell.setY(5);
+      field.addCell(playerCell);
     }
   }
 }

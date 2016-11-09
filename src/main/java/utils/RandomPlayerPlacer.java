@@ -25,6 +25,7 @@ public class RandomPlayerPlacer implements PlayerPlacer {
     for (PlayerCell playerCell : player.getCells()) {
       playerCell.setX(playerCell.getRadius() + random.nextInt(field.getWidth() - 2 * playerCell.getRadius()));
       playerCell.setY(playerCell.getRadius() + random.nextInt(field.getHeight() - 2 * playerCell.getRadius()));
+      field.getCells().add(playerCell);
     }
   }
 }

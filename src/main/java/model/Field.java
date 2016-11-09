@@ -3,8 +3,8 @@ package model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author apomosov
@@ -13,9 +13,7 @@ public class Field {
   private final int width;
   private final int height;
   @NotNull
-  private final List<Virus> viruses = new ArrayList<>();
-  @NotNull
-  private final HashSet<Food> foods = new HashSet<>();
+  private List<Cell> cells = new ArrayList<>();
 
   public Field() {
     this.width = GameConstants.FIELD_WIDTH;
@@ -24,12 +22,31 @@ public class Field {
 
   @NotNull
   public List<Virus> getViruses() {
-    return viruses;
+    return cells.stream()
+            .filter(c -> c instanceof Virus)
+            .map(v -> (Virus) v)
+            .collect(Collectors.toList());
   }
 
   @NotNull
-  public HashSet<Food> getFoods() {
-    return foods;
+  public List<Food> getFoods() {
+    return cells.stream()
+            .filter(c -> c instanceof Food)
+            .map(v -> (Food) v)
+            .collect(Collectors.toList());
+  }
+
+  @NotNull
+  public List<Cell> getCells() {
+    return cells;
+  }
+
+  public void addCell(@NotNull Cell cell) {
+    cells.add(cell);
+  }
+
+  public void removeCell(@NotNull Cell cell) {
+    cells.remove(cell);
   }
 
   public int getWidth() {
