@@ -39,12 +39,13 @@ public class MasterServer {
 
 
   public static void main(@NotNull String[] args) throws ExecutionException, InterruptedException {
-    server.start();
+    MasterServer.start();
   }
 
   public static void stop() {
     services.forEach(Service::interrupt);
     services.clear();
+    ApplicationContext.instance().clear();
     log.info("MasterServer stopped");
   }
 

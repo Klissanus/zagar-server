@@ -16,6 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ApplicationContext {
   private static final @NotNull Logger log = LogManager.getLogger(ApplicationContext.class);
   private static volatile @Nullable ApplicationContext instance;
+  private final @NotNull Map<Class, Object> contextMap = new ConcurrentHashMap<>();
+
+  private ApplicationContext() {
+    log.info(ApplicationContext.class.getName() + " initialized");
+  }
 
   public static @NotNull ApplicationContext instance() {
     if (instance == null) {
@@ -28,8 +33,6 @@ public class ApplicationContext {
     return instance;
   }
 
-  private final @NotNull Map<Class, Object> contextMap = new ConcurrentHashMap<>();
-
   public void put(@NotNull Class clazz, @NotNull Object object) {
     contextMap.put(clazz, object);
   }
@@ -39,7 +42,7 @@ public class ApplicationContext {
     return (T) contextMap.get(type);
   }
 
-  private ApplicationContext() {
-    log.info(ApplicationContext.class.getName() + " initialized");
+  public void clear() {
+    contextMap.clear();
   }
 }
