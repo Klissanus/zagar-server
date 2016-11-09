@@ -6,13 +6,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ticker.Ticker;
-import utils.RandomPlayerPlacer;
 import utils.RandomVirusGenerator;
 import utils.SimplePlayerPlacer;
 import utils.UniformFoodGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Creates {@link GameSession} for single player
@@ -26,18 +26,25 @@ public class MatchMakerImpl implements MatchMaker {
   private final List<GameSession> activeGameSessions = new ArrayList<>();
 
   /**
-   * Creates new GameSession for single player
+   * Creates new GameSession
    *
    * @param player single player
    */
   @Override
   public void joinGame(@NotNull Player player) {
+    //try to find session with free slots
+    List<GameSession> withFreeSlots = activeGameSessions.stream()
+            .filter(s -> s.getPlayers().size() < GameConstants.MAX_PLAYERS_IN_SESSION)
+            .collect(Collectors.toList());
+    if (withFreeSlots.size() != 0) {
+      withFreeSlots.get(0).join(player);
+      log.info("{} joined to session with free slots {}", player, withFreeSlots.get(0));
+      return;
+    }
     GameSession newGameSession = createNewGame();
     activeGameSessions.add(newGameSession);
     newGameSession.join(player);
-    if (log.isInfoEnabled()) {
-      log.info(player + " joined " + newGameSession);
-    }
+    log.info("{} joined {}", player, newGameSession);
   }
 
   @NotNull
