@@ -12,8 +12,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Klissan on 06.11.2016.
@@ -62,13 +62,13 @@ public class JdbcLeaderboardStorage
     */
     @Override
     @NotNull
-    public SortedMap<User, Integer> getTopUsers(int count) {
+    public Map<User, Integer> getTopUsers(int count) {
         final String query =
                 "SELECT * FROM leaderboard " +
                         "ORDER BY score DESC " +
                         "LIMIT %d;";
 
-        SortedMap<User, Integer> leaders = new TreeMap<>();
+        Map<User, Integer> leaders = new HashMap<>();
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
             ResultSet rs = stm.executeQuery(String.format(query, count));

@@ -1,6 +1,6 @@
 package utils;
 
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -9,8 +9,11 @@ import java.util.TreeMap;
  * Helps sort map by value
  */
 public class SortedByValueMap {
-    public static <K, V extends Comparable<V>> SortedMap<K, V> sortByValues(final SortedMap<K, V> map) {
-        SortedMap<K, V> sortedByValues = new TreeMap<>((K k1, K k2) -> {
+    private SortedByValueMap() {
+    }
+
+    public static <K, V extends Comparable<V>> Map<K, V> sortByValues(final Map<K, V> map) {
+        Map<K, V> sortedByValues = new TreeMap<>((K k1, K k2) -> {
             int compare = map.get(k2).compareTo(map.get(k1));
             if (compare == 0) return 1;
             else return compare;
@@ -18,6 +21,4 @@ public class SortedByValueMap {
         sortedByValues.putAll(map);
         return sortedByValues;
     }
-
-    private SortedByValueMap(){}
 }

@@ -10,8 +10,8 @@ import org.junit.Test;
 import utils.JSONHelper;
 import utils.SortedByValueMap;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status;
 import static org.junit.Assert.*;
@@ -28,25 +28,26 @@ public class TestLeaderboardApi extends WebServerTest {
         final String urlPostfix = "data/leaderboard";
         for (int i = 0; i < users.length; i++){
             ApplicationContext.instance().get(UserDao.class).addUser(users[i]);
-            ApplicationContext.instance().get(LeaderboardDao.class).addUser(users[i].getId());
-            ApplicationContext.instance().get(LeaderboardDao.class).updateScore(users[i].getId(), scores[i]);
+            ApplicationContext.instance().get(LeaderboardDao.class).addUser(users[i]);
+            ApplicationContext.instance().get(LeaderboardDao.class).updateScore(users[i], scores[i]);
         }
-        SortedMap<String,Integer> top = new TreeMap<>();
+        Map<String, Integer> top = new HashMap<>();
         top.put(users[1].getName(),scores[1]);
         top.put(users[2].getName(),scores[2]);
         top = SortedByValueMap.sortByValues(top);
         try {
             Response actual = getRequest(urlPostfix,"N="+(users.length-1),null);
             assertEquals(Status.OK,Status.fromStatusCode(actual.code()));
+            System.out.println(actual.body().string());
             LeaderboardApi.UserInfo ui = JSONHelper.fromJSON(actual.body().string(),LeaderboardApi.UserInfo.class);
             assertNotNull(ui);
             assertEquals(top.toString(),ui.leadersWithScore.toString());
         } catch (Exception e) {
             fail(e.toString());
         } finally {
-            for (int i = 0; i < users.length; i++) {
-                ApplicationContext.instance().get(LeaderboardDao.class).removeUser(users[i].getId());
-                ApplicationContext.instance().get(UserDao.class).removeUser(users[i]);
+            for (User u : users) {
+                ApplicationContext.instance().get(LeaderboardDao.class).removeUser(u);
+                ApplicationContext.instance().get(UserDao.class).removeUser(u);
             }
         }
     }

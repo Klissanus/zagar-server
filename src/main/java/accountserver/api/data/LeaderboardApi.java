@@ -16,8 +16,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Klissan on 06.11.2016.
@@ -41,7 +41,7 @@ public class LeaderboardApi {
         log.info("Top '{}' users by scores requested",count);
 
         //get leaders
-        SortedMap<User, Integer> leaders = ApplicationContext
+        Map<User, Integer> leaders = ApplicationContext
                 .instance()
                 .get(LeaderboardDao.class)
                 .getTopUsers(count);
@@ -64,7 +64,7 @@ public class LeaderboardApi {
 
     public static class UserInfo {
         @Expose
-        public SortedMap<String,Integer> leadersWithScore = new TreeMap<>();
+        public Map<String, Integer> leadersWithScore = new HashMap<>();
         //name + score
     }
 }

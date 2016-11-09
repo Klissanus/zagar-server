@@ -3,7 +3,7 @@ package accountserver.database.leaderboard;
 import accountserver.database.User;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SortedMap;
+import java.util.Map;
 
 /**
  * Created by Klissan on 06.11.2016.
@@ -38,5 +38,5 @@ public interface LeaderboardDao {
      * @param count number of users to return
      * @return map user-score
      */
-    @NotNull SortedMap<User, Integer> getTopUsers(int count);
+    @NotNull Map<User, Integer> getTopUsers(int count);
 }
