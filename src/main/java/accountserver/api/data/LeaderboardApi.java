@@ -1,6 +1,6 @@
 package accountserver.api.data;
 
-import accountserver.database.UserDao;
+import accountserver.database.User;
 import accountserver.database.leaderboard.LeaderboardDao;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
@@ -41,14 +41,14 @@ public class LeaderboardApi {
         log.info("Top '{}' users by scores requested",count);
 
         //get leaders
-        SortedMap<Integer, Integer>  leaders = ApplicationContext
+        SortedMap<User, Integer> leaders = ApplicationContext
                 .instance()
                 .get(LeaderboardDao.class)
                 .getTopUsers(count);
 
         LeaderboardApi.UserInfo ret = new LeaderboardApi.UserInfo();
-        leaders.forEach((Integer id, Integer score)->ret.leadersWithScore.put(
-                ApplicationContext.instance().get(UserDao.class).getUserById(id).getName(),
+        leaders.forEach((User user, Integer score) -> ret.leadersWithScore.put(
+                user.getName(),
                 score
         ));
         ret.leadersWithScore = SortedByValueMap.sortByValues(ret.leadersWithScore);

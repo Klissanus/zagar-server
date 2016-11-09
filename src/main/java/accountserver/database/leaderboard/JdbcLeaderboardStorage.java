@@ -1,7 +1,11 @@
 package accountserver.database.leaderboard;
 
+import accountserver.database.User;
+import accountserver.database.UserDao;
+import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import utils.SortedByValueMap;
 
 import java.sql.Connection;
@@ -21,15 +25,15 @@ public class JdbcLeaderboardStorage
     private static final Logger log = LogManager.getLogger(LeaderboardDao.class);
 
     @Override
-    public void addUser(Integer userId) {
+    public void addUser(@NotNull User user) {
         final String query =
                 "INSERT INTO leaderboard (user_id) " +
                         "VALUES (%d);";
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
-            stm.execute(String.format(query, userId));
+            stm.execute(String.format(query, user.getId()));
         } catch (SQLException e) {
-            log.error("Failed to add user with id {}", userId, e);
+            log.error("Failed to add user with id {}", user.getId(), e);
         }
     }
 
@@ -39,16 +43,16 @@ public class JdbcLeaderboardStorage
         WHERE user = userId;
         */
     @Override
-    public void updateScore(int userId, int scoreToAdd) {
+    public void updateScore(@NotNull User user, int scoreToAdd) {
         final String query =
                 "UPDATE leaderboard " +
                 "SET score = score + %d " +
                 "WHERE user_id = %d;";
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
-            stm.execute(String.format(query, scoreToAdd, userId));
+            stm.execute(String.format(query, scoreToAdd, user.getId()));
         } catch (SQLException e) {
-            log.error("Failed to add score {} to user with id {}", scoreToAdd, userId, e);
+            log.error("Failed to add score {} to user with id {}", scoreToAdd, user.getId(), e);
         }
     }
 
@@ -57,20 +61,23 @@ public class JdbcLeaderboardStorage
     ORDER BY score
     */
     @Override
-    public SortedMap<Integer, Integer> getTopUsers(int count) {
+    @NotNull
+    public SortedMap<User, Integer> getTopUsers(int count) {
         final String query =
                 "SELECT * FROM leaderboard " +
                         "ORDER BY score DESC " +
                         "LIMIT %d;";
 
-        SortedMap<Integer, Integer> leaders = new TreeMap<>();
+        SortedMap<User, Integer> leaders = new TreeMap<>();
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
             ResultSet rs = stm.executeQuery(String.format(query, count));
 
             while (rs.next()) {
                 leaders.put(
-                        rs.getInt("user_id"),
+                        ApplicationContext.instance()
+                                .get(UserDao.class)
+                                .getUserById(rs.getInt("user_id")),
                         rs.getInt("score")
                 );
             }
@@ -82,15 +89,15 @@ public class JdbcLeaderboardStorage
     }
 
     @Override
-    public void removeUser(Integer userId) {
+    public void removeUser(@NotNull User user) {
         final String query =
                 "DELETE FROM leaderboard " +
                         "WHERE user_id = %d";
         try(Connection con = JdbcDbConnector.getConnection();
             Statement stm = con.createStatement()){
-            stm.execute(String.format(query, userId));
+            stm.execute(String.format(query, user.getId()));
         } catch (SQLException e) {
-            log.error("Remove user '{}' failed.", userId, e);
+            log.error("Remove user '{}' failed.", user.getId(), e);
         }
     }
 }

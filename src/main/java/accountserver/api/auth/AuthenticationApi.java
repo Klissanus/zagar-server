@@ -44,15 +44,16 @@ public class AuthenticationApi {
       return Response.status(Response.Status.NOT_ACCEPTABLE).build();
     }
 
-    int userId = ApplicationContext.instance()
+      User user = new User(username, password);
+      ApplicationContext.instance()
             .get(UserDao.class)
-            .addUser(new User(username, password));
+              .addUser(user);
 
 
     //добавляем в таблицу Leaderboard
     ApplicationContext.instance()
             .get(LeaderboardDao.class)
-            .addUser(userId);
+            .addUser(user);
 
     log.info("New user '{}' registered", username);
     return Response.ok("User " + username + " registered.").build();

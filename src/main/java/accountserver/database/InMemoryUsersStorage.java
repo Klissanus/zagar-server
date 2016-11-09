@@ -27,9 +27,8 @@ public class InMemoryUsersStorage implements UserDao {
     }
 
     @Override
-    public int addUser(@NotNull User user) {
+    public void addUser(@NotNull User user) {
         users.put(user.getId(),user);
-        return user.getId();
     }
 
     @Override
