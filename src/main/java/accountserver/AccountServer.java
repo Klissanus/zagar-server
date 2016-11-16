@@ -69,8 +69,8 @@ public class AccountServer extends Service {
   public void run() {
     startApi();
     while (!Thread.interrupted()) {
-      if (ApplicationContext.instance().get(MessageSystem.class) != null)
-        ApplicationContext.instance().get(MessageSystem.class).execForService(this);
+      MessageSystem ms = ApplicationContext.instance().get(MessageSystem.class);
+      if (ms != null) ms.execForService(this);
     }
   }
 }

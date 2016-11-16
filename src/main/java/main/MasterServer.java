@@ -5,6 +5,8 @@ import accountserver.database.HibernateTokensStorage;
 import accountserver.database.HibernateUsersStorage;
 import accountserver.database.TokenDao;
 import accountserver.database.UserDao;
+import accountserver.database.leaderboard.JdbcLeaderboardStorage;
+import accountserver.database.leaderboard.LeaderboardDao;
 import matchmaker.MatchMaker;
 import matchmaker.MatchMakerImpl;
 import mechanics.Mechanics;
@@ -57,6 +59,7 @@ public class MasterServer {
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
     ApplicationContext.instance().put(UserDao.class, new HibernateUsersStorage());
     ApplicationContext.instance().put(TokenDao.class, new HibernateTokensStorage());
+      ApplicationContext.instance().put(LeaderboardDao.class, new JdbcLeaderboardStorage());
 
     Mechanics mechanics = new Mechanics();
 
