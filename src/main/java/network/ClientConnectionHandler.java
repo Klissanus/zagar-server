@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import main.ApplicationContext;
 import model.Player;
 import network.handlers.PacketHandlerAuth;
+import network.handlers.PacketHandlerWindowSize;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandAuth;
+import protocol.commands.CommandWindowSize;
 import utils.JSONHelper;
 
 import java.util.Map;
@@ -57,6 +59,9 @@ public class ClientConnectionHandler extends WebSocketAdapter {
     switch (name) {
       case CommandAuth.NAME:
         new PacketHandlerAuth(getSession(), msg);
+        break;
+      case CommandWindowSize.NAME:
+        new PacketHandlerWindowSize(getSession(), msg);
         break;
     }
   }

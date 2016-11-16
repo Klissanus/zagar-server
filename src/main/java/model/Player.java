@@ -13,11 +13,15 @@ import java.util.Optional;
  * @author apomosov
  */
 public class Player {
+  private static final int widthFactor = 1;
+  private static final int heightFactor = 1;
   private final int id;
   @NotNull
   private final List<PlayerCell> cells = new ArrayList<>();
   @NotNull
   private String name;
+  private int windowWidth;
+  private int windowHeight;
 
   public Player(int id, @NotNull String name) {
     this.id = id;
@@ -56,6 +60,22 @@ public class Player {
             .min((c1, c2) -> Long.compare(c1.getLastMovementTime(), c2.getLastMovementTime()));
     if (!lastmoved.isPresent()) return Duration.ZERO;
     return Duration.ofMillis(lastmoved.get().getLastMovementTime());
+  }
+
+  public int getWindowWidth() {
+    return windowWidth;
+  }
+
+  public void setWindowWidth(int windowWidth) {
+    this.windowWidth = windowWidth;
+  }
+
+  public int getWindowHeight() {
+    return windowHeight;
+  }
+
+  public void setWindowHeight(int windowHeight) {
+    this.windowHeight = windowHeight;
   }
 
   @NotNull
