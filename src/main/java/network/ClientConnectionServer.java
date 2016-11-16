@@ -1,8 +1,10 @@
 package network;
 
-import main.ServletContext;
+import main.ApplicationContext;
 import main.MasterServer;
 import main.Service;
+import main.ServletContext;
+import messageSystem.MessageSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
@@ -23,6 +25,12 @@ public class ClientConnectionServer extends Service {
     this.port = port;
   }
 
+  public static void main(@NotNull String[] args) throws InterruptedException {
+    ClientConnectionServer clientConnectionServer = new ClientConnectionServer(7001);
+    clientConnectionServer.start();
+    clientConnectionServer.join();
+  }
+
   @Override
   public void run() {
     server = new Server();
@@ -41,7 +49,12 @@ public class ClientConnectionServer extends Service {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    log.info(getName() + " started on port " + port);
+
+    log.info(getAddress() + " started on port " + port);
+
+    while (true) {
+      ApplicationContext.instance().get(MessageSystem.class).execForService(this);
+    }
   }
 
   @Override
@@ -53,11 +66,5 @@ public class ClientConnectionServer extends Service {
     } finally {
       super.interrupt();
     }
-  }
-
-  public static void main(@NotNull String[] args) throws InterruptedException {
-    ClientConnectionServer clientConnectionServer = new ClientConnectionServer(7001);
-    clientConnectionServer.start();
-    clientConnectionServer.join();
   }
 }

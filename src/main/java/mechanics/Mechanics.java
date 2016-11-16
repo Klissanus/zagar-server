@@ -2,10 +2,12 @@ package mechanics;
 
 import main.ApplicationContext;
 import main.Service;
+import messageSystem.Message;
+import messageSystem.MessageSystem;
+import messageSystem.messages.ReplicateMsg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import replication.Replicator;
 import ticker.Tickable;
 
 /**
@@ -37,7 +39,13 @@ public class Mechanics extends Service implements Tickable {
     }
 
     log.info("Start replication");
-    ApplicationContext.instance().get(Replicator.class).replicate();
+    @NotNull MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
+    Message message = new ReplicateMsg(this.getAddress());
+    messageSystem.sendMessage(message);
+
+    //execute all messages from queue
+    messageSystem.execForService(this);
+
 
     log.info("Mechanics tick() finished");
   }

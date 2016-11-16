@@ -1,5 +1,6 @@
 package utils;
 
+import model.Field;
 import model.Player;
 import model.PlayerCell;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +12,10 @@ import java.util.Random;
  */
 public class SimplePlayerPlacer implements PlayerPlacer {
   @NotNull
-  private final Player player;
+  private final Field field;
 
-  public SimplePlayerPlacer(@NotNull Player player) {
-    this.player = player;
+  public SimplePlayerPlacer(@NotNull Field field) {
+    this.field = field;
   }
 
   @Override

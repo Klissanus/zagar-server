@@ -6,8 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ticker.Ticker;
+import utils.RandomPlayerPlacer;
 import utils.RandomVirusGenerator;
-import utils.SimplePlayerPlacer;
 import utils.UniformFoodGenerator;
 
 import java.util.ArrayList;
@@ -62,6 +62,6 @@ public class MatchMakerImpl implements MatchMaker {
     Ticker ticker = ApplicationContext.instance().get(Ticker.class);
     UniformFoodGenerator foodGenerator = new UniformFoodGenerator(field, GameConstants.FOOD_PER_SECOND_GENERATION, GameConstants.MAX_FOOD_ON_FIELD);
     ticker.registerTickable(foodGenerator);
-    return new GameSessionImpl(foodGenerator, new SimplePlayerPlacer(field), new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
+    return new GameSessionImpl(foodGenerator, new RandomPlayerPlacer(field), new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
   }
 }
