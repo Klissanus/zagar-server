@@ -2,6 +2,8 @@ package network;
 
 import model.Player;
 import org.eclipse.jetty.websocket.api.Session;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,21 +17,29 @@ public class ClientConnections {
   private final ConcurrentHashMap<Player, Session> connections = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<Session, Player> players = new ConcurrentHashMap<>();
 
-  public Session registerConnection(Player player, Session session) {
+  @NotNull
+  public Session registerConnection(@NotNull Player player, @NotNull Session session) {
     players.putIfAbsent(session, player);
     return connections.putIfAbsent(player, session);
   }
 
-  public boolean removeConnection(Player player) {
+  public boolean removeConnection(@NotNull Player player) {
     Session session = connections.get(player);
     return connections.remove(player) != null && players.remove(session) != null;
   }
 
+  @NotNull
   public Set<Map.Entry<Player, Session>> getConnections() {
     return connections.entrySet();
   }
 
-  public Player getPlayerBySession(Session session) {
+  @Nullable
+  public Player getPlayerBySession(@NotNull Session session) {
     return players.get(session);
+  }
+
+  @Nullable
+  public Session getSessionByPlayer(@NotNull Player player) {
+    return connections.get(player);
   }
 }
