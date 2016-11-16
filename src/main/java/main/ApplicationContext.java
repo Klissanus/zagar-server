@@ -37,7 +37,7 @@ public class ApplicationContext {
     contextMap.put(clazz, object);
   }
 
-  @Nullable
+  @NotNull
   public <T> T get(@NotNull Class<T> type) {
     return (T) contextMap.get(type);
   }
