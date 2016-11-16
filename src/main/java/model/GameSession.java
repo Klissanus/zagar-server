@@ -1,7 +1,6 @@
 package model;
 
 import org.jetbrains.annotations.NotNull;
-import ticker.Tickable;
 
 import java.util.List;
 
@@ -27,5 +26,9 @@ public interface GameSession {
    */
   void leave(@NotNull Player player);
 
+  @NotNull
+  Field getField();
+
+  @NotNull
   List<Player> getPlayers();
 }

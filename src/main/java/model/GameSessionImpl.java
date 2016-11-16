@@ -45,6 +45,7 @@ public class GameSessionImpl implements GameSession {
   }
 
   @Override
+  @NotNull
   public List<Player> getPlayers() {
     return new ArrayList<>(players);
   }
@@ -58,6 +59,11 @@ public class GameSessionImpl implements GameSession {
     } catch (InterruptedException ignored) {
 
     }
+  }
+
+  @Override
+  public @NotNull Field getField() {
+    return field;
   }
 
   @Override
