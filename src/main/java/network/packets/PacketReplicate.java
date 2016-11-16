@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import protocol.CommandReplicate;
+import protocol.commands.CommandReplicate;
 import protocol.model.Cell;
 import protocol.model.Food;
 import utils.JSONHelper;

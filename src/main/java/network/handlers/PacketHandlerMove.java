@@ -2,7 +2,7 @@ package network.handlers;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import protocol.CommandMove;
+import protocol.commands.CommandMove;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;
 

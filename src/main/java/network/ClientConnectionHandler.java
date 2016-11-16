@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.jetbrains.annotations.NotNull;
-import protocol.CommandAuth;
+import protocol.commands.CommandAuth;
 import utils.JSONHelper;
 
 import java.util.Map;

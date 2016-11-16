@@ -9,7 +9,7 @@ import network.packets.PacketAuthFail;
 import network.packets.PacketAuthOk;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import protocol.CommandAuth;
+import protocol.commands.CommandAuth;
 import utils.IDGenerator;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;

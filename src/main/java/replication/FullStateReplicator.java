@@ -8,15 +8,11 @@ import model.PlayerCell;
 import network.ClientConnections;
 import network.packets.PacketReplicate;
 import org.eclipse.jetty.websocket.api.Session;
-import protocol.CommandReplicate;
 import protocol.model.Cell;
 import protocol.model.Food;
-import utils.JSONHelper;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * @author Alpi

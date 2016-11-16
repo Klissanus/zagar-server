@@ -2,8 +2,7 @@ package network.handlers;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import protocol.CommandEjectMass;
-import protocol.CommandSplit;
+import protocol.commands.CommandSplit;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;
 
