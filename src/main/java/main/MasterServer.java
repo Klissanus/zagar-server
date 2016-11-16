@@ -1,6 +1,10 @@
 package main;
 
 import accountserver.AccountServer;
+import accountserver.database.HibernateTokensStorage;
+import accountserver.database.HibernateUsersStorage;
+import accountserver.database.TokenDao;
+import accountserver.database.UserDao;
 import matchmaker.MatchMaker;
 import matchmaker.MatchMakerImpl;
 import mechanics.Mechanics;
@@ -45,13 +49,14 @@ public class MasterServer {
 
   public static void start() throws ExecutionException, InterruptedException {
     log.info("MasterServer started");
+    MessageSystem messageSystem = new MessageSystem();
+    ApplicationContext.instance().put(MessageSystem.class, messageSystem);
     ApplicationContext.instance().put(MatchMaker.class, new MatchMakerImpl());
     ApplicationContext.instance().put(ClientConnections.class, new ClientConnections());
     ApplicationContext.instance().put(Replicator.class, new FullStateReplicator());
     ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
-
-    MessageSystem messageSystem = new MessageSystem();
-    ApplicationContext.instance().put(MessageSystem.class, messageSystem);
+    ApplicationContext.instance().put(UserDao.class, new HibernateUsersStorage());
+    ApplicationContext.instance().put(TokenDao.class, new HibernateTokensStorage());
 
     Mechanics mechanics = new Mechanics();
 

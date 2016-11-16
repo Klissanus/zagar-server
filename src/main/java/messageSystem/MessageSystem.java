@@ -4,6 +4,7 @@ import main.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public final class MessageSystem {
         log.info(service + " registered");
     }
 
-    public <T> T getService(Class<T> type) {
+    @Nullable
+    public <T> T getService(@NotNull Class<T> type) {
         return (T) services.get(type);
     }
 
