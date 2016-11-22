@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import replication.FullStateReplicator;
 import replication.Replicator;
 import utils.IDGenerator;
+import utils.InsideAreaFinder;
+import utils.NaiveInsideAreaFinder;
 import utils.SequentialIDGenerator;
 
 import java.util.ArrayList;
@@ -53,13 +55,6 @@ public class MasterServer {
     log.info("MasterServer started");
     MessageSystem messageSystem = new MessageSystem();
     ApplicationContext.instance().put(MessageSystem.class, messageSystem);
-    ApplicationContext.instance().put(MatchMaker.class, new MatchMakerImpl());
-    ApplicationContext.instance().put(ClientConnections.class, new ClientConnections());
-    ApplicationContext.instance().put(Replicator.class, new FullStateReplicator());
-    ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
-    ApplicationContext.instance().put(UserDao.class, new HibernateUsersStorage());
-    ApplicationContext.instance().put(TokenDao.class, new HibernateTokensStorage());
-      ApplicationContext.instance().put(LeaderboardDao.class, new JdbcLeaderboardStorage());
 
     Mechanics mechanics = new Mechanics();
 
@@ -68,6 +63,14 @@ public class MasterServer {
     messageSystem.registerService(ClientConnectionServer.class, new ClientConnectionServer(7000));
     messageSystem.getServices().forEach(Service::start);
 
+    ApplicationContext.instance().put(MatchMaker.class, new MatchMakerImpl());
+    ApplicationContext.instance().put(ClientConnections.class, new ClientConnections());
+    ApplicationContext.instance().put(Replicator.class, new FullStateReplicator());
+    ApplicationContext.instance().put(IDGenerator.class, new SequentialIDGenerator());
+    ApplicationContext.instance().put(UserDao.class, new HibernateUsersStorage());
+    ApplicationContext.instance().put(TokenDao.class, new HibernateTokensStorage());
+    ApplicationContext.instance().put(LeaderboardDao.class, new JdbcLeaderboardStorage());
+    ApplicationContext.instance().put(InsideAreaFinder.class, new NaiveInsideAreaFinder());
     for (Service service : services) {
       service.join();
     }
