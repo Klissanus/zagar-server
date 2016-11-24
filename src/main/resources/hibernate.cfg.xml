@@ -35,9 +35,10 @@
         <!--<property name="dialect">org.hibernate.dialect.H2Dialect</property>-->
 
         <!-- Names the annotated entity class -->
-        <mapping class="accountserver.database.User"/>
-        <mapping class="accountserver.database.StoredToken"/>
-        <mapping class="accountserver.database.StoredToken"/>
+        <mapping class="accountserver.database.users.User"/>
+        <mapping class="accountserver.database.tokens.StoredToken"/>
+        <mapping class="accountserver.database.tokens.StoredToken"/>
+        <mapping class="accountserver.database.leaderboard.LeaderboardRecord"/>
 
     </session-factory>
 
