@@ -1,5 +1,6 @@
-package accountserver.database;
+package accountserver.database.tokens;
 
+import accountserver.database.users.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

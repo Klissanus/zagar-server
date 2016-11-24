@@ -1,4 +1,4 @@
-package accountserver.database;
+package accountserver.database.tokens;
 
 import org.jetbrains.annotations.NotNull;
 

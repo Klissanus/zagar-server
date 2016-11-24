@@ -1,4 +1,4 @@
-package accountserver.database;
+package accountserver.database.users;
 
 import com.google.gson.annotations.Expose;
 import main.ApplicationContext;

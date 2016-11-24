@@ -1,5 +1,7 @@
-package accountserver.database;
+package accountserver.database.tokens;
 
+import accountserver.database.users.HibernateUsersStorage;
+import accountserver.database.users.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;

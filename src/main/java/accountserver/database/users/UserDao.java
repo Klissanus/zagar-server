@@ -1,4 +1,4 @@
-package accountserver.database;
+package accountserver.database.users;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
