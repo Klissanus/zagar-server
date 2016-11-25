@@ -10,6 +10,7 @@ import utils.HibernateHelper;
 import utils.SortedByValueMap;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Klissan on 24.11.2016.
@@ -49,18 +50,11 @@ public class HibernateLeaderboardStorage
                         .setMaxResults(count)//LIMIT count
                         .list()
         );
+        @SuppressWarnings("unchecked")
         List<LeaderboardRecord> leaders = (List<LeaderboardRecord>) resp;
         Iterator<LeaderboardRecord> it = leaders.iterator();
-        Map<User, Integer>  result = new HashMap<>();
-        while (it.hasNext()) {
-            LeaderboardRecord elem = it.next();
-            result.put(
-                    ApplicationContext.instance()
-                            .get(UserDao.class)
-                            .getUserById(elem.getOwner().getId()),
-                    elem.getScore()
-            );
-        }
+        Map<User, Integer>  result = leaders.stream()
+                .collect(Collectors.toMap(LeaderboardRecord::getOwner,LeaderboardRecord::getScore));
         return SortedByValueMap.sortByValues(result);
     }
 

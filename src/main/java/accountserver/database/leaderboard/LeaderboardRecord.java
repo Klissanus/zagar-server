@@ -18,6 +18,11 @@ import java.io.Serializable;
 public class LeaderboardRecord
         implements Serializable
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "record_id", unique = true, nullable = false)
+    private int id;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User owner;
