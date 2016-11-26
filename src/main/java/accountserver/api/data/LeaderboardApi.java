@@ -1,7 +1,7 @@
 package accountserver.api.data;
 
-import accountserver.database.User;
 import accountserver.database.leaderboard.LeaderboardDao;
+import accountserver.database.users.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 import main.ApplicationContext;

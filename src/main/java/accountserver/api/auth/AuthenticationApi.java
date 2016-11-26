@@ -1,10 +1,10 @@
 package accountserver.api.auth;
 
-import accountserver.database.Token;
-import accountserver.database.TokenDao;
-import accountserver.database.User;
-import accountserver.database.UserDao;
 import accountserver.database.leaderboard.LeaderboardDao;
+import accountserver.database.tokens.Token;
+import accountserver.database.tokens.TokenDao;
+import accountserver.database.users.User;
+import accountserver.database.users.UserDao;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

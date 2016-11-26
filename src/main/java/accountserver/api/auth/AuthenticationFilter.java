@@ -1,7 +1,7 @@
 package accountserver.api.auth;
 
-import accountserver.database.Token;
-import accountserver.database.TokenDao;
+import accountserver.database.tokens.Token;
+import accountserver.database.tokens.TokenDao;
 import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

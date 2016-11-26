@@ -1,6 +1,6 @@
 package accountserver.database.leaderboard;
 
-import accountserver.database.User;
+import accountserver.database.users.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
