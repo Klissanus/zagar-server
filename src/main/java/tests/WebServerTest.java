@@ -42,7 +42,7 @@ public class WebServerTest {
     @BeforeClass
     public static void startServer() {
         try {
-            MasterServer.start();
+            MasterServer.main(new String[0]);
             Thread.sleep(20000);
         } catch (InterruptedException ignored) {
 

@@ -90,8 +90,12 @@ public class MasterServer {
     }
 
     public static void main(@NotNull String[] args) throws Exception {
-    MasterServer.start();
-  }
+        log.info("MasterServer starting");
+        loadConfig(args.length > 0 ? args[0] : null);
+        for (Service service : services) {
+            service.join();
+        }
+    }
 
   public static void stop() {
     services.forEach(Service::interrupt);
@@ -100,12 +104,4 @@ public class MasterServer {
     log.info("MasterServer stopped");
   }
 
-    public static void start() throws Exception {
-        log.info("MasterServer starting");
-    MessageSystem messageSystem = new MessageSystem();
-        loadConfig(null);
-    for (Service service : services) {
-      service.join();
-    }
-  }
 }
