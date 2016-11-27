@@ -1,9 +1,7 @@
 package tests;
 
-import accountserver.database.Token;
-import accountserver.database.TokenDao;
-import accountserver.database.User;
-import accountserver.database.UserDao;
+import accountserver.database.users.*;
+import accountserver.database.tokens.*;
 import com.squareup.okhttp.Response;
 import main.ApplicationContext;
 import org.junit.Test;

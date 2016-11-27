@@ -46,6 +46,8 @@ public class LeaderboardApi {
                 .get(LeaderboardDao.class)
                 .getTopUsers(count);
 
+        //System.out.println(JSONHelper.toJSON(leaders,new TypeToken<Map<User,Integer>>(){}.getType()));
+
         LeaderboardApi.UserInfo ret = new LeaderboardApi.UserInfo();
         leaders.forEach((User user, Integer score) -> ret.leadersWithScore.put(
                 user.getName(),

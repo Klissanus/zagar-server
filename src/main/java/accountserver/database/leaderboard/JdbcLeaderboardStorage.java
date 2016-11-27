@@ -1,7 +1,6 @@
 package accountserver.database.leaderboard;
 
-import accountserver.database.User;
-import accountserver.database.UserDao;
+import accountserver.database.users.*;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

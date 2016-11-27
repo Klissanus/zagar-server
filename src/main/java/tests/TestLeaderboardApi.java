@@ -1,8 +1,7 @@
 package tests;
 
 import accountserver.api.data.LeaderboardApi;
-import accountserver.database.User;
-import accountserver.database.UserDao;
+import accountserver.database.users.*;
 import accountserver.database.leaderboard.LeaderboardDao;
 import com.squareup.okhttp.Response;
 import main.ApplicationContext;
@@ -38,8 +37,9 @@ public class TestLeaderboardApi extends WebServerTest {
         try {
             Response actual = getRequest(urlPostfix,"N="+(users.length-1),null);
             assertEquals(Status.OK,Status.fromStatusCode(actual.code()));
-            System.out.println(actual.body().string());
-            LeaderboardApi.UserInfo ui = JSONHelper.fromJSON(actual.body().string(),LeaderboardApi.UserInfo.class);
+            String json = actual.body().string();
+            System.out.println(json);
+            LeaderboardApi.UserInfo ui = JSONHelper.fromJSON(json,LeaderboardApi.UserInfo.class);
             assertNotNull(ui);
             assertEquals(top.toString(),ui.leadersWithScore.toString());
         } catch (Exception e) {
