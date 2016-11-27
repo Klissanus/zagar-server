@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,20 +32,20 @@ public class MasterServer {
   private static final List<Service> services = new ArrayList<>();
 
     private static void loadConfig(@Nullable String path) throws Exception {
-        File file;
+        Ini ini = new Ini();
         if (path == null) {
             //try to load from resource folder
             log.info("Loading config from resources");
             ClassLoader cl = MasterServer.class.getClassLoader();
-            URL fname = cl.getResource("servercfg.ini");
-            if (fname == null) throw new FileNotFoundException();
-            file = new File(fname.getFile());
+            InputStream cfgis = cl.getResourceAsStream("servercfg.ini");
+            if (cfgis==null) throw new FileNotFoundException();
+            ini.load(cfgis);
         } else {
             log.info("Loading config from {}", path);
-            file = new File(path);
+            File file = new File(path);
+            ini.load(file);
         }
-        Ini ini = new Ini();
-        ini.load(file);
+
         Map<String, String> serverCfg = ini.get("server");
         List<String> services = Arrays.asList(serverCfg.get("services").split(","));
         int accountServerPort = Integer.parseInt(serverCfg.get("accountServerPort"));
