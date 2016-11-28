@@ -2,6 +2,8 @@ package replication;
 
 import main.ApplicationContext;
 import network.ClientConnections;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +17,7 @@ import java.nio.file.Paths;
  * Replicates a file content to client (NOT FOR PRODUCTION!!! ONLY FOR TESTS)
  */
 public class SimpleJsonReplicator implements Replicator {
+    private static final Logger log = LogManager.getLogger(SimpleJsonReplicator.class);
     private static URL jsonFileUrl = SimpleJsonReplicator.class
             .getClassLoader()
             .getResource("testreplic.json");
@@ -31,18 +34,20 @@ public class SimpleJsonReplicator implements Replicator {
     @Override
     public void replicate() {
         if (json == null) return;
+        log.debug("Sending test replic {}",json);
         try {
             ApplicationContext.instance().get(ClientConnections.class)
                     .getConnections()
                     .forEach((entry) -> {
                         try {
-                            entry.getValue().getRemote().sendString(json);
-                        } catch (IOException ignored) {
-
+                            if (entry.getValue().isOpen())
+                                entry.getValue().getRemote().sendString(json);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     });
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

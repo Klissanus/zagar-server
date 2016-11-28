@@ -54,9 +54,7 @@ public class Ticker extends Service implements Tickable {
     public void tick(long elapsedNanos) {
         log.info("=== tick " + tickNumber + " ===");
         tickNumber.incrementAndGet();
-      for (Tickable tickable : tickables) {
-        tickable.tick(elapsedNanos);
-      }
+      tickables.forEach(tickable->tickable.tick(elapsedNanos));
     }
 
     @Override
