@@ -1,5 +1,10 @@
 package network.handlers;
 
+import main.ApplicationContext;
+import messageSystem.Message;
+import messageSystem.MessageSystem;
+import messageSystem.messages.EjectMassMsg;
+import messageSystem.messages.SplitMsg;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandSplit;
@@ -15,6 +20,11 @@ public class PacketHandlerSplit implements PacketHandler {
       e.printStackTrace();
       return;
     }
-    //TODO
+
+    log.info("Create SplitMsg");
+    MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
+    Message message = new SplitMsg();
+    if (messageSystem == null) return;
+    messageSystem.sendMessage(message);
   }
 }

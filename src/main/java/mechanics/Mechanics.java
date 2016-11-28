@@ -50,4 +50,16 @@ public class Mechanics extends Service implements Tickable {
 
     log.info("Mechanics tick() finished");
   }
+
+  public void ejectMass(){
+    log.info("Mass ejected");
+  }
+
+  public void move(){
+    log.info("Moved");
+  }
+
+  public void split(){
+    log.info("Split");
+  }
 }

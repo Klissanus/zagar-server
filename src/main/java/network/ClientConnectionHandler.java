@@ -61,10 +61,14 @@ public class ClientConnectionHandler extends WebSocketAdapter {
   }
 
   private void handlePacket(@NotNull String msg) {
-    JsonObject json = JSONHelper.getJSONObject(msg);
-    String name = json.get("command").getAsString();
-    PacketHandler handler = handleMap.get(name);
-    if (handler==null) return;
-    handler.handle(getSession(),msg);
+    try {
+      JsonObject json = JSONHelper.getJSONObject(msg);
+      String name = json.get("command").getAsString();
+      PacketHandler handler = handleMap.get(name);
+      if (handler == null) return;
+      handler.handle(getSession(), msg);
+    } catch (Exception e) {
+      log.warn("Handler exception: " + e);
+    }
   }
 }

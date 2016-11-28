@@ -19,7 +19,7 @@ public class ReplicateMsg extends Message {
     @NotNull
     private final static Logger log = LogManager.getLogger(ReplicateMsg.class);
     public ReplicateMsg(Address from) {
-        super(from, ApplicationContext.instance().get(MessageSystem.class).getService(ClientConnectionServer.class).getAddress());
+        super(from, Message.getMessageSystem().getService(ClientConnectionServer.class).getAddress());
     }
 
     @Override
