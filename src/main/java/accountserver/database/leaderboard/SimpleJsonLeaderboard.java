@@ -1,6 +1,8 @@
 package accountserver.database.leaderboard;
 
 import accountserver.database.users.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import utils.JSONHelper;
 import utils.SortedByValueMap;
@@ -18,6 +20,7 @@ import java.util.Map;
  * Sends leaderboard from file to client (NOT FOR PRODUCTION!!! ONLY FOR TESTS)
  */
 public class SimpleJsonLeaderboard implements LeaderboardDao {
+    private static final Logger log = LogManager.getLogger(SimpleJsonLeaderboard.class);
     private static URL jsonFileUrl = SimpleJsonLeaderboard.class
             .getClassLoader()
             .getResource("testleaderboard.json");
@@ -51,6 +54,7 @@ public class SimpleJsonLeaderboard implements LeaderboardDao {
     @NotNull
     @Override
     public Map<User, Integer> getTopUsers(int count) {
+        log.debug("sending top {} users {}",count,users);
         return users;
     }
 }

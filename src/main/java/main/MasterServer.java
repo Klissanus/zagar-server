@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.ini4j.Ini;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ticker.Ticker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,14 +65,20 @@ public class MasterServer {
 
         MessageSystem messageSystem = new MessageSystem();
         ApplicationContext.instance().put(MessageSystem.class, messageSystem);
+        Ticker ticker = new Ticker(1);
         serviceClasses.forEach(serviceClass -> {
             if (serviceClass.equals(Mechanics.class)) {
-                messageSystem.registerService(Mechanics.class, new Mechanics());
+                Mechanics m = new Mechanics();
+                messageSystem.registerService(Mechanics.class, m);
+                ticker.registerTickable(m);
             } else if (serviceClass.equals(AccountServer.class)) {
                 messageSystem.registerService(AccountServer.class, new AccountServer(accountServerPort));
             } else if (serviceClass.equals(ClientConnectionServer.class)) {
                 messageSystem.registerService(ClientConnectionServer.class,
                         new ClientConnectionServer(clientConnectionPort));
+            } else if (serviceClass.equals(Ticker.class)) {
+                MasterServer.services.add(ticker);
+                ticker.start();
             }
         });
         messageSystem.getServices().forEach(Service::start);
