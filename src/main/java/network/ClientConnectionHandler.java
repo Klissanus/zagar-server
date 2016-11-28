@@ -17,7 +17,8 @@ import utils.JSONHelper;
 import java.util.Map;
 
 public class ClientConnectionHandler extends WebSocketAdapter {
-  private final static @NotNull Logger log = LogManager.getLogger(ClientConnectionHandler.class);
+  @NotNull
+  private final static Logger log = LogManager.getLogger(ClientConnectionHandler.class);
 
   @Override
   public void onWebSocketConnect(@NotNull Session sess) {
@@ -39,11 +40,9 @@ public class ClientConnectionHandler extends WebSocketAdapter {
     super.onWebSocketClose(statusCode, reason);
     log.info("Socket closed: [" + statusCode + "] " + reason);
     ClientConnections clientConnections = ApplicationContext.instance().get(ClientConnections.class);
-    for (Map.Entry<Player, Session> connection : clientConnections.getConnections()) {
-      if(connection.getValue().equals(getSession())){
-        clientConnections.removeConnection(connection.getKey());
-      }
-    }
+    clientConnections.getConnections().forEach((entry)->{
+      if(!entry.getValue().isOpen()) clientConnections.removeConnection(entry.getKey());
+    });
 
   }
 

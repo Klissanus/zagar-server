@@ -68,9 +68,13 @@ public class AccountServer extends Service {
   @Override
   public void run() {
     startApi();
-    while (!Thread.interrupted()) {
-      MessageSystem ms = ApplicationContext.instance().get(MessageSystem.class);
-      if (ms != null) ms.execForService(this);
+    try {
+      while (true) {
+        MessageSystem ms = ApplicationContext.instance().get(MessageSystem.class);
+        ApplicationContext.instance().get(MessageSystem.class).execOneForService(this,100);
+      }
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
   }
 }

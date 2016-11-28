@@ -83,12 +83,18 @@ public class HibernateTokensStorage implements TokenDao {
 
     @Override
     public @Nullable Token findByValue(@NotNull String rawToken) {
+        long token;
+        try {
+            token = Long.parseLong(rawToken);
+        } catch (NumberFormatException e) {
+            return null;
+        }
         log.info("Searching token by value" + rawToken);
         List response = HibernateHelper.selectTransactional(session ->
                 session.createQuery("from StoredToken t where t.token.token = :val and " +
                         "t.token.validUntil >= :ts and t.token.generationDate <= :ts")
                         .setParameter("ts", new Date())
-                        .setParameter("val", Long.parseLong(rawToken))
+                        .setParameter("val", token)
                         .list());
         if (response == null) {
             log.error("Error searching token by value " + rawToken);

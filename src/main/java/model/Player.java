@@ -78,6 +78,16 @@ public class Player {
     this.windowHeight = windowHeight;
   }
 
+  @Override
+  public int hashCode() {
+    return id;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return (obj instanceof Player) && (id == ((Player) obj).id);
+  }
+
   @NotNull
   @Override
   public String toString() {
