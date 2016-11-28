@@ -49,7 +49,7 @@ public interface TokenDao {
      * @return Token object if it was found and valid, null otherwise
      */
     @Nullable
-    Token findByValue(@NotNull String rawToken);
+    Token findByValue( String rawToken);
 
     /**
      *

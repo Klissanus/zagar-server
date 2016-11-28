@@ -82,7 +82,7 @@ public class HibernateTokensStorage implements TokenDao {
     }
 
     @Override
-    public @Nullable Token findByValue(@NotNull String rawToken) {
+    public @Nullable Token findByValue( String rawToken) {
         long token;
         try {
             token = Long.parseLong(rawToken);
