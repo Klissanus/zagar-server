@@ -64,6 +64,7 @@ public class ClientConnectionHandler extends WebSocketAdapter {
     try {
       JsonObject json = JSONHelper.getJSONObject(msg);
       String name = json.get("command").getAsString();
+      log.debug("Received command {} in msg {}",name,msg);
       PacketHandler handler = handleMap.get(name);
       if (handler == null) return;
       handler.handle(getSession(), msg);

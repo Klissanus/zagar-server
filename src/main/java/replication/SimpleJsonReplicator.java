@@ -4,13 +4,12 @@ import main.ApplicationContext;
 import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import utils.JSONHelper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import java.io.InputStream;
+import java.io.InputStreamReader;
 /**
  * Created by xakep666 on 26.11.16.
  * <p>
@@ -18,15 +17,24 @@ import java.nio.file.Paths;
  */
 public class SimpleJsonReplicator implements Replicator {
     private static final Logger log = LogManager.getLogger(SimpleJsonReplicator.class);
-    private static URL jsonFileUrl = SimpleJsonReplicator.class
+    private static InputStream jsonFileInput = SimpleJsonReplicator.class
             .getClassLoader()
-            .getResource("testreplic.json");
+            .getResourceAsStream("testreplic.json");
     private static String json;
 
     static {
         try {
-            json = new String(Files.readAllBytes(Paths.get(jsonFileUrl.getFile())), Charset.defaultCharset());
+            if (jsonFileInput == null) {
+                log.error("File testreplic.json not found");
+            } else {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(jsonFileInput));
+                StringBuilder out = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) out.append(line);
+                json = out.toString();
+            }
         } catch (IOException e) {
+            e.printStackTrace();
             json = null;
         }
     }

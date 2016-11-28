@@ -23,8 +23,18 @@ public class JSONHelper {
     public static String toJSON(@NotNull Object object, @NotNull Type type) {
         return gson.toJson(object, type);
     }
-  @NotNull
+
+    @NotNull
   public static <T> T fromJSON(@NotNull String json, @NotNull Class<T> type) throws JSONDeserializationException {
+    try {
+      return gson.fromJson(json, type);
+    } catch (JsonSyntaxException e) {
+      throw new JSONDeserializationException(e);
+    }
+  }
+
+  @NotNull
+  public static <T> T fromJSON(@NotNull String json, @NotNull Type type) throws JSONDeserializationException {
     try {
       return gson.fromJson(json, type);
     } catch (JsonSyntaxException e) {

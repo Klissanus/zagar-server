@@ -6,10 +6,12 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
+import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ticker.Tickable;
+import utils.SortedByValueMap;
 
 /**
  * Created by apomosov on 14.05.16.
@@ -47,9 +49,10 @@ public class Mechanics extends Service implements Tickable {
     messageSystem.sendMessage(message);
     messageSystem.sendMessage(lbMessage);
 
+    /*System.out.println("Conns " +
+            ApplicationContext.instance().get(ClientConnections.class).getConnections());*/
     //execute all messages from queue
     messageSystem.execForService(this);
-
 
     log.info("Mechanics tick() finished");
   }

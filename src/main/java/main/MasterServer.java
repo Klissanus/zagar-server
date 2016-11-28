@@ -47,6 +47,19 @@ public class MasterServer {
             ini.load(file);
         }
 
+        Map<String, String> implementations = ini.get("implementations");
+        implementations.entrySet().forEach(entry -> {
+            Class<?> interfClass, implClass;
+            try {
+                interfClass = Class.forName(entry.getKey());
+                implClass = Class.forName(entry.getValue());
+                ApplicationContext.instance().put(interfClass, implClass.newInstance());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        });
+
         Map<String, String> serverCfg = ini.get("server");
         List<String> services = Arrays.asList(serverCfg.get("services").split(","));
         int accountServerPort = Integer.parseInt(serverCfg.get("accountServerPort"));
@@ -66,35 +79,23 @@ public class MasterServer {
         MessageSystem messageSystem = new MessageSystem();
         ApplicationContext.instance().put(MessageSystem.class, messageSystem);
         Ticker ticker = new Ticker(1);
-        serviceClasses.forEach(serviceClass -> {
-            if (serviceClass.equals(Mechanics.class)) {
-                Mechanics m = new Mechanics();
-                messageSystem.registerService(Mechanics.class, m);
-                ticker.registerTickable(m);
-            } else if (serviceClass.equals(AccountServer.class)) {
-                messageSystem.registerService(AccountServer.class, new AccountServer(accountServerPort));
-            } else if (serviceClass.equals(ClientConnectionServer.class)) {
-                messageSystem.registerService(ClientConnectionServer.class,
-                        new ClientConnectionServer(clientConnectionPort));
-            } else if (serviceClass.equals(Ticker.class)) {
-                MasterServer.services.add(ticker);
-                ticker.start();
-            }
-        });
+        if (serviceClasses.contains(Mechanics.class)) {
+            Mechanics m = new Mechanics();
+            messageSystem.registerService(Mechanics.class, m);
+            ticker.registerTickable(m);
+        }
+        if (serviceClasses.contains(AccountServer.class)) {
+            messageSystem.registerService(AccountServer.class, new AccountServer(accountServerPort));
+        }
+        if (serviceClasses.contains(ClientConnectionServer.class)) {
+            messageSystem.registerService(ClientConnectionServer.class,
+                    new ClientConnectionServer(clientConnectionPort));
+        }
+        if (serviceClasses.contains(Ticker.class)) {
+            messageSystem.registerService(Ticker.class, ticker);
+        }
         messageSystem.getServices().forEach(Service::start);
 
-        Map<String, String> implementations = ini.get("implementations");
-        implementations.entrySet().forEach(entry -> {
-            Class<?> interfClass, implClass;
-            try {
-                interfClass = Class.forName(entry.getKey());
-                implClass = Class.forName(entry.getValue());
-                ApplicationContext.instance().put(interfClass, implClass.newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
-        });
     }
 
     public static void main(@NotNull String[] args) throws Exception {
