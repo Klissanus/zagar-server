@@ -21,6 +21,6 @@ public class MoveMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.info("MoveMsg exec() call");
-        ApplicationContext.instance().get(Mechanics.class).move();
+        Message.getMessageSystem().getService(Mechanics.class).move();
     }
 }

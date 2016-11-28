@@ -23,6 +23,6 @@ public class EjectMassMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.info("EjectMassMsg exec() call");
-        ApplicationContext.instance().get(Mechanics.class).ejectMass();
+        Message.getMessageSystem().getService(Mechanics.class).ejectMass();
     }
 }

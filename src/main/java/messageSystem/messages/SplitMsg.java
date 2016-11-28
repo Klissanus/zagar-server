@@ -21,6 +21,6 @@ public class SplitMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.info("SplitMsg exec() call");
-        ApplicationContext.instance().get(Mechanics.class).split();
+        Message.getMessageSystem().getService(Mechanics.class).split();
     }
 }
