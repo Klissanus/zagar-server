@@ -3,5 +3,7 @@
   "food":[
     {"x":5,"y":5}
   ],
-  "cells":[]
+  "cells":[
+    {"x":-5,"y":-5,"isVirus":true,"cellId":0,"playerId":0,"size":5}
+  ]
 }
