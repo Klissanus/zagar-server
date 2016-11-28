@@ -16,8 +16,8 @@ import utils.JSONHelper;
 
 import java.io.IOException;
 
-public class PacketHandlerAuth {
-  public PacketHandlerAuth(@NotNull Session session, @NotNull String json) {
+public class PacketHandlerAuth implements PacketHandler {
+  public void handle(@NotNull Session session, @NotNull String json) {
     CommandAuth commandAuth;
     try {
       commandAuth = JSONHelper.fromJSON(json, CommandAuth.class);

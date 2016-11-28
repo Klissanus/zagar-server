@@ -6,8 +6,8 @@ import protocol.commands.CommandSplit;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;
 
-public class PacketHandlerSplit {
-  public PacketHandlerSplit(@NotNull Session session, @NotNull String json) {
+public class PacketHandlerSplit implements PacketHandler {
+  public void handle(@NotNull Session session, @NotNull String json) {
     CommandSplit commandSplit;
     try {
       commandSplit = JSONHelper.fromJSON(json, CommandSplit.class);

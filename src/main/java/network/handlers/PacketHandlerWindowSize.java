@@ -9,8 +9,8 @@ import protocol.commands.CommandWindowSize;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;
 
-public class PacketHandlerWindowSize {
-    public PacketHandlerWindowSize(@NotNull Session session, @NotNull String json) {
+public class PacketHandlerWindowSize implements PacketHandler {
+    public void handle(@NotNull Session session, @NotNull String json) {
         CommandWindowSize commandWindowSize;
         try {
             commandWindowSize = JSONHelper.fromJSON(json, CommandWindowSize.class);

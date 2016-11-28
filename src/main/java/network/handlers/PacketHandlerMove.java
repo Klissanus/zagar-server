@@ -6,8 +6,8 @@ import protocol.commands.CommandMove;
 import utils.JSONDeserializationException;
 import utils.JSONHelper;
 
-public class PacketHandlerMove {
-  public PacketHandlerMove(@NotNull Session session, @NotNull String json) {
+public class PacketHandlerMove implements PacketHandler {
+  public void handle(@NotNull Session session, @NotNull String json) {
     CommandMove commandMove;
     try {
       commandMove = JSONHelper.fromJSON(json, CommandMove.class);

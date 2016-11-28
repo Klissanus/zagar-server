@@ -2,23 +2,31 @@ package network;
 
 import com.google.gson.JsonObject;
 import main.ApplicationContext;
-import model.Player;
-import network.handlers.PacketHandlerAuth;
-import network.handlers.PacketHandlerWindowSize;
+import network.handlers.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.jetbrains.annotations.NotNull;
-import protocol.commands.CommandAuth;
-import protocol.commands.CommandWindowSize;
+import protocol.commands.*;
 import utils.JSONHelper;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientConnectionHandler extends WebSocketAdapter {
   @NotNull
   private final static Logger log = LogManager.getLogger(ClientConnectionHandler.class);
+
+  @NotNull
+  private final static Map<String, PacketHandler> handleMap = new ConcurrentHashMap<>();
+  static {
+    handleMap.put(CommandAuth.NAME,new PacketHandlerAuth());
+    handleMap.put(CommandEjectMass.NAME, new PacketHandlerEjectMass());
+    handleMap.put(CommandMove.NAME, new PacketHandlerMove());
+    handleMap.put(CommandSplit.NAME, new PacketHandlerSplit());
+    handleMap.put(CommandWindowSize.NAME,new PacketHandlerWindowSize());
+  }
 
   @Override
   public void onWebSocketConnect(@NotNull Session sess) {
@@ -52,16 +60,11 @@ public class ClientConnectionHandler extends WebSocketAdapter {
     cause.printStackTrace(System.err);
   }
 
-  public void handlePacket(@NotNull String msg) {
+  private void handlePacket(@NotNull String msg) {
     JsonObject json = JSONHelper.getJSONObject(msg);
     String name = json.get("command").getAsString();
-    switch (name) {
-      case CommandAuth.NAME:
-        new PacketHandlerAuth(getSession(), msg);
-        break;
-      case CommandWindowSize.NAME:
-        new PacketHandlerWindowSize(getSession(), msg);
-        break;
-    }
+    PacketHandler handler = handleMap.get(name);
+    if (handler==null) return;
+    handler.handle(getSession(),msg);
   }
 }
