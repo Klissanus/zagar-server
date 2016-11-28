@@ -1,1 +1,7 @@
-{"command":"replicate", "food":[{"x":10,"y":-10}], "cells":[]}
+{
+  "command":"replicate",
+  "food":[
+    {"x":5,"y":5}
+  ],
+  "cells":[]
+}
