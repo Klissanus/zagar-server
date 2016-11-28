@@ -1,5 +1,6 @@
 package tests;
 
+import accountserver.database.leaderboard.LeaderboardDao;
 import accountserver.database.users.*;
 import accountserver.database.tokens.*;
 import com.squareup.okhttp.Response;
@@ -39,10 +40,14 @@ public class TestAuthenticationApi extends WebServerTest {
                 User u = ApplicationContext.instance()
                         .get(UserDao.class)
                         .getUserByName(name==null ? "null": name);
-                if (u!=null)
+                if (u!=null) {
+                    ApplicationContext.instance()
+                            .get(LeaderboardDao.class)
+                            .removeUser(u);
                     ApplicationContext.instance()
                             .get(UserDao.class)
                             .removeUser(u);
+                }
             }
         }
     }
