@@ -3,6 +3,7 @@ package accountserver.database.tokens;
 import accountserver.database.users.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,8 +74,10 @@ public class InMemoryTokensStorage implements TokenDao {
         return ret;
     }
 
+    @Nullable
+    @Contract("null -> null")
     @Override
-    public @Nullable Token findByValue(@NotNull String rawToken) {
+    public Token findByValue(@Nullable String rawToken) {
         for(Token token:userTokens.values()) {
             if (token.rawEquals(rawToken) && token.isValid()) return token;
         }

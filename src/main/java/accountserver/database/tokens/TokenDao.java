@@ -1,6 +1,7 @@
 package accountserver.database.tokens;
 
 import accountserver.database.users.User;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +50,8 @@ public interface TokenDao {
      * @return Token object if it was found and valid, null otherwise
      */
     @Nullable
-    Token findByValue(@NotNull String rawToken);
+    @Contract("null -> null")
+    Token findByValue(@Nullable String rawToken);
 
     /**
      *

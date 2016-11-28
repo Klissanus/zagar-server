@@ -4,6 +4,7 @@ import accountserver.database.users.HibernateUsersStorage;
 import accountserver.database.users.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import utils.HibernateHelper;
@@ -81,8 +82,10 @@ public class HibernateTokensStorage implements TokenDao {
         return ((StoredToken) response.get(0)).getOwner();
     }
 
+    @Nullable
+    @Contract("null -> null")
     @Override
-    public @Nullable Token findByValue(@NotNull String rawToken) {
+    public Token findByValue(@Nullable String rawToken) {
         long token;
         try {
             token = Long.parseLong(rawToken);
