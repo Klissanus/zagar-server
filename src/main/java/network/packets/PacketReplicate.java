@@ -10,16 +10,16 @@ import protocol.model.Food;
 import utils.JSONHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 public class PacketReplicate {
   @NotNull
   private static final Logger log = LogManager.getLogger(PacketReplicate.class);
   @NotNull
-  private final Cell[] cells;
-  @NotNull
-  private final Food[] food;
+  private final List<Cell> cells;
+    private final List<Food> food;
 
-  public PacketReplicate(@NotNull Cell[] cells, @NotNull Food[] food) {
+    public PacketReplicate(@NotNull List<Cell> cells, List<Food> food) {
     this.cells = cells;
     this.food = food;
   }

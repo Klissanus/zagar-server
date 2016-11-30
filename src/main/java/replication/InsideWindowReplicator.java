@@ -83,13 +83,21 @@ public class InsideWindowReplicator implements Replicator {
                               @NotNull List<Virus> viruses) {
         Session session = ApplicationContext.instance().get(ClientConnections.class).getSessionByPlayer(player);
         if (session == null) return;
-        protocol.model.Cell[] playerCellsToSend = playerCells.stream()
+        List<protocol.model.Cell> playerCellsToSend = playerCells.stream()
                 .map(cell -> new protocol.model.Cell(cell.getId(), player.getId(),
                         false, cell.getRadius(), cell.getX(), cell.getY()))
-                .collect(Collectors.toList())
-                .toArray(new protocol.model.Cell[0]);
-        //TODO send food and viruses
-        protocol.model.Food[] foodsToSend = new protocol.model.Food[0];
+                .collect(Collectors.toList());
+
+        List<protocol.model.Food> foodsToSend = foods.stream()
+                .map(f -> new protocol.model.Food(f.getX(), f.getY()))
+                .collect(Collectors.toList());
+        playerCellsToSend.addAll(
+                viruses.stream()
+                        .map(virus ->
+                                //negative IDs shows that cell not belongs to player
+                                new protocol.model.Cell(-1, -1, true, virus.getMass(), virus.getX(), virus.getY()))
+                        .collect(Collectors.toList())
+        );
         try {
             new PacketReplicate(playerCellsToSend, foodsToSend).write(session);
         } catch (IOException e) {
