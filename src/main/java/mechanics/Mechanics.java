@@ -6,28 +6,31 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
-import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ticker.Tickable;
-import utils.SortedByValueMap;
+import ticker.Ticker;
 
 /**
  * Created by apomosov on 14.05.16.
+ *
+ * Game mechanics
  */
 public class Mechanics extends Service implements Tickable {
   @NotNull
   private final static Logger log = LogManager.getLogger(Mechanics.class);
+  @NotNull
+  private final Ticker ticker = new Ticker(this, 1);
 
   public Mechanics() {
     super("mechanics");
   }
 
   @Override
-  public synchronized void start() {
-    super.start();
-    log.info(getName() + " started");
+  public void run() {
+    log.info(getAddress() + " started");
+    ticker.loop();
   }
 
   @Override

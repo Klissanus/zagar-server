@@ -1,64 +1,43 @@
 package ticker;
 
-import main.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by apomosov on 14.05.16.
+ *
+ * Synchronizes services
  */
-public class Ticker extends Service implements Tickable {
+public class Ticker {
     private final static Logger log = LogManager.getLogger(Ticker.class);
 
-    private final ConcurrentLinkedDeque<Tickable> tickables;
     private final long sleepTimeNanos;
     private final AtomicLong tickNumber;
+    private final Tickable tickable;
 
-    public Ticker(int maxTicksPerSecond) {
-        super("ticker");
-        this.tickables = new ConcurrentLinkedDeque<>();
+    public Ticker(Tickable tickable, int maxTicksPerSecond) {
+        this.tickable = tickable;
         this.tickNumber = new AtomicLong(0);
         this.sleepTimeNanos = TimeUnit.SECONDS.toNanos(1) / maxTicksPerSecond;
     }
 
-    public void registerTickable(Tickable tickable) {
-        if (!tickables.contains(tickable)) {
-            tickables.add(tickable);
-        } else {
-            log.warn(tickable + " is already in registered in Ticker");
-        }
-    }
-
-    private void loop() {
+    public void loop() {
         long elapsed = sleepTimeNanos;
-        while (!isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {
             long started = System.nanoTime();
-            tick(elapsed);
+            tickable.tick(elapsed);
             elapsed = System.nanoTime() - started;
             if (elapsed < sleepTimeNanos) {
-                log.info("All tickers finish at " + TimeUnit.NANOSECONDS.toMillis(elapsed) + " ms");
+                log.trace("All tickers finish at {} ms", TimeUnit.NANOSECONDS.toMillis(elapsed));
                 LockSupport.parkNanos(sleepTimeNanos - elapsed);
             } else {
-                log.warn("tick lag " + TimeUnit.NANOSECONDS.toMillis(elapsed - sleepTimeNanos) + " ms");
+                log.warn("tick lag {} ms", TimeUnit.NANOSECONDS.toMillis(elapsed - sleepTimeNanos));
             }
+            log.trace("{} <tick> {}", tickable, tickNumber.incrementAndGet());
         }
-    }
-
-    public void tick(long elapsedNanos) {
-        log.info("=== tick " + tickNumber + " ===");
-        tickNumber.incrementAndGet();
-      tickables.forEach(tickable->tickable.tick(elapsedNanos));
-    }
-
-    @Override
-    public void run() {
-        loop();
     }
 }
