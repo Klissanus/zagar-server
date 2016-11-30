@@ -60,8 +60,8 @@ public class MatchMakerImpl implements MatchMaker {
   GameSession createNewGame() {
     Field field = new Field();
     Ticker ticker = ApplicationContext.instance().get(Ticker.class);
+    //TODO use ticker
     UniformFoodGenerator foodGenerator = new UniformFoodGenerator(field, GameConstants.FOOD_PER_SECOND_GENERATION, GameConstants.MAX_FOOD_ON_FIELD);
-    ticker.registerTickable(foodGenerator);
     return new GameSessionImpl(foodGenerator, new RandomPlayerPlacer(field), new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
   }
 }
