@@ -1,19 +1,28 @@
 package messageSystem.messages;
 
-import main.ApplicationContext;
 import mechanics.Mechanics;
 import messageSystem.Abonent;
 import messageSystem.Message;
+import model.Player;
 import network.ClientConnectionServer;
+import org.jetbrains.annotations.NotNull;
+import protocol.commands.CommandMove;
 
 /**
  * Created by Klissan on 28.11.2016.
  */
 public class MoveMsg extends Message {
 
-    public MoveMsg(){
+    @NotNull
+    private CommandMove command;
+    @NotNull
+    private Player player;
+
+    public MoveMsg(@NotNull Player player, @NotNull CommandMove command) {
         super(Message.getMessageSystem().getService(ClientConnectionServer.class).getAddress(),
                 Message.getMessageSystem().getService(Mechanics.class).getAddress());
+        this.command = command;
+        this.player = player;
         log.info("MoveMsg created");
 
     }
@@ -21,6 +30,6 @@ public class MoveMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.info("MoveMsg exec() call");
-        Message.getMessageSystem().getService(Mechanics.class).move();
+        Message.getMessageSystem().getService(Mechanics.class).move(player, command);
     }
 }

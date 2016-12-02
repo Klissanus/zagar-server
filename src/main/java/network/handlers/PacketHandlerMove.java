@@ -3,8 +3,9 @@ package network.handlers;
 import main.ApplicationContext;
 import messageSystem.Message;
 import messageSystem.MessageSystem;
-import messageSystem.messages.EjectMassMsg;
 import messageSystem.messages.MoveMsg;
+import model.Player;
+import network.ClientConnections;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandMove;
@@ -18,11 +19,17 @@ public class PacketHandlerMove implements PacketHandler {
       commandMove = JSONHelper.fromJSON(json, CommandMove.class);
     } catch (JSONDeserializationException e) {
       e.printStackTrace();
+      return;
     }
 
     log.info("Create MoveMsg");
     MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
-    Message message = new MoveMsg();
+    Player player = ApplicationContext.instance().get(ClientConnections.class).getPlayerBySession(session);
+    if (player == null) {
+      log.warn("Could not send MoveMsg, player is null");
+      return;
+    }
+    Message message = new MoveMsg(player, commandMove);
     if (messageSystem == null) return;
     messageSystem.sendMessage(message);
   }

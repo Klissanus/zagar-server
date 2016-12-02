@@ -3,8 +3,9 @@ package network.handlers;
 import main.ApplicationContext;
 import messageSystem.Message;
 import messageSystem.MessageSystem;
-import messageSystem.messages.EjectMassMsg;
 import messageSystem.messages.SplitMsg;
+import model.Player;
+import network.ClientConnections;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandSplit;
@@ -23,7 +24,12 @@ public class PacketHandlerSplit implements PacketHandler {
 
     log.info("Create SplitMsg");
     MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
-    Message message = new SplitMsg();
+    Player player = ApplicationContext.instance().get(ClientConnections.class).getPlayerBySession(session);
+    if (player == null) {
+      log.warn("Could not send SplitMsg, player or command is null");
+      return;
+    }
+    Message message = new SplitMsg(player, commandSplit);
     if (messageSystem == null) return;
     messageSystem.sendMessage(message);
   }

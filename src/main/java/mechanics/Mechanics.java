@@ -6,9 +6,13 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
+import model.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import protocol.commands.CommandEjectMass;
+import protocol.commands.CommandMove;
+import protocol.commands.CommandSplit;
 import ticker.Tickable;
 import ticker.Ticker;
 
@@ -60,15 +64,15 @@ public class Mechanics extends Service implements Tickable {
     log.info("Mechanics tick() finished");
   }
 
-  public void ejectMass(){
+  public void ejectMass(@NotNull Player player, @NotNull CommandEjectMass commandEjectMass) {
     log.info("Mass ejected");
   }
 
-  public void move(){
+  public void move(@NotNull Player player, @NotNull CommandMove commandMove) {
     log.info("Moved");
   }
 
-  public void split(){
+  public void split(@NotNull Player player, @NotNull CommandSplit commandSplit) {
     log.info("Split");
   }
 }
