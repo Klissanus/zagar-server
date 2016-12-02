@@ -13,7 +13,6 @@ import utils.UniformFoodGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -73,10 +72,7 @@ public class MatchMakerImpl implements MatchMaker {
   public void leaveGame(@NotNull Player player) {
     //update score
     LeaderboardDao lb = ApplicationContext.instance().get(LeaderboardDao.class);
-    Optional<Integer> totalScore = player.getCells().stream()
-            .map(PlayerCell::getMass)
-            .reduce(Math::addExact);
-    if (totalScore.isPresent()) lb.updateScore(player.getUser(), totalScore.get());
+      lb.updateScore(player.getUser(), player.getTotalScore());
     activeGameSessions.forEach(session -> session.leave(player));
   }
 }

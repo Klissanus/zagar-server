@@ -19,7 +19,10 @@ public class PacketHandlerWindowSize implements PacketHandler {
             return;
         }
         Player player = ApplicationContext.instance().get(ClientConnections.class).getPlayerBySession(session);
-        if (player == null) return;
+        if (player == null) {
+            log.warn("Cannot set player window size, player is null");
+            return;
+        }
         player.setWindowWidth(commandWindowSize.getWidth());
         player.setWindowHeight(commandWindowSize.getHeight());
     }

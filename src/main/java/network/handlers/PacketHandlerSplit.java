@@ -26,7 +26,7 @@ public class PacketHandlerSplit implements PacketHandler {
     MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
     Player player = ApplicationContext.instance().get(ClientConnections.class).getPlayerBySession(session);
     if (player == null) {
-      log.warn("Could not send SplitMsg, player or command is null");
+      log.warn("Could not send SplitMsg, player is  null");
       return;
     }
     Message message = new SplitMsg(player, commandSplit);

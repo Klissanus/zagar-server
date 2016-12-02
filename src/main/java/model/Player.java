@@ -48,7 +48,7 @@ public class Player {
     return cells;
   }
 
-  int getTotalScore() {
+  public int getTotalScore() {
     Optional<Integer> totalScore = cells.stream()
             .map(PlayerCell::getMass)
             .reduce(Math::addExact);
