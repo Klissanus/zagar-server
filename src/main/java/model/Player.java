@@ -14,11 +14,10 @@ import java.util.Optional;
  * @author apomosov
  */
 public class Player {
-  private static final int widthFactor = 1;
-  private static final int heightFactor = 1;
   private final int id;
   @NotNull
   private final List<PlayerCell> cells = new ArrayList<>();
+  private Field field;
   @NotNull
   private User user;
   private int windowWidth;
@@ -28,6 +27,15 @@ public class Player {
     this.id = id;
     this.user = user;
     addCell(new PlayerCell(ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
+  }
+
+  @NotNull
+  public Field getField() {
+    return field;
+  }
+
+  public void setField(@NotNull Field field) {
+    this.field = field;
   }
 
   public void addCell(@NotNull PlayerCell cell) {

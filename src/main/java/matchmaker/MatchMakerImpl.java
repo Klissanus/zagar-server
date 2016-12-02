@@ -39,12 +39,14 @@ public class MatchMakerImpl implements MatchMaker {
             .collect(Collectors.toList());
     if (withFreeSlots.size() != 0) {
       withFreeSlots.get(0).join(player);
+      player.setField(withFreeSlots.get(0).getField());
       log.info("{} joined to session with free slots {}", player, withFreeSlots.get(0));
       return;
     }
     GameSession newGameSession = createNewGame();
     activeGameSessions.add(newGameSession);
     newGameSession.join(player);
+    player.setField(newGameSession.getField());
     log.info("{} joined {}", player, newGameSession);
   }
 
