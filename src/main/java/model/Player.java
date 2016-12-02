@@ -1,5 +1,6 @@
 package model;
 
+import accountserver.database.users.User;
 import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import utils.IDGenerator;
@@ -19,13 +20,13 @@ public class Player {
   @NotNull
   private final List<PlayerCell> cells = new ArrayList<>();
   @NotNull
-  private String name;
+  private User user;
   private int windowWidth;
   private int windowHeight;
 
-  public Player(int id, @NotNull String name) {
+  public Player(int id, @NotNull User user) {
     this.id = id;
-    this.name = name;
+    this.user = user;
     addCell(new PlayerCell(ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
   }
 
@@ -38,12 +39,8 @@ public class Player {
   }
 
   @NotNull
-  public String getName() {
-    return name;
-  }
-
-  public void setName(@NotNull String name) {
-    this.name = name;
+  public User getUser() {
+    return user;
   }
 
   @NotNull
@@ -92,7 +89,7 @@ public class Player {
   @Override
   public String toString() {
     return "Player{" +
-        "name='" + name + '\'' +
+            "name='" + user.getName() + '\'' +
         '}';
   }
 }

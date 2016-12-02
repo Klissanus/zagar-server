@@ -1,5 +1,6 @@
 package matchmaker;
 
+import accountserver.database.leaderboard.LeaderboardDao;
 import main.ApplicationContext;
 import model.*;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import utils.UniformFoodGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +64,19 @@ public class MatchMakerImpl implements MatchMaker {
     Ticker ticker = ApplicationContext.instance().get(Ticker.class);
     //TODO use ticker
     UniformFoodGenerator foodGenerator = new UniformFoodGenerator(field, GameConstants.FOOD_PER_SECOND_GENERATION, GameConstants.MAX_FOOD_ON_FIELD);
-    return new GameSessionImpl(foodGenerator, new RandomPlayerPlacer(field), new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
+    return new GameSessionImpl(foodGenerator,
+            new RandomPlayerPlacer(field),
+            new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
+  }
+
+  @Override
+  public void leaveGame(@NotNull Player player) {
+    //update score
+    LeaderboardDao lb = ApplicationContext.instance().get(LeaderboardDao.class);
+    Optional<Integer> totalScore = player.getCells().stream()
+            .map(PlayerCell::getMass)
+            .reduce(Math::addExact);
+    if (totalScore.isPresent()) lb.updateScore(player.getUser(), totalScore.get());
+    activeGameSessions.forEach(session -> session.leave(player));
   }
 }
