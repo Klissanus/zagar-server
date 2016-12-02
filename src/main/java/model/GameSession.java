@@ -3,6 +3,7 @@ package model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Single agar.io game session
@@ -31,4 +32,13 @@ public interface GameSession {
 
   @NotNull
   List<Player> getPlayers();
+
+    /**
+     * Return top N users in session (by score, descending)
+     *
+     * @param n number of records to return
+     * @return map of player`s scores (contains n top records)
+     */
+    @NotNull
+    Map<Player, Integer> getTop(int n);
 }

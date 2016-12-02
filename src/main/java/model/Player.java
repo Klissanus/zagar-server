@@ -48,6 +48,15 @@ public class Player {
     return cells;
   }
 
+  int getTotalScore() {
+    Optional<Integer> totalScore = cells.stream()
+            .map(PlayerCell::getMass)
+            .reduce(Math::addExact);
+    return totalScore.isPresent() ?
+            totalScore.get() :
+            0;
+  }
+
   public int getId() {
     return id;
   }

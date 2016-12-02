@@ -1,6 +1,8 @@
 package network.handlers;
 
 import accountserver.api.auth.AuthenticationApi;
+import accountserver.database.users.User;
+import accountserver.database.users.UserDao;
 import main.ApplicationContext;
 import matchmaker.MatchMaker;
 import model.Player;
@@ -23,7 +25,14 @@ public class PacketHandlerAuth implements PacketHandler {
       if (!AuthenticationApi.validateToken(commandAuth.getToken())) {
         new PacketAuthFail(commandAuth.getLogin(), commandAuth.getToken(), "Invalid user or password").write(session);
       } else {
-        Player player = new Player(ApplicationContext.instance().get(IDGenerator.class).next(), commandAuth.getLogin());
+        User user = ApplicationContext.instance().get(UserDao.class).getUserByName(commandAuth.getLogin());
+        if (user == null) {
+          new PacketAuthFail(commandAuth.getLogin(), commandAuth.getToken(), "Error getting user from base")
+                  .write(session);
+          return;
+        }
+        int id = ApplicationContext.instance().get(IDGenerator.class).next();
+        Player player = new Player(id, user);
         ApplicationContext.instance().get(ClientConnections.class).registerConnection(player, session);
         new PacketAuthOk().write(session);
         ApplicationContext.instance().get(MatchMaker.class).joinGame(player);

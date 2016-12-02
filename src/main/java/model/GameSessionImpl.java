@@ -7,6 +7,8 @@ import utils.VirusGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author apomosov
@@ -59,6 +61,15 @@ public class GameSessionImpl implements GameSession {
     } catch (InterruptedException ignored) {
 
     }
+  }
+
+  @NotNull
+  @Override
+  public Map<Player, Integer> getTop(int n) {
+    return players.stream()
+            .sorted((player1, player2) -> player2.getTotalScore() - player1.getTotalScore())
+            .limit(n)
+            .collect(Collectors.toMap(player -> player, Player::getTotalScore));
   }
 
   @Override

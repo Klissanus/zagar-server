@@ -1,20 +1,12 @@
 package replication;
 
-import accountserver.database.leaderboard.LeaderboardDao;
-import accountserver.database.users.User;
 import main.ApplicationContext;
-import model.Player;
+import matchmaker.MatchMaker;
 import network.ClientConnections;
 import network.packets.PacketLeaderBoard;
 import org.eclipse.jetty.websocket.api.Session;
-import utils.SortedByValueMap;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -24,21 +16,23 @@ import java.util.stream.Collectors;
  */
 public class LeaderboardReplicator {
     public void replicate() {
-        String[] lb =
-                ApplicationContext.instance().get(LeaderboardDao.class).getTopUsers(10)
-                .keySet()
-                .stream()
-                .map(User::getName)
-                .toArray(String[]::new);
-        Set<Map.Entry<Player,Session>> sessions = ApplicationContext.instance().get(ClientConnections.class).getConnections();
-        sessions.forEach(entry->{
-            try {
-                if (entry.getValue().isOpen()) {
-                    new PacketLeaderBoard(lb).write(entry.getValue());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        ApplicationContext.instance().get(MatchMaker.class).getActiveGameSessions()
+                .forEach(gameSession -> {
+                    String[] lb = gameSession.getTop(10).entrySet().stream()
+                            .map(e -> e.getKey().getUser().getName())
+                            .toArray(String[]::new);
+                    gameSession.getPlayers().forEach(
+                            player -> {
+                                Session session = ApplicationContext.instance()
+                                        .get(ClientConnections.class)
+                                        .getSessionByPlayer(player);
+                                if (session == null) return;
+                                try {
+                                    new PacketLeaderBoard(lb).write(session);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                });
     }
 }
