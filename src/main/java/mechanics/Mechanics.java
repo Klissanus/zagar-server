@@ -6,6 +6,7 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
+import model.GameConstants;
 import model.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,7 +70,21 @@ public class Mechanics extends Service implements Tickable {
   }
 
   public void move(@NotNull Player player, @NotNull CommandMove commandMove) {
-    log.info("Moved");
+      log.trace("Moving player {}: dx {} dy {}", player, commandMove.getDx(), commandMove.getDy());
+      if (Math.abs(commandMove.getDx()) > GameConstants.MAX_COORDINATE_DELTA_MODULE ||
+              Math.abs(commandMove.getDy()) > GameConstants.MAX_COORDINATE_DELTA_MODULE) {
+          log.info("Player {} may be cheater", player);
+          return;
+      }
+      player.getCells().forEach(cell -> {
+          float newX = cell.getX() + commandMove.getDx();
+          if (newX + cell.getRadius() / 2 <= player.getField().getWidth() &&
+                  newX - cell.getRadius() / 2 >= 0) cell.setX((int) newX);
+          float newY = cell.getY() + commandMove.getDy();
+          if (newY + cell.getRadius() / 2 <= player.getField().getHeight() &&
+                  newX - cell.getRadius() / 2 >= 0) cell.setY((int) newY);
+      });
+      //TODO handle collisions
   }
 
   public void split(@NotNull Player player, @NotNull CommandSplit commandSplit) {
