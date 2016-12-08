@@ -6,6 +6,7 @@ import model.GameConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +28,7 @@ public class UniformFoodGenerator extends FoodGenerator {
     //Remove or not?
     Random rand = new Random();
     if (rand.nextDouble() > GameConstants.FOOD_REMOVE_CHANCE) {
-      List<Food> foods = getField().getFoods();
+      List<Food> foods = new ArrayList<>(getField().getFoods());
       int toRemove = (int) (foods.size() * rand.nextDouble());
       for (int i = 0; i < toRemove; i++) {
         getField().removeFood(foods.get(i));

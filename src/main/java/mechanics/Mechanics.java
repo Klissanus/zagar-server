@@ -2,6 +2,7 @@ package mechanics;
 
 import main.ApplicationContext;
 import main.Service;
+import matchmaker.MatchMaker;
 import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
@@ -43,8 +44,16 @@ public class Mechanics extends Service implements Tickable {
   @Override
   public void tick(@NotNull Duration elapsed) {
       MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
+
       //execute all messages from queue
       messageSystem.execForService(this);
+
+      //execute game session ticks
+      MatchMaker matchMaker = ApplicationContext.instance().get(MatchMaker.class);
+      matchMaker.getActiveGameSessions().forEach(gameSession -> {
+          gameSession.tickRemoveAfk();
+          gameSession.tickGenerators(elapsed);
+      });
 
       log.trace("Start replication");
     Message message = new ReplicateMsg(getAddress());
@@ -54,7 +63,6 @@ public class Mechanics extends Service implements Tickable {
 
     /*System.out.println("Conns " +
             ApplicationContext.instance().get(ClientConnections.class).getConnections());*/
-
 
       log.trace("Mechanics tick() finished");
   }

@@ -5,6 +5,7 @@ import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.VirusGenerator;
 import utils.playerPlacing.PlayerPlacer;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,20 +25,17 @@ public class GameSessionImpl implements GameSession {
   private final PlayerPlacer playerPlacer;
   @NotNull
   private final VirusGenerator virusGenerator;
-  @NotNull
-  private final Thread afkRemoverThread = new Thread(this::periodicAfkRemover);
 
   public GameSessionImpl(@NotNull FoodGenerator foodGenerator, @NotNull PlayerPlacer playerPlacer, @NotNull VirusGenerator virusGenerator) {
     this.foodGenerator = foodGenerator;
     this.playerPlacer = playerPlacer;
     this.virusGenerator = virusGenerator;
-    afkRemoverThread.start();
   }
 
   @Override
   public void join(@NotNull Player player) {
     players.add(player);
-    this.playerPlacer.place(player);
+    playerPlacer.place(player);
   }
 
   @Override
@@ -51,15 +49,15 @@ public class GameSessionImpl implements GameSession {
     return new ArrayList<>(players);
   }
 
-  private void periodicAfkRemover() {
-    try {
-      while (!Thread.interrupted()) {
-        Thread.sleep(GameConstants.MOVEMENT_TIMEOUT.toMillis() / 2);
-        players.removeIf(p -> p.getMinTimeWithoutMovements().compareTo(GameConstants.MOVEMENT_TIMEOUT) > 0);
-      }
-    } catch (InterruptedException ignored) {
+  @Override
+  public void tickRemoveAfk() {
+    //players.removeIf(p -> p.getMinTimeWithoutMovements().compareTo(GameConstants.MOVEMENT_TIMEOUT) > 0);
+  }
 
-    }
+  @Override
+  public void tickGenerators(@NotNull Duration elapsed) {
+    foodGenerator.tick(elapsed);
+    virusGenerator.tick(elapsed);
   }
 
   @NotNull
@@ -75,11 +73,4 @@ public class GameSessionImpl implements GameSession {
   public @NotNull Field getField() {
     return field;
   }
-
-  @Override
-  public void finalize() throws Throwable {
-    afkRemoverThread.interrupt();
-    super.finalize();
-  }
-
 }

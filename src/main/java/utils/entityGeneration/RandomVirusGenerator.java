@@ -6,6 +6,7 @@ import model.Virus;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +27,7 @@ public class RandomVirusGenerator extends VirusGenerator {
     //Generate  or not?
     if (random.nextDouble() > GameConstants.VIRUS_GENERATION_CHANCE) return;
 
-    List<Virus> onField = getField().getViruses();
+    List<Virus> onField = new ArrayList<>(getField().getViruses());
 
     int virusesToRemove = (int) (onField.size() * random.nextDouble());
     for (int i = 0; i < virusesToRemove; i++) {

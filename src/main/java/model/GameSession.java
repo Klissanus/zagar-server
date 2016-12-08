@@ -2,6 +2,7 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -41,4 +42,8 @@ public interface GameSession {
      */
     @NotNull
     Map<Player, Integer> getTop(int n);
+
+    void tickGenerators(@NotNull Duration elapsed);
+
+    void tickRemoveAfk();
 }
