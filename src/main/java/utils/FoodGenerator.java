@@ -3,7 +3,6 @@ package utils;
 import model.Field;
 import org.jetbrains.annotations.NotNull;
 import ticker.Tickable;
-import ticker.Ticker;
 
 import java.time.Duration;
 
@@ -16,12 +15,9 @@ import java.time.Duration;
 public abstract class FoodGenerator implements Tickable {
     @NotNull
     private final Field field;
-    @NotNull
-    private final Ticker ticker = new Ticker(this);
 
     FoodGenerator(@NotNull Field field) {
         this.field = field;
-        ticker.loop();
     }
 
     @NotNull

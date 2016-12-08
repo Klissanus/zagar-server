@@ -6,7 +6,6 @@ import model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import ticker.Ticker;
 import utils.RandomPlayerPlacer;
 import utils.RandomVirusGenerator;
 import utils.UniformFoodGenerator;
@@ -62,8 +61,6 @@ public class MatchMakerImpl implements MatchMaker {
   @NotNull
   GameSession createNewGame() {
     Field field = new Field();
-    Ticker ticker = ApplicationContext.instance().get(Ticker.class);
-    //TODO use ticker
     UniformFoodGenerator foodGenerator = new UniformFoodGenerator(field, GameConstants.FOOD_PER_SECOND_GENERATION, GameConstants.MAX_FOOD_ON_FIELD);
     return new GameSessionImpl(foodGenerator,
             new RandomPlayerPlacer(field),
