@@ -1,11 +1,12 @@
 package ticker;
 
+import model.GameConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by apomosov on 14.05.16.
@@ -15,29 +16,34 @@ import java.util.concurrent.locks.LockSupport;
 public class Ticker {
     private final static Logger log = LogManager.getLogger(Ticker.class);
 
-    private final long sleepTimeNanos;
+    private final Duration sleepTime;
     private final AtomicLong tickNumber;
     private final Tickable tickable;
 
-    public Ticker(Tickable tickable, int maxTicksPerSecond) {
+    public Ticker(Tickable tickable) {
         this.tickable = tickable;
         this.tickNumber = new AtomicLong(0);
-        this.sleepTimeNanos = TimeUnit.SECONDS.toNanos(1) / maxTicksPerSecond;
+        this.sleepTime = Duration.ofMillis(TimeUnit.SECONDS.toMillis(1) / GameConstants.TICKS_PER_SECOND);
     }
 
     public void loop() {
-        long elapsed = sleepTimeNanos;
-        while (!Thread.currentThread().isInterrupted()) {
-            long started = System.nanoTime();
-            tickable.tick(elapsed);
-            elapsed = System.nanoTime() - started;
-            if (elapsed < sleepTimeNanos) {
-                log.trace("All tickers finish at {} ms", TimeUnit.NANOSECONDS.toMillis(elapsed));
-                LockSupport.parkNanos(sleepTimeNanos - elapsed);
-            } else {
-                log.warn("tick lag {} ms", TimeUnit.NANOSECONDS.toMillis(elapsed - sleepTimeNanos));
+        Duration elapsed = sleepTime;
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                Duration started = Duration.ofMillis(System.currentTimeMillis());
+                tickable.tick(elapsed);
+                elapsed = Duration.ofNanos(System.currentTimeMillis()).minus(started);
+                if (elapsed.compareTo(sleepTime) < 0) {
+                    log.trace("All tickers finish at {} ms", elapsed.toMillis());
+                    Thread.sleep(sleepTime.toMillis());
+                } else {
+                    log.warn("tick lag {} ms", sleepTime.minus(elapsed).toMillis());
+                }
+                log.trace("{} <tick> {}", tickable, tickNumber.incrementAndGet());
             }
-            log.trace("{} <tick> {}", tickable, tickNumber.incrementAndGet());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }

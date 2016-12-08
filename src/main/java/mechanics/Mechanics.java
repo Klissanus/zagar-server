@@ -17,6 +17,8 @@ import protocol.commands.CommandSplit;
 import ticker.Tickable;
 import ticker.Ticker;
 
+import java.time.Duration;
+
 /**
  * Created by apomosov on 14.05.16.
  *
@@ -26,7 +28,7 @@ public class Mechanics extends Service implements Tickable {
   @NotNull
   private final static Logger log = LogManager.getLogger(Mechanics.class);
   @NotNull
-  private final Ticker ticker = new Ticker(this, 1);
+  private final Ticker ticker = new Ticker(this);
 
   public Mechanics() {
     super("mechanics");
@@ -39,16 +41,7 @@ public class Mechanics extends Service implements Tickable {
   }
 
   @Override
-  public void tick(long elapsedNanos) {
-    log.info("Mechanics tick() started");
-    try {
-      Thread.sleep(1500);
-    } catch (InterruptedException e) {
-      log.error(e);
-      Thread.currentThread().interrupt();
-      e.printStackTrace();
-    }
-
+  public void tick(@NotNull Duration elapsed) {
     log.info("Start replication");
     MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
     Message message = new ReplicateMsg(getAddress());
@@ -62,11 +55,11 @@ public class Mechanics extends Service implements Tickable {
     //execute all messages from queue
     messageSystem.execForService(this);
 
-    log.info("Mechanics tick() finished");
+      log.trace("Mechanics tick() finished");
   }
 
   public void ejectMass(@NotNull Player player, @NotNull CommandEjectMass commandEjectMass) {
-    log.info("Mass ejected");
+      log.debug("Mass ejected");
   }
 
   public void move(@NotNull Player player, @NotNull CommandMove commandMove) {

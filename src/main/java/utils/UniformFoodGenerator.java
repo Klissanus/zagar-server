@@ -5,6 +5,7 @@ import model.Food;
 import model.GameConstants;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public class UniformFoodGenerator implements FoodGenerator {
   }
 
   @Override
-  public void tick(long elapsedNanos) {
+  public void tick(@NotNull Duration elapsed) {
     //Remove or not?
     Random rand = new Random();
     if (rand.nextDouble() > GameConstants.FOOD_REMOVE_CHANCE) {
@@ -35,7 +36,7 @@ public class UniformFoodGenerator implements FoodGenerator {
       }
     }
     if (field.getFoods().size() <= threshold) {
-      int toGenerate = (int) Math.ceil(foodPerSecond * elapsedNanos / 1_000_000_000.);
+      int toGenerate = (int) Math.ceil(foodPerSecond * elapsed.getSeconds());
       for (int i = 0; i < toGenerate; i++) {
         Food food = new Food(0, 0);
         food.setX(food.getRadius() + rand.nextInt(field.getWidth() - 2 * food.getRadius()));

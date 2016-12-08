@@ -6,6 +6,7 @@ import java.time.Duration;
  * @author apomosov
  */
 public interface GameConstants {
+  int TICKS_PER_SECOND = 20;
   int MAX_PLAYERS_IN_SESSION = 10;
   int FIELD_WIDTH = 1000;
   int FIELD_HEIGHT = 1000;
