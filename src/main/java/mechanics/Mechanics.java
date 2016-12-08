@@ -42,7 +42,7 @@ public class Mechanics extends Service implements Tickable {
 
   @Override
   public void tick(@NotNull Duration elapsed) {
-    log.info("Start replication");
+      log.trace("Start replication");
     MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
     Message message = new ReplicateMsg(getAddress());
     Message lbMessage = new LeaderboardMsg(getAddress());
