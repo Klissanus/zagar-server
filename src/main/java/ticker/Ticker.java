@@ -32,7 +32,7 @@ public class Ticker {
             while (!Thread.currentThread().isInterrupted()) {
                 Duration started = Duration.ofMillis(System.currentTimeMillis());
                 tickable.tick(elapsed);
-                elapsed = Duration.ofNanos(System.currentTimeMillis()).minus(started);
+                elapsed = Duration.ofMillis(System.currentTimeMillis()).minus(started);
                 if (elapsed.compareTo(sleepTime) < 0) {
                     log.trace("All tickers finish at {} ms", elapsed.toMillis());
                     Thread.sleep(sleepTime.toMillis());
