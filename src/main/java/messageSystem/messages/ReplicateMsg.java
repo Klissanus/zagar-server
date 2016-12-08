@@ -1,11 +1,9 @@
 package messageSystem.messages;
 
 import main.ApplicationContext;
-import main.MasterServer;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.Message;
-import messageSystem.MessageSystem;
 import network.ClientConnectionServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +22,7 @@ public class ReplicateMsg extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        log.info("ReplicateMsg exec() call");
+        log.trace("ReplicateMsg exec() call");
         ApplicationContext.instance().get(Replicator.class).replicate();
     }
 }

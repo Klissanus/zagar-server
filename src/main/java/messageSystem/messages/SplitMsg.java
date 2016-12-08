@@ -23,13 +23,13 @@ public class SplitMsg extends Message {
                 Message.getMessageSystem().getService(Mechanics.class).getAddress());
         this.command = command;
         this.player = player;
-        log.info("SplitMsg created");
+        log.trace("SplitMsg created");
 
     }
 
     @Override
     public void exec(Abonent abonent) {
-        log.info("SplitMsg exec() call");
+        log.trace("SplitMsg exec() call");
         Message.getMessageSystem().getService(Mechanics.class).split(player, command);
     }
 }

@@ -23,13 +23,13 @@ public class EjectMassMsg extends Message {
                 Message.getMessageSystem().getService(Mechanics.class).getAddress());
         this.command = command;
         this.player = player;
-        log.info("Eject mass msg created");
+        log.trace("Eject mass msg created");
 
     }
 
     @Override
     public void exec(Abonent abonent) {
-        log.info("EjectMassMsg exec() call");
+        log.trace("EjectMassMsg exec() call");
         Message.getMessageSystem().getService(Mechanics.class).ejectMass(player, command);
     }
 }

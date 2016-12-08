@@ -23,13 +23,13 @@ public class MoveMsg extends Message {
                 Message.getMessageSystem().getService(Mechanics.class).getAddress());
         this.command = command;
         this.player = player;
-        log.info("MoveMsg created");
+        log.trace("MoveMsg created");
 
     }
 
     @Override
     public void exec(Abonent abonent) {
-        log.info("MoveMsg exec() call");
+        log.trace("MoveMsg exec() call");
         Message.getMessageSystem().getService(Mechanics.class).move(player, command);
     }
 }

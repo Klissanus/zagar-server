@@ -24,7 +24,7 @@ public class LeaderboardMsg extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        log.info("LeaderboardMsg exec() call");
+        log.trace("LeaderboardMsg exec() call");
         ApplicationContext.instance().get(LeaderboardReplicator.class).replicate();
     }
 }
