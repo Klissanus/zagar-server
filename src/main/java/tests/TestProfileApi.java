@@ -1,13 +1,15 @@
 package tests;
 
-import accountserver.database.users.*;
-import accountserver.database.tokens.*;
+import accountserver.database.tokens.Token;
+import accountserver.database.tokens.TokenDao;
+import accountserver.database.users.User;
+import accountserver.database.users.UserDao;
 import com.squareup.okhttp.Response;
 import main.ApplicationContext;
 import org.junit.Test;
-import utils.JSONHelper;
-import java.time.Duration;
+import utils.json.JSONHelper;
 
+import java.time.Duration;
 
 import static javax.ws.rs.core.Response.Status;
 import static org.junit.Assert.*;

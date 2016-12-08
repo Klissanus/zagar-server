@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
 import org.jetbrains.annotations.NotNull;
-import utils.IDGenerator;
+import utils.idGeneration.IDGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;

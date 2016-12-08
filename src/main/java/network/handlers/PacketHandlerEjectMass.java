@@ -9,8 +9,8 @@ import network.ClientConnections;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandEjectMass;
-import utils.JSONDeserializationException;
-import utils.JSONHelper;
+import utils.json.JSONDeserializationException;
+import utils.json.JSONHelper;
 
 public class PacketHandlerEjectMass implements PacketHandler {
   public void handle(@NotNull Session session, @NotNull String json) {

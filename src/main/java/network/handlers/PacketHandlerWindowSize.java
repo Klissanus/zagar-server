@@ -6,8 +6,8 @@ import network.ClientConnections;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandWindowSize;
-import utils.JSONDeserializationException;
-import utils.JSONHelper;
+import utils.json.JSONDeserializationException;
+import utils.json.JSONHelper;
 
 public class PacketHandlerWindowSize implements PacketHandler {
     public void handle(@NotNull Session session, @NotNull String json) {

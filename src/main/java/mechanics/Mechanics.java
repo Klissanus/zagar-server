@@ -42,18 +42,19 @@ public class Mechanics extends Service implements Tickable {
 
   @Override
   public void tick(@NotNull Duration elapsed) {
+      MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
+      //execute all messages from queue
+      messageSystem.execForService(this);
+
       log.trace("Start replication");
-    MessageSystem messageSystem = ApplicationContext.instance().get(MessageSystem.class);
     Message message = new ReplicateMsg(getAddress());
     Message lbMessage = new LeaderboardMsg(getAddress());
-    if (messageSystem == null) return;
     messageSystem.sendMessage(message);
     messageSystem.sendMessage(lbMessage);
 
     /*System.out.println("Conns " +
             ApplicationContext.instance().get(ClientConnections.class).getConnections());*/
-    //execute all messages from queue
-    messageSystem.execForService(this);
+
 
       log.trace("Mechanics tick() finished");
   }

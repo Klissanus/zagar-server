@@ -1,9 +1,9 @@
 package model;
 
 import org.jetbrains.annotations.NotNull;
-import utils.FoodGenerator;
-import utils.PlayerPlacer;
-import utils.VirusGenerator;
+import utils.entityGeneration.FoodGenerator;
+import utils.entityGeneration.VirusGenerator;
+import utils.playerPlacing.PlayerPlacer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,6 @@ public class GameSessionImpl implements GameSession {
     this.foodGenerator = foodGenerator;
     this.playerPlacer = playerPlacer;
     this.virusGenerator = virusGenerator;
-    virusGenerator.generate();
     afkRemoverThread.start();
   }
 

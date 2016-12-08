@@ -1,4 +1,4 @@
-package utils;
+package utils.playerPlacing;
 
 import model.Field;
 import model.Player;

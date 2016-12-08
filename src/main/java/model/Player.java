@@ -3,7 +3,7 @@ package model;
 import accountserver.database.users.User;
 import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
-import utils.IDGenerator;
+import utils.idGeneration.IDGenerator;
 
 import java.time.Duration;
 import java.util.ArrayList;

@@ -1,8 +1,6 @@
-package utils;
+package utils.playerPlacing;
 
-import model.Field;
 import model.Player;
-import model.PlayerCell;
 import org.jetbrains.annotations.NotNull;
 
 /**

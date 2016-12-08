@@ -1,13 +1,14 @@
 package tests;
 
 import accountserver.api.data.LeaderboardApi;
-import accountserver.database.users.*;
 import accountserver.database.leaderboard.LeaderboardDao;
+import accountserver.database.users.User;
+import accountserver.database.users.UserDao;
 import com.squareup.okhttp.Response;
 import main.ApplicationContext;
 import org.junit.Test;
-import utils.JSONHelper;
 import utils.SortedByValueMap;
+import utils.json.JSONHelper;
 
 import java.util.HashMap;
 import java.util.Map;

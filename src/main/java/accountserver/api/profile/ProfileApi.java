@@ -10,8 +10,8 @@ import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import utils.JSONDeserializationException;
-import utils.JSONHelper;
+import utils.json.JSONDeserializationException;
+import utils.json.JSONHelper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;

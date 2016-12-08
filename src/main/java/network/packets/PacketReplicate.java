@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandReplicate;
 import protocol.model.Cell;
 import protocol.model.Food;
-import utils.JSONHelper;
+import utils.json.JSONHelper;
 
 import java.io.IOException;
 import java.util.List;

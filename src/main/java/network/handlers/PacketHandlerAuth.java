@@ -12,9 +12,9 @@ import network.packets.PacketAuthOk;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandAuth;
-import utils.IDGenerator;
-import utils.JSONDeserializationException;
-import utils.JSONHelper;
+import utils.idGeneration.IDGenerator;
+import utils.json.JSONDeserializationException;
+import utils.json.JSONHelper;
 
 import java.io.IOException;
 

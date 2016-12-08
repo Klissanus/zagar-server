@@ -4,17 +4,15 @@ import accountserver.database.users.User;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import utils.JSONHelper;
 import utils.SortedByValueMap;
+import utils.json.JSONHelper;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,17 +54,17 @@ public class SimpleJsonLeaderboard implements LeaderboardDao {
     }
 
     @Override
-    public void addUser(User user) {
+    public void addUser(@NotNull User user) {
 
     }
 
     @Override
-    public void removeUser(User user) {
+    public void removeUser(@NotNull User user) {
 
     }
 
     @Override
-    public void updateScore(User user, int scoreToAdd) {
+    public void updateScore(@NotNull User user, int scoreToAdd) {
 
     }
 

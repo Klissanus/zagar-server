@@ -10,7 +10,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.*;
-import utils.JSONHelper;
+import utils.json.JSONHelper;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

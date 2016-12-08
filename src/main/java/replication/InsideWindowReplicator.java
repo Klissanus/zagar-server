@@ -7,7 +7,7 @@ import network.ClientConnections;
 import network.packets.PacketReplicate;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
-import utils.InsideAreaFinder;
+import utils.entitySearching.InsideAreaFinder;
 
 import java.io.IOException;
 import java.util.LinkedList;

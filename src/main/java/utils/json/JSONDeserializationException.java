@@ -1,4 +1,4 @@
-package utils;
+package utils.json;
 
 import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.NotNull;
@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * @author apomosov
  */
 public class JSONDeserializationException extends Exception {
-
-  public JSONDeserializationException(@NotNull JsonSyntaxException cause) {
+  JSONDeserializationException(@NotNull JsonSyntaxException cause) {
     super(cause);
   }
 }

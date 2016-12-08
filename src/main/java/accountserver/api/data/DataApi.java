@@ -8,7 +8,7 @@ import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import utils.JSONHelper;
+import utils.json.JSONHelper;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

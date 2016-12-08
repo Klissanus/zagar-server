@@ -1,4 +1,4 @@
-package utils;
+package utils.idGeneration;
 
 /**
  * @author Alpi

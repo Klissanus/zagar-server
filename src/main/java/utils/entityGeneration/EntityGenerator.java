@@ -1,4 +1,4 @@
-package utils;
+package utils.entityGeneration;
 
 import model.Field;
 import org.jetbrains.annotations.NotNull;
@@ -7,16 +7,15 @@ import ticker.Tickable;
 import java.time.Duration;
 
 /**
- * @author xakep666
- *
- * Base class for food generators.
- * generate() method will be called every tick
+ * Created by xakep666 on 08.12.16.
+ * <p>
+ * Base class for entity generators
  */
-public abstract class FoodGenerator implements Tickable {
+public abstract class EntityGenerator implements Tickable {
     @NotNull
     private final Field field;
 
-    FoodGenerator(@NotNull Field field) {
+    EntityGenerator(@NotNull Field field) {
         this.field = field;
     }
 

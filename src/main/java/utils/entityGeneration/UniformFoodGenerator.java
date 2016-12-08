@@ -1,4 +1,4 @@
-package utils;
+package utils.entityGeneration;
 
 import model.Field;
 import model.Food;
