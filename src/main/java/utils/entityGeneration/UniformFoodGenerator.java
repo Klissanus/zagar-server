@@ -28,19 +28,19 @@ public class UniformFoodGenerator extends FoodGenerator {
     //Remove or not?
     Random rand = new Random();
     if (rand.nextDouble() > GameConstants.FOOD_REMOVE_CHANCE) {
-      List<Food> foods = new ArrayList<>(getField().getFoods());
+      List<Food> foods = new ArrayList<>(getField().getCells(Food.class));
       int toRemove = (int) (foods.size() * rand.nextDouble());
       for (int i = 0; i < toRemove; i++) {
-        getField().removeFood(foods.get(i));
+        getField().removeCell(foods.get(i));
       }
     }
-    if (getField().getFoods().size() <= threshold) {
+    if (getField().getCells(Food.class).size() <= threshold) {
       int toGenerate = (int) Math.ceil(foodPerSecond * elapsed.getSeconds());
       for (int i = 0; i < toGenerate; i++) {
         Food food = new Food(0, 0);
         food.setX(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));
         food.setY(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));
-        getField().addFood(food);
+        getField().addCell(food);
       }
     }
   }

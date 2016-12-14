@@ -54,9 +54,9 @@ public class InsideWindowReplicator implements Replicator {
                 gameSession.getPlayers().forEach(p ->
                         playerCells.addAll(finder.findInArea(p.getCells(),
                                 leftBorder, rightBorder, bottomBorder, topBorder)));
-                List<Food> foods = finder.findInArea(gameSession.getField().getFoods(),
+                List<Food> foods = finder.findInArea(gameSession.getField().getCells(model.Food.class),
                         leftBorder, rightBorder, bottomBorder, topBorder);
-                List<Virus> viruses = finder.findInArea(gameSession.getField().getViruses(),
+                List<Virus> viruses = finder.findInArea(gameSession.getField().getCells(model.Virus.class),
                         leftBorder, rightBorder, bottomBorder, topBorder);
 
                 sendToPlayer(player, playerCells, foods, viruses);

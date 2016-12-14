@@ -21,7 +21,7 @@ public class FullStateReplicator implements Replicator {
   @Override
   public void replicate() {
     for (GameSession gameSession : ApplicationContext.instance().get(MatchMaker.class).getActiveGameSessions()) {
-      List<Food> food = gameSession.getField().getFoods().stream()
+      List<Food> food = gameSession.getField().getCells(model.Food.class).stream()
               .map(f -> new Food(f.getX(), f.getY()))
               .collect(Collectors.toList());
       List<Cell> cells = new ArrayList<>();
@@ -37,7 +37,7 @@ public class FullStateReplicator implements Replicator {
                       .collect(Collectors.toList())
       ));
       cells.addAll(
-              gameSession.getField().getViruses().stream()
+              gameSession.getField().getCells(model.Virus.class).stream()
                       .map(virus ->
                               //negative IDs shows that cell not belongs to player
                               new Cell(-1, -1, true, virus.getMass(), virus.getX(), virus.getY()))

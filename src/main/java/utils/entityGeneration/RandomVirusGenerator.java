@@ -27,11 +27,11 @@ public class RandomVirusGenerator extends VirusGenerator {
     //Generate  or not?
     if (random.nextDouble() > GameConstants.VIRUS_GENERATION_CHANCE) return;
 
-    List<Virus> onField = new ArrayList<>(getField().getViruses());
+    List<Virus> onField = new ArrayList<>(getField().getCells(Virus.class));
 
     int virusesToRemove = (int) (onField.size() * random.nextDouble());
     for (int i = 0; i < virusesToRemove; i++) {
-      getField().removeVirus(onField.get(i));
+      getField().removeCell(onField.get(i));
     }
 
     int virusRadius = (int) Math.sqrt(GameConstants.VIRUS_MASS / Math.PI);
@@ -40,7 +40,7 @@ public class RandomVirusGenerator extends VirusGenerator {
               virusRadius + random.nextInt(getField().getWidth() - 2 * virusRadius),
               virusRadius + random.nextInt(getField().getHeight() - 2 * virusRadius)
       );
-      getField().addVirus(virus);
+      getField().addCell(virus);
     }
   }
 }

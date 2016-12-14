@@ -1,8 +1,10 @@
 package model;
 
+import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.VirusGenerator;
+import utils.idGeneration.IDGenerator;
 import utils.playerPlacing.PlayerPlacer;
 
 import java.time.Duration;
@@ -34,6 +36,8 @@ public class GameSessionImpl implements GameSession {
 
   @Override
   public void join(@NotNull Player player) {
+    player.setField(field);
+    field.addCell(new PlayerCell(ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
     players.add(player);
     playerPlacer.place(player);
   }
