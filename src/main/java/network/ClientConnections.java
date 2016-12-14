@@ -20,7 +20,8 @@ public class ClientConnections {
   @NotNull
   public Session registerConnection(@NotNull Player player, @NotNull Session session) {
     players.putIfAbsent(session, player);
-    return connections.putIfAbsent(player, session);
+    connections.putIfAbsent(player, session);
+    return session;
   }
 
   public boolean removeConnection(@NotNull Player player) {
