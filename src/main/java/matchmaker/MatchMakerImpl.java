@@ -73,5 +73,7 @@ public class MatchMakerImpl implements MatchMaker {
     LeaderboardDao lb = ApplicationContext.instance().get(LeaderboardDao.class);
       lb.updateScore(player.getUser(), player.getTotalScore());
     activeGameSessions.forEach(session -> session.leave(player));
+      //search and remove empty sessions
+      activeGameSessions.removeIf(session -> session.getPlayers().isEmpty());
   }
 }
