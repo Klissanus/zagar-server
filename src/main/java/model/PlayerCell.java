@@ -1,16 +1,24 @@
 package model;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author apomosov
  */
 public class PlayerCell extends Cell {
   private final int id;
 
-  private long lastMovementTime = System.currentTimeMillis();
+  @NotNull
+  private AtomicLong lastMovementTime = new AtomicLong(System.currentTimeMillis());
+  @NotNull
+  private Player owner;
 
-  public PlayerCell(int id, int x, int y) {
+  public PlayerCell(@NotNull Player owner, int id, int x, int y) {
     super(x, y, GameConstants.DEFAULT_PLAYER_CELL_MASS);
     this.id = id;
+    this.owner = owner;
   }
 
   public int getId() {
@@ -20,13 +28,13 @@ public class PlayerCell extends Cell {
   @Override
   public void setX(int x) {
     super.setX(x);
-    lastMovementTime = System.currentTimeMillis();
+      lastMovementTime.set(System.currentTimeMillis());
   }
 
   @Override
   public void setY(int y) {
     super.setY(y);
-    lastMovementTime = System.currentTimeMillis();
+      lastMovementTime.set(System.currentTimeMillis());
   }
 
   public void eat(Cell cell){
@@ -38,6 +46,11 @@ public class PlayerCell extends Cell {
   }
 
   long getLastMovementTime() {
-    return lastMovementTime;
+      return lastMovementTime.get();
+  }
+
+  @NotNull
+  public Player getOwner() {
+    return owner;
   }
 }

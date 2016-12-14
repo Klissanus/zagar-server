@@ -1,12 +1,8 @@
 package model;
 
 import accountserver.database.users.User;
-import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
-import utils.idGeneration.IDGenerator;
 
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +20,6 @@ public class Player {
   public Player(int id, @NotNull User user) {
     this.id = id;
     this.user = user;
-//    addCell(new PlayerCell(ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
   }
 
   @NotNull
@@ -36,14 +31,6 @@ public class Player {
     this.field = field;
   }
 
-  /*public void addCell(@NotNull PlayerCell cell) {
-    field.addCell(cell);
-  }*/
-
-  public void removeCell(@NotNull PlayerCell cell) {
-    field.removeCell(cell);
-  }
-
   @NotNull
   public User getUser() {
     return user;
@@ -51,7 +38,7 @@ public class Player {
 
   @NotNull
   public List<PlayerCell> getCells() {
-    return field.getCells(PlayerCell.class);
+      return field.getPlayerCells(this);
   }
 
   public int getTotalScore() {
@@ -67,11 +54,11 @@ public class Player {
     return id;
   }
 
-  Duration getMinTimeWithoutMovements() {
-    Optional<PlayerCell> lastmoved = getCells().stream()
-            .min((c1, c2) -> Long.compare(c1.getLastMovementTime(), c2.getLastMovementTime()));
-    if (!lastmoved.isPresent()) return Duration.ZERO;
-    return Duration.ofMillis(lastmoved.get().getLastMovementTime());
+    long lastMovementTime() {
+        return getCells().stream()
+                .map(PlayerCell::getLastMovementTime)
+                .max(Long::compareTo)
+                .orElse(0L);
   }
 
   public int getWindowWidth() {

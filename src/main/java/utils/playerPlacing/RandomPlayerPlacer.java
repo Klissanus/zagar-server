@@ -5,6 +5,7 @@ import model.Player;
 import model.PlayerCell;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,9 +21,10 @@ public class RandomPlayerPlacer implements PlayerPlacer {
 
   @Override
   public void place(@NotNull Player player) {
-    assert(player.getCells().size() == 1);
+      List<PlayerCell> playerCells = player.getCells();
+      assert (playerCells.size() == 1); //make sure that placer used only at spawn time
     Random random = new Random();
-    for (PlayerCell playerCell : player.getCells()) {
+      for (PlayerCell playerCell : playerCells) {
         playerCell.setX(playerCell.getRadius() + random.nextInt(field.getWidth() - 2 * playerCell.getRadius()));
         playerCell.setY(playerCell.getRadius() + random.nextInt(field.getHeight() - 2 * playerCell.getRadius()));
     }
