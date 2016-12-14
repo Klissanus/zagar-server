@@ -3,6 +3,7 @@ package replication;
 import main.ApplicationContext;
 import matchmaker.MatchMaker;
 import model.GameSession;
+import model.PlayerCell;
 import network.ClientConnections;
 import network.packets.PacketReplicate;
 import protocol.model.Cell;
@@ -25,17 +26,16 @@ public class FullStateReplicator implements Replicator {
               .map(f -> new Food(f.getX(), f.getY()))
               .collect(Collectors.toList());
       List<Cell> cells = new ArrayList<>();
-      gameSession.getPlayers().forEach(player -> cells.addAll(
-              player.getCells().stream()
-                      .map(cell ->
-                              new Cell(cell.getId(),
-                                      player.getId(),
-                                      false,
-                                      cell.getMass(),
-                                      cell.getX(),
-                                      cell.getY()))
-                      .collect(Collectors.toList())
-      ));
+      gameSession.getField()
+              .getCells(PlayerCell.class)
+              .forEach(cell -> cells.add(
+                      new Cell(cell.getId(),
+                              cell.getOwner().getId(),
+                              false,
+                              cell.getMass(),
+                              cell.getX(),
+                              cell.getY()))
+              );
       cells.addAll(
               gameSession.getField().getCells(model.Virus.class).stream()
                       .map(virus ->
