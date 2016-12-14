@@ -25,7 +25,7 @@ public class RandomVirusGenerator extends VirusGenerator {
   public void generate(@NotNull Duration elapsed) {
     Random random = new Random();
     //Generate  or not?
-    if (random.nextDouble() > GameConstants.VIRUS_GENERATION_CHANCE) return;
+    if (random.nextDouble() > 1 - GameConstants.VIRUS_GENERATION_CHANCE) return;
 
     List<Virus> onField = new ArrayList<>(getField().getCells(Virus.class));
 

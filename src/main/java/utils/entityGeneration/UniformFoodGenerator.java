@@ -1,14 +1,9 @@
 package utils.entityGeneration;
 
 import model.Field;
-import model.Food;
-import model.GameConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * @author apomosov
@@ -26,7 +21,7 @@ public class UniformFoodGenerator extends FoodGenerator {
   @Override
   public void generate(@NotNull Duration elapsed) {
     //Remove or not?
-    Random rand = new Random();
+    /*Random rand = new Random();
     if (rand.nextDouble() > GameConstants.FOOD_REMOVE_CHANCE) {
       List<Food> foods = new ArrayList<>(getField().getCells(Food.class));
       int toRemove = (int) (foods.size() * rand.nextDouble());
@@ -42,6 +37,6 @@ public class UniformFoodGenerator extends FoodGenerator {
         food.setY(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));
         getField().addCell(food);
       }
-    }
+    }*/
   }
 }
