@@ -56,10 +56,10 @@ public class Mechanics extends Service implements Tickable {
       });
 
       log.trace("Start replication");
-    Message message = new ReplicateMsg(getAddress());
-    Message lbMessage = new LeaderboardMsg(getAddress());
-    messageSystem.sendMessage(message);
-    messageSystem.sendMessage(lbMessage);
+      Message message = new ReplicateMsg(getAddress());
+      Message lbMessage = new LeaderboardMsg(getAddress());
+      messageSystem.sendMessage(message);
+      messageSystem.sendMessage(lbMessage);
 
     /*System.out.println("Conns " +
             ApplicationContext.instance().get(ClientConnections.class).getConnections());*/
@@ -79,12 +79,23 @@ public class Mechanics extends Service implements Tickable {
           return;
       }
       player.getCells().forEach(cell -> {
+          int newValidX = cell.getX();
           float newX = cell.getX() + commandMove.getDx();
-          if (newX + cell.getRadius() / 2 <= player.getField().getWidth() &&
-                  newX - cell.getRadius() / 2 >= 0) cell.setX((int) newX);
+          boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getWidth()) &&
+                  (newX - cell.getRadius() / 2 >= 0);
+          if (inBoundsOnX) {
+              newValidX = (int) newX;
+          }
+
+          int newValidY = cell.getY();
           float newY = cell.getY() + commandMove.getDy();
-          if (newY + cell.getRadius() / 2 <= player.getField().getHeight() &&
-                  newX - cell.getRadius() / 2 >= 0) cell.setY((int) newY);
+          boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getHeight()) &&
+                  (newX - cell.getRadius() / 2 >= 0);
+          if (inBoundsOnY){
+              newValidY = (int) newY;
+          }
+
+          player.getField().moveCell(cell, newValidX, newValidY);
       });
       //TODO handle collisions
   }

@@ -37,6 +37,14 @@ public class PlayerCell extends Cell {
       lastMovementTime.set(System.currentTimeMillis());
   }
 
+  public void eat(Cell cell){
+    this.setMass(this.getMass() + cell.getMass());
+  }
+
+  public  void explode(){
+    //todo explode
+  }
+
   long getLastMovementTime() {
       return lastMovementTime.get();
   }
