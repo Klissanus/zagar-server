@@ -84,6 +84,9 @@ public class Field {
             //можно сделать проверку, входит ли 3 в радиус, если да, то взять больше ближайших
             Cell[] candidatesToEat = (Cell[]) entities.nearest(new double[]{cell.getX(), cell.getY()}, 3);
             Arrays.stream(candidatesToEat)
+                    .filter(c -> Math.pow(c.getX() - cell.getX(), 2.0)
+                            + Math.pow(c.getY() - cell.getY(), 2.0)
+                            < Math.pow(cell.getRadius(), 2.0))//is in cell radius
                     .filter( c -> eatComparator.compare(cell, c) == 1)//canEat
                     .forEach(c -> {
                         cell.eat(c);//todo update player score??
