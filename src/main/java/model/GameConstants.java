@@ -19,5 +19,5 @@ public interface GameConstants {
   int MAX_FOOD_ON_FIELD = 100;
   int NUMBER_OF_VIRUSES = 10;
   Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
-  int MAX_COORDINATE_DELTA_MODULE = 1;
+    double MAX_COORDINATE_DELTA_MODULE = 1.5;
 }
