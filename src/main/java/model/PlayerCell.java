@@ -1,5 +1,7 @@
 package model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -8,11 +10,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PlayerCell extends Cell {
   private final int id;
 
-    private AtomicLong lastMovementTime = new AtomicLong(System.currentTimeMillis());
+  @NotNull
+  private AtomicLong lastMovementTime = new AtomicLong(System.currentTimeMillis());
+  @NotNull
+  private Player owner;
 
-  public PlayerCell(int id, int x, int y) {
+  public PlayerCell(@NotNull Player owner, int id, int x, int y) {
     super(x, y, GameConstants.DEFAULT_PLAYER_CELL_MASS);
     this.id = id;
+    this.owner = owner;
   }
 
   public int getId() {
@@ -33,5 +39,10 @@ public class PlayerCell extends Cell {
 
   long getLastMovementTime() {
       return lastMovementTime.get();
+  }
+
+  @NotNull
+  public Player getOwner() {
+    return owner;
   }
 }

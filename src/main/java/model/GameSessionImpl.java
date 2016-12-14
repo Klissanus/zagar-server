@@ -37,7 +37,7 @@ public class GameSessionImpl implements GameSession {
   @Override
   public void join(@NotNull Player player) {
     player.setField(field);
-    field.addCell(new PlayerCell(ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
+      field.addCell(new PlayerCell(player, ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
     players.add(player);
     playerPlacer.place(player);
   }
