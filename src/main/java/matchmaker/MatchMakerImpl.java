@@ -6,8 +6,11 @@ import model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.RandomVirusGenerator;
 import utils.entityGeneration.UniformFoodGenerator;
+import utils.entityGeneration.VirusGenerator;
+import utils.playerPlacing.PlayerPlacer;
 import utils.playerPlacing.RandomPlayerPlacer;
 
 import java.util.ArrayList;
@@ -61,10 +64,15 @@ public class MatchMakerImpl implements MatchMaker {
   @NotNull
   GameSession createNewGame() {
     Field field = new Field();
-    UniformFoodGenerator foodGenerator = new UniformFoodGenerator(field, GameConstants.FOOD_PER_SECOND_GENERATION, GameConstants.MAX_FOOD_ON_FIELD);
-    return new GameSessionImpl(foodGenerator,
-            new RandomPlayerPlacer(field),
-            new RandomVirusGenerator(field, GameConstants.NUMBER_OF_VIRUSES));
+      FoodGenerator foodGenerator = new UniformFoodGenerator(field,
+              GameConstants.FOOD_PER_SECOND_GENERATION,
+              GameConstants.MAX_FOOD_ON_FIELD,
+              GameConstants.FOOD_REMOVE_CHANCE);
+      PlayerPlacer playerPlacer = new RandomPlayerPlacer(field);
+      VirusGenerator virusGenerator = new RandomVirusGenerator(field,
+              GameConstants.NUMBER_OF_VIRUSES,
+              GameConstants.VIRUS_REMOVE_CHANCE);
+      return new GameSessionImpl(field, foodGenerator, playerPlacer, virusGenerator);
   }
 
   @Override
