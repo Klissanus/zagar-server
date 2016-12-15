@@ -27,9 +27,9 @@ public class Ticker {
     }
 
     public void loop() {
-        Duration elapsed = sleepTime;
         try {
             while (!Thread.currentThread().isInterrupted()) {
+                Duration elapsed = sleepTime;
                 Duration started = Duration.ofMillis(System.currentTimeMillis());
                 tickable.tick(elapsed);
                 elapsed = Duration.ofMillis(System.currentTimeMillis()).minus(started);
