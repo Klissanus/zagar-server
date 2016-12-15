@@ -16,8 +16,6 @@ import java.util.Random;
 public class RandomVirusGenerator extends VirusGenerator {
   private final int numberOfViruses;
   private final double removeChance;
-  @NotNull
-  private Duration idleDuration = Duration.ZERO;
 
   public RandomVirusGenerator(@NotNull Field field, int numberOfViruses, double removeChance) {
     super(field);
@@ -28,13 +26,6 @@ public class RandomVirusGenerator extends VirusGenerator {
 
   @Override
   public void generate(@NotNull Duration elapsed) {
-    //do work only when idleDuration greater than 1 second
-    if (idleDuration.toMillis() >= 1000) {
-      idleDuration = Duration.ZERO;
-    } else {
-      idleDuration = idleDuration.plus(elapsed);
-      return;
-    }
     Random random = new Random();
     List<Virus> onField = new ArrayList<>(getField().getCells(Virus.class));
     //Remove or not?

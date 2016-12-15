@@ -16,8 +16,6 @@ public class UniformFoodGenerator extends FoodGenerator {
   private final int threshold;
   private final double foodPerSecond;
   private final double removeChance;
-  @NotNull
-  private Duration idleDuration = Duration.ZERO;
 
   public UniformFoodGenerator(@NotNull Field field, double foodPerSecond, int threshold, double removeChance) {
     super(field);
@@ -29,13 +27,6 @@ public class UniformFoodGenerator extends FoodGenerator {
 
   @Override
   public void generate(@NotNull Duration elapsed) {
-    //do work only when idleDuration greater than 1 second
-    if (idleDuration.toMillis() >= 1000) {
-      idleDuration = Duration.ZERO;
-    } else {
-      idleDuration = idleDuration.plus(elapsed);
-      return;
-    }
     //Remove or not?
     Random rand = new Random();
     if (rand.nextDouble() > 1 - removeChance) {
@@ -46,7 +37,7 @@ public class UniformFoodGenerator extends FoodGenerator {
       }
     }
     if (getField().getCells(Food.class).size() <= threshold) {
-      int toGenerate = (int) Math.ceil(foodPerSecond * idleDuration.getSeconds());
+        int toGenerate = (int) Math.ceil(foodPerSecond * getIdleDuration().getSeconds());
       for (int i = 0; i < toGenerate; i++) {
         Food food = new Food(0, 0);
         food.setX(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));

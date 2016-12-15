@@ -14,6 +14,8 @@ import java.time.Duration;
 public abstract class EntityGenerator implements Tickable {
     @NotNull
     private final Field field;
+    @NotNull
+    private Duration idleDuration = Duration.ZERO;
 
     EntityGenerator(@NotNull Field field) {
         this.field = field;
@@ -28,6 +30,18 @@ public abstract class EntityGenerator implements Tickable {
 
     @Override
     public void tick(@NotNull Duration elapsed) {
+        //do work only when idleDuration greater than 1 second
+        if (idleDuration.toMillis() >= 1000) {
+            idleDuration = Duration.ZERO;
+        } else {
+            idleDuration = idleDuration.plus(elapsed);
+            return;
+        }
         generate(elapsed);
+    }
+
+    @NotNull
+    protected Duration getIdleDuration() {
+        return idleDuration;
     }
 }
