@@ -13,11 +13,11 @@ import replication.LeaderboardReplicator;
 
 /**
  * Created by xakep666 on 28.11.16.
- *
  */
 public class LeaderboardMsg extends Message {
     @NotNull
     private final static Logger log = LogManager.getLogger(LeaderboardMsg.class);
+
     public LeaderboardMsg(Address from) {
         super(from, ApplicationContext.instance().get(MessageSystem.class).getService(ClientConnectionServer.class).getAddress());
     }

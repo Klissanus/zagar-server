@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Created by xakep666 on 24.10.16.
- *
+ * <p>
  * Provides abstraction layer for tokens storage
  * Issues, stores, validates {@link Token}
  */
@@ -22,6 +22,7 @@ public interface TokenDao {
 
     /**
      * Issues a new token (if was not found or invalid) or returns alrady issued
+     *
      * @param user user who wants token
      * @return found or issued token
      */
@@ -30,6 +31,7 @@ public interface TokenDao {
 
     /**
      * Finds user`s token
+     *
      * @param user user which token will be searched
      * @return user`s token if it`s found and it is valid, null otherwise
      */
@@ -38,6 +40,7 @@ public interface TokenDao {
 
     /**
      * Finds token owner
+     *
      * @param token token which owner will be searched
      * @return user, null if not found
      */
@@ -46,6 +49,7 @@ public interface TokenDao {
 
     /**
      * Find given raw token in storage
+     *
      * @param rawToken token to find
      * @return Token object if it was found and valid, null otherwise
      */
@@ -54,7 +58,6 @@ public interface TokenDao {
     Token findByValue(@Nullable String rawToken);
 
     /**
-     *
      * @return list of users with valid tokens
      */
     @NotNull
@@ -62,12 +65,14 @@ public interface TokenDao {
 
     /**
      * Removes token from storage
+     *
      * @param token token to remove
      */
     void removeToken(@NotNull Token token);
 
     /**
      * Removes user`s token from storage
+     *
      * @param user user which token will be removed
      */
     void removeToken(@NotNull User user);

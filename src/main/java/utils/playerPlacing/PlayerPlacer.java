@@ -7,5 +7,5 @@ import org.jetbrains.annotations.NotNull;
  * @author apomosov
  */
 public interface PlayerPlacer {
-  void place(@NotNull Player player);
+    void place(@NotNull Player player);
 }

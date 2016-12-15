@@ -10,15 +10,16 @@ import utils.json.JSONHelper;
 import java.io.IOException;
 
 public class PacketAuthOk {
-  @NotNull
-  private static final Logger log = LogManager.getLogger(PacketAuthOk.class);
-  public PacketAuthOk() {
-  }
+    @NotNull
+    private static final Logger log = LogManager.getLogger(PacketAuthOk.class);
 
-  public void write(@NotNull Session session) throws IOException {
-    if (!session.isOpen()) return;
-    String msg = JSONHelper.toJSON(new CommandAuthOk());
-    log.trace("Sending [" + msg + "]");
-    session.getRemote().sendString(msg);
-  }
+    public PacketAuthOk() {
+    }
+
+    public void write(@NotNull Session session) throws IOException {
+        if (!session.isOpen()) return;
+        String msg = JSONHelper.toJSON(new CommandAuthOk());
+        log.trace("Sending [" + msg + "]");
+        session.getRemote().sendString(msg);
+    }
 }

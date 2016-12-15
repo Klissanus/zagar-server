@@ -1,23 +1,22 @@
 package accountserver.database.leaderboard;
 
 import accountserver.database.users.User;
-import accountserver.database.users.UserDao;
-import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import utils.HibernateHelper;
 import utils.SortedByValueMap;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Created by Klissan on 24.11.2016.
  */
 public class HibernateLeaderboardStorage
-        implements LeaderboardDao
-{
+        implements LeaderboardDao {
     private static final Logger log = LogManager.getLogger(HibernateLeaderboardStorage.class);
 
     public HibernateLeaderboardStorage() {
@@ -53,8 +52,8 @@ public class HibernateLeaderboardStorage
         @SuppressWarnings("unchecked")
         List<LeaderboardRecord> leaders = (List<LeaderboardRecord>) resp;
         Iterator<LeaderboardRecord> it = leaders.iterator();
-        Map<User, Integer>  result = leaders.stream()
-                .collect(Collectors.toMap(LeaderboardRecord::getOwner,LeaderboardRecord::getScore));
+        Map<User, Integer> result = leaders.stream()
+                .collect(Collectors.toMap(LeaderboardRecord::getOwner, LeaderboardRecord::getScore));
         return SortedByValueMap.sortByValues(result);
     }
 

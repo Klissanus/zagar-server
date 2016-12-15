@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by xakep666 on 24.10.16.
- *
+ * <p>
  * Tokens storage based on in-memory data structures
  */
 public class InMemoryTokensStorage implements TokenDao {
@@ -59,7 +59,7 @@ public class InMemoryTokensStorage implements TokenDao {
     public User getTokenOwner(@NotNull Token token) {
         if (!tokenOwners.containsKey(token)) return null;
         User owner = tokenOwners.get(token);
-        if (owner==null) return null;
+        if (owner == null) return null;
         if (!token.isValid()) return null;
         return owner;
     }
@@ -69,7 +69,7 @@ public class InMemoryTokensStorage implements TokenDao {
     public List<User> getValidTokenOwners() {
         List<User> ret = new ArrayList<>(userTokens.size());
         userTokens.forEach((User key, Token value) -> {
-            if(value.isValid()) ret.add(key);
+            if (value.isValid()) ret.add(key);
         });
         return ret;
     }
@@ -78,7 +78,7 @@ public class InMemoryTokensStorage implements TokenDao {
     @Contract("null -> null")
     @Override
     public Token findByValue(@Nullable String rawToken) {
-        for(Token token:userTokens.values()) {
+        for (Token token : userTokens.values()) {
             if (token.rawEquals(rawToken) && token.isValid()) return token;
         }
         return null;
@@ -87,7 +87,7 @@ public class InMemoryTokensStorage implements TokenDao {
     @Override
     public void removeToken(@NotNull Token token) {
         User owner = tokenOwners.get(token);
-        if (owner!=null) {
+        if (owner != null) {
             tokenOwners.remove(token);
             userTokens.remove(owner);
         }
@@ -96,7 +96,7 @@ public class InMemoryTokensStorage implements TokenDao {
     @Override
     public void removeToken(@NotNull User user) {
         Token token = userTokens.get(user);
-        if (token!=null) {
+        if (token != null) {
             userTokens.remove(user);
             tokenOwners.remove(token);
         }
@@ -104,11 +104,11 @@ public class InMemoryTokensStorage implements TokenDao {
 
     private void periodicRemover() {
         try {
-            while(!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 Set<User> invalidTokenOwners = new HashSet<>();
                 Set<Token> invalidTokens = new HashSet<>();
                 userTokens.forEach((User key, Token value) -> {
-                    if (value.isValid()){
+                    if (value.isValid()) {
                         invalidTokenOwners.add(key);
                         invalidTokens.add(value);
                     }

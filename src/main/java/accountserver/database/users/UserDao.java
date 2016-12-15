@@ -7,18 +7,20 @@ import java.util.List;
 
 /**
  * Created by xakep666 on 12.10.16.
- *
+ * <p>
  * Provides an abstraction layer for databases of {@link User}
  */
 public interface UserDao {
     /**
      * Add user to storage
+     *
      * @param user user to add
      */
     void addUser(@NotNull User user);
 
     /**
      * Finds user by user id
+     *
      * @param id user id to find
      * @return User object if found null otherwise
      */
@@ -27,6 +29,7 @@ public interface UserDao {
 
     /**
      * Find user by username
+     *
      * @param name name of user to find
      * @return User object if found, null otherwise
      */
@@ -35,6 +38,7 @@ public interface UserDao {
 
     /**
      * Remove user from base;
+     *
      * @param user user to remove
      */
     void removeUser(@NotNull User user);

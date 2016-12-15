@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 
 /**
  * Created by apomosov on 14.05.16
- *
+ * <p>
  * Initializes all services.
  */
 public class MasterServer {
-  @NotNull
-  private final static Logger log = LogManager.getLogger(MasterServer.class);
-  @NotNull
-  private static final List<Service> services = new ArrayList<>();
+    @NotNull
+    private final static Logger log = LogManager.getLogger(MasterServer.class);
+    @NotNull
+    private static final List<Service> services = new ArrayList<>();
 
     private static void loadConfig(@Nullable String path) throws Exception {
         Ini ini = new Ini();
@@ -37,7 +37,7 @@ public class MasterServer {
             log.info("Loading config from resources");
             ClassLoader cl = MasterServer.class.getClassLoader();
             InputStream cfgis = cl.getResourceAsStream("servercfg.ini");
-            if (cfgis==null) throw new FileNotFoundException();
+            if (cfgis == null) throw new FileNotFoundException();
             ini.load(cfgis);
         } else {
             log.info("Loading config from {}", path);
@@ -99,11 +99,11 @@ public class MasterServer {
         }
     }
 
-  public static void stop() {
-    services.forEach(Service::interrupt);
-    services.clear();
-    ApplicationContext.instance().clear();
-    log.info("MasterServer stopped");
-  }
+    public static void stop() {
+        services.forEach(Service::interrupt);
+        services.clear();
+        ApplicationContext.instance().clear();
+        log.info("MasterServer stopped");
+    }
 
 }

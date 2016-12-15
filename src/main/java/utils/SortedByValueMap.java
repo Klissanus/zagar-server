@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 /**
  * Created by user on 08.11.16.
- *
+ * <p>
  * Helps sort map by value
  */
 public class SortedByValueMap {

@@ -13,21 +13,21 @@ import java.io.IOException;
 import java.util.List;
 
 public class PacketReplicate {
-  @NotNull
-  private static final Logger log = LogManager.getLogger(PacketReplicate.class);
-  @NotNull
-  private final List<Cell> cells;
+    @NotNull
+    private static final Logger log = LogManager.getLogger(PacketReplicate.class);
+    @NotNull
+    private final List<Cell> cells;
     private final List<Food> food;
 
     public PacketReplicate(@NotNull List<Cell> cells, List<Food> food) {
-    this.cells = cells;
-    this.food = food;
-  }
+        this.cells = cells;
+        this.food = food;
+    }
 
-  public void write(@NotNull Session session) throws IOException {
-    if (!session.isOpen()) return;
-    String msg = JSONHelper.toJSON(new CommandReplicate(food, cells));
-    log.trace("Sending [" + msg + "]");
-    session.getRemote().sendString(msg);
-  }
+    public void write(@NotNull Session session) throws IOException {
+        if (!session.isOpen()) return;
+        String msg = JSONHelper.toJSON(new CommandReplicate(food, cells));
+        log.trace("Sending [" + msg + "]");
+        session.getRemote().sendString(msg);
+    }
 }

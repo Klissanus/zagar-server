@@ -14,56 +14,56 @@ import java.util.stream.Collectors;
  * @author apomosov
  */
 public class Field {
-  @NotNull
-  private static final Logger log = LogManager.getLogger(Field.class);
+    @NotNull
+    private static final Logger log = LogManager.getLogger(Field.class);
     private static final int width = GameConstants.FIELD_WIDTH;
     private static final int height = GameConstants.FIELD_HEIGHT;
-  @NotNull
-  private static final Rectangle fieldRange = new Rectangle(0, 0, width, height);
-  @NotNull
-  private final CellQuadTree entities = new CellQuadTree(fieldRange, 128, 12);
-  @NotNull
-  private EatComparator eatComparator = new EatComparator();
+    @NotNull
+    private static final Rectangle fieldRange = new Rectangle(0, 0, width, height);
+    @NotNull
+    private final CellQuadTree entities = new CellQuadTree(fieldRange, 128, 12);
+    @NotNull
+    private EatComparator eatComparator = new EatComparator();
 
 
-  public Field() {
-  }
+    public Field() {
+    }
 
-  @NotNull
-  public <T extends Cell> List<T> getCells(Class<T> identifier) {
-      return entities.query(fieldRange, identifier::isInstance).stream()
-            .map(identifier::cast)
-            .collect(Collectors.toList());
-  }
+    @NotNull
+    public <T extends Cell> List<T> getCells(Class<T> identifier) {
+        return entities.query(fieldRange, identifier::isInstance).stream()
+                .map(identifier::cast)
+                .collect(Collectors.toList());
+    }
 
-  @NotNull
-  List<PlayerCell> getPlayerCells(@NotNull Player player) {
-      return entities.query(fieldRange,
-              c -> (c instanceof PlayerCell) && ((PlayerCell) c).getOwner().equals(player))
-              .stream()
-            .map(PlayerCell.class::cast)
-            .collect(Collectors.toList());
-  }
+    @NotNull
+    List<PlayerCell> getPlayerCells(@NotNull Player player) {
+        return entities.query(fieldRange,
+                c -> (c instanceof PlayerCell) && ((PlayerCell) c).getOwner().equals(player))
+                .stream()
+                .map(PlayerCell.class::cast)
+                .collect(Collectors.toList());
+    }
 
-  public void addCell(@NotNull Cell cell) {
-      log.trace("Field:{} Added {} to ({}, {})", toString(), cell.getClass().getName(), cell.getX(), cell.getY());
-      entities.add(cell);
-  }
+    public void addCell(@NotNull Cell cell) {
+        log.trace("Field:{} Added {} to ({}, {})", toString(), cell.getClass().getName(), cell.getX(), cell.getY());
+        entities.add(cell);
+    }
 
-  public void removeCell(@NotNull Cell cell) {
-      entities.remove(cell);
-      log.trace("Removing {} from ({}, {})", cell.getClass().getName(), cell.getX(), cell.getY());
-  }
+    public void removeCell(@NotNull Cell cell) {
+        entities.remove(cell);
+        log.trace("Removing {} from ({}, {})", cell.getClass().getName(), cell.getX(), cell.getY());
+    }
 
 
-    public void moveCell(@NotNull Cell cell, int newX, int newY){
+    public void moveCell(@NotNull Cell cell, int newX, int newY) {
         removeCell(cell);
         cell.setX(newX);
         cell.setY(newY);
         addCell(cell);
     }
 
-    public void tryToEat(@NotNull Player player){
+    public void tryToEat(@NotNull Player player) {
         /*player.getCells().forEach(cell -> {
             //берем 3 ближайших шарика
             //исходим из предположения, что за один тик в радиус шара не попадет больше 3 шариков
@@ -86,10 +86,10 @@ public class Field {
 
 
     public int getWidth() {
-    return width;
-  }
+        return width;
+    }
 
-  public int getHeight() {
-    return height;
-  }
+    public int getHeight() {
+        return height;
+    }
 }

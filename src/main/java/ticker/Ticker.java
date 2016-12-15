@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by apomosov on 14.05.16.
- *
+ * <p>
  * Synchronizes services
  */
 public class Ticker {

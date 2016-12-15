@@ -10,7 +10,7 @@ import java.util.Random;
 
 /**
  * Created by xakep666 on 23.10.16.
- *
+ * <p>
  * Token is a unique identifier of user
  */
 @Embeddable
@@ -38,6 +38,7 @@ public class Token implements Serializable {
 
     /**
      * Determine if token is valid
+     *
      * @return true if valid, false otherwise
      */
     boolean isValid() {
@@ -47,6 +48,7 @@ public class Token implements Serializable {
 
     /**
      * Compare token value with raw string
+     *
      * @param rawToken string to compare
      * @return true if equals, false otherwise
      */
@@ -56,7 +58,7 @@ public class Token implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return (o==this) || (o instanceof Token) && ((Token)o).token==this.token;
+        return (o == this) || (o instanceof Token) && ((Token) o).token == this.token;
     }
 
     @Override
@@ -65,5 +67,7 @@ public class Token implements Serializable {
     }
 
     @Override
-    public String toString() {return Long.valueOf(token).toString();}
+    public String toString() {
+        return Long.valueOf(token).toString();
+    }
 }

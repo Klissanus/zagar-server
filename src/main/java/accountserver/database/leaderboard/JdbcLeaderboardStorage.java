@@ -1,6 +1,7 @@
 package accountserver.database.leaderboard;
 
-import accountserver.database.users.*;
+import accountserver.database.users.User;
+import accountserver.database.users.UserDao;
 import main.ApplicationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +20,7 @@ import java.util.Map;
  * JdbcLeaderboardStorage
  */
 public class JdbcLeaderboardStorage
-        implements LeaderboardDao
-{
+        implements LeaderboardDao {
     private static final Logger log = LogManager.getLogger(LeaderboardDao.class);
 
     @Override
@@ -45,8 +45,8 @@ public class JdbcLeaderboardStorage
     public void updateScore(@NotNull User user, int scoreToAdd) {
         final String query =
                 "UPDATE leaderboard " +
-                "SET score = score + %d " +
-                "WHERE user_id = %d;";
+                        "SET score = score + %d " +
+                        "WHERE user_id = %d;";
         try (Connection con = JdbcDbConnector.getConnection();
              Statement stm = con.createStatement()) {
             stm.execute(String.format(query, scoreToAdd, user.getId()));
@@ -82,7 +82,7 @@ public class JdbcLeaderboardStorage
             }
             return SortedByValueMap.sortByValues(leaders);
         } catch (SQLException e) {
-            log.error("Get leaders failed.",  e);
+            log.error("Get leaders failed.", e);
             return leaders;
         }
     }
@@ -92,8 +92,8 @@ public class JdbcLeaderboardStorage
         final String query =
                 "DELETE FROM leaderboard " +
                         "WHERE user_id = %d";
-        try(Connection con = JdbcDbConnector.getConnection();
-            Statement stm = con.createStatement()){
+        try (Connection con = JdbcDbConnector.getConnection();
+             Statement stm = con.createStatement()) {
             stm.execute(String.format(query, user.getId()));
         } catch (SQLException e) {
             log.error("Remove user '{}' failed.", user.getId(), e);

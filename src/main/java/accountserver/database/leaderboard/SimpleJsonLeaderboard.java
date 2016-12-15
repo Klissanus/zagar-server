@@ -31,22 +31,22 @@ public class SimpleJsonLeaderboard implements LeaderboardDao {
     static {
 
         try {
-            if (jsonFileInput==null) {
+            if (jsonFileInput == null) {
                 log.error("File testleaderboard.json not found");
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(jsonFileInput));
                 StringBuilder out = new StringBuilder();
                 String line;
-                while((line = reader.readLine()) != null) out.append(line);
+                while ((line = reader.readLine()) != null) out.append(line);
                 String fileContent = out.toString();
-                JsonObject record  = JSONHelper.getJSONObject(fileContent);
+                JsonObject record = JSONHelper.getJSONObject(fileContent);
                 JsonArray userRecord = record.get("users").getAsJsonArray();
                 JsonArray scoreRecord = record.get("scores").getAsJsonArray();
-                int i=0;
-                for(JsonElement e: userRecord) {
-                    users.put(new User(e.getAsString(),"something"),scoreRecord.get(i++).getAsInt());
+                int i = 0;
+                for (JsonElement e : userRecord) {
+                    users.put(new User(e.getAsString(), "something"), scoreRecord.get(i++).getAsInt());
                 }
-                log.info("Got users {}",users);
+                log.info("Got users {}", users);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class SimpleJsonLeaderboard implements LeaderboardDao {
     @NotNull
     @Override
     public Map<User, Integer> getTopUsers(int count) {
-        log.debug("sending top {} users {}",count,users);
+        log.debug("sending top {} users {}", count, users);
         return SortedByValueMap.sortByValues(users);
     }
 }

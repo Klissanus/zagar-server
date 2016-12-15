@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Created by xakep666 on 13.10.16.
- *
+ * <p>
  * Provides REST API for work with users
  */
 @Path("/data")
@@ -28,6 +28,7 @@ public class DataApi {
 
     /**
      * Method retrieves logged in users (with valid tokens) and serializes it to jso
+     *
      * @return serialized list
      */
     @GET
@@ -37,8 +38,10 @@ public class DataApi {
         log.info("Logged in users list requested");
         UserInfo ret = new UserInfo();
         ret.users = ApplicationContext.instance().get(TokenDao.class).getValidTokenOwners();
-        return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {}.getType())).build();
+        return Response.ok(JSONHelper.toJSON(ret, new TypeToken<UserInfo>() {
+        }.getType())).build();
     }
+
     public static class UserInfo {
         @Expose
         public List<User> users;

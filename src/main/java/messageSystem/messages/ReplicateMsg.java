@@ -16,6 +16,7 @@ import replication.Replicator;
 public class ReplicateMsg extends Message {
     @NotNull
     private final static Logger log = LogManager.getLogger(ReplicateMsg.class);
+
     public ReplicateMsg(Address from) {
         super(from, Message.getMessageSystem().getService(ClientConnectionServer.class).getAddress());
     }

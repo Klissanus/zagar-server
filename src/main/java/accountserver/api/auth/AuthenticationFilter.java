@@ -18,35 +18,35 @@ import java.util.List;
 @Authorized
 @Provider
 public class AuthenticationFilter implements ContainerRequestFilter {
-  @Nullable
-  public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
-    List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
-    String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
-    return ApplicationContext.instance().get(TokenDao.class).findByValue(rawToken);
-  }
-
-  @Override
-  public void filter(@NotNull ContainerRequestContext requestContext) throws IOException {
-
-    // Get the HTTP Authorization header from the request
-    String authorizationHeader =
-        requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-
-    // Check if the HTTP Authorization header is present and formatted correctly
-    if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-      throw new NotAuthorizedException("Authorization header must be provided");
+    @Nullable
+    public static Token getTokenFromHeaders(@NotNull HttpHeaders headers) {
+        List<String> authHeaders = headers.getRequestHeader(HttpHeaders.AUTHORIZATION);
+        String rawToken = authHeaders.get(0).substring("Bearer".length()).trim();
+        return ApplicationContext.instance().get(TokenDao.class).findByValue(rawToken);
     }
 
-    // Extract the token from the HTTP Authorization header
-    String token = authorizationHeader.substring("Bearer".length()).trim();
+    @Override
+    public void filter(@NotNull ContainerRequestContext requestContext) throws IOException {
 
-    if (!validateToken(token)) {
-      requestContext.abortWith(
-          Response.status(Response.Status.UNAUTHORIZED).build());
+        // Get the HTTP Authorization header from the request
+        String authorizationHeader =
+                requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+        // Check if the HTTP Authorization header is present and formatted correctly
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new NotAuthorizedException("Authorization header must be provided");
+        }
+
+        // Extract the token from the HTTP Authorization header
+        String token = authorizationHeader.substring("Bearer".length()).trim();
+
+        if (!validateToken(token)) {
+            requestContext.abortWith(
+                    Response.status(Response.Status.UNAUTHORIZED).build());
+        }
     }
-  }
 
-  private boolean validateToken(@NotNull String token) {
-    return AuthenticationApi.validateToken(token);
-  }
+    private boolean validateToken(@NotNull String token) {
+        return AuthenticationApi.validateToken(token);
+    }
 }

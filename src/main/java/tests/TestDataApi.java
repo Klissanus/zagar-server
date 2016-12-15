@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  * Created by user on 07.11.16.
- *
+ * <p>
  * Data API tests
  */
 public class TestDataApi extends WebServerTest {
@@ -30,24 +30,24 @@ public class TestDataApi extends WebServerTest {
         }
         try {
             Response response = getRequest(urlPostfix, "", "");
-            assertEquals(Status.OK,Status.fromStatusCode(response.code()));
+            assertEquals(Status.OK, Status.fromStatusCode(response.code()));
             String rawJson = response.body().string();
             DataApi.UserInfo ui = JSONHelper.fromJSON(rawJson, DataApi.UserInfo.class);
             assertNotNull(ui);
-            for(User u: users) {
-                boolean contains=false;
-                for(User deserU: ui.users) {
-                    if(deserU.getName().equals(u.getName())) {
-                        contains=true;
+            for (User u : users) {
+                boolean contains = false;
+                for (User deserU : ui.users) {
+                    if (deserU.getName().equals(u.getName())) {
+                        contains = true;
                         break;
                     }
                 }
                 assertTrue(contains);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             fail(e.toString());
         } finally {
-            for(User u: users) {
+            for (User u : users) {
                 ApplicationContext.instance().get(TokenDao.class).removeToken(u);
                 ApplicationContext.instance().get(UserDao.class).removeUser(u);
             }

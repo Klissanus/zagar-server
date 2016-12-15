@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Created by xakep666 on 03.11.16.
- *
+ * <p>
  * Stores {@link User} in database using Hibernate framework
  */
 public class HibernateUsersStorage implements UserDao {
@@ -29,7 +29,7 @@ public class HibernateUsersStorage implements UserDao {
 
     @Override
     public @Nullable User getUserById(int id) {
-            log.info("Searching user with id "+id);
+        log.info("Searching user with id " + id);
         List response = HibernateHelper.selectTransactional(session ->
                 session.createQuery("from User u where u.id = :id")
                         .setParameter("id", id)
@@ -40,7 +40,7 @@ public class HibernateUsersStorage implements UserDao {
 
     @Override
     public @Nullable User getUserByName(@NotNull String name) {
-            log.info("Searching user with name "+name);
+        log.info("Searching user with name " + name);
         List response = HibernateHelper.selectTransactional(session ->
                 session.createQuery("from User u where u.name = :name")
                         .setParameter("name", name)
@@ -59,16 +59,16 @@ public class HibernateUsersStorage implements UserDao {
 
     @Override
     public @NotNull List<User> getAllUsers() {
-            log.info("Getting all users");
+        log.info("Getting all users");
         List resp = HibernateHelper.selectTransactional(session -> session.createQuery("from User").list());
-            if (resp==null || !(resp.get(0) instanceof User)) {
-                log.error("Could not retrieve users");
-                return new LinkedList<>();
-            }
+        if (resp == null || !(resp.get(0) instanceof User)) {
+            log.error("Could not retrieve users");
+            return new LinkedList<>();
+        }
 
-            @SuppressWarnings("unchecked")
-            List<User> ret = (List<User>)resp;
-            return ret;
+        @SuppressWarnings("unchecked")
+        List<User> ret = (List<User>) resp;
+        return ret;
     }
 
     @Override

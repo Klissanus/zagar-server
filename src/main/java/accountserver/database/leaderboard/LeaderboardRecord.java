@@ -1,10 +1,6 @@
 package accountserver.database.leaderboard;
 
-import accountserver.database.tokens.Token;
 import accountserver.database.users.User;
-import com.google.gson.annotations.Expose;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -16,8 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "leaderboard")
 public class LeaderboardRecord
-        implements Serializable
-{
+        implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "record_id", unique = true, nullable = false)
@@ -31,9 +26,10 @@ public class LeaderboardRecord
     @Column(name = "score", nullable = false)
     private Integer score = 0;
 
-    protected LeaderboardRecord(){}
+    protected LeaderboardRecord() {
+    }
 
-    public LeaderboardRecord(@NotNull User user, @NotNull Integer score){
+    public LeaderboardRecord(@NotNull User user, @NotNull Integer score) {
         this.owner = user;
         this.score = score;
     }

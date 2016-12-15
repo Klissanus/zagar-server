@@ -15,6 +15,7 @@ class JdbcDbConnector {
     private static final String USER = "atom43";
     private static final String PASSWORD = "atom43";
     private static final String DRIVER = "org.postgresql.Driver";
+
     static {
         try {
             Class.forName(DRIVER);

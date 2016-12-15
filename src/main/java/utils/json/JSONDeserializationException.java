@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * @author apomosov
  */
 public class JSONDeserializationException extends Exception {
-  JSONDeserializationException(@NotNull JsonSyntaxException cause) {
-    super(cause);
-  }
+    JSONDeserializationException(@NotNull JsonSyntaxException cause) {
+        super(cause);
+    }
 }

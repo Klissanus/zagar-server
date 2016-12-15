@@ -37,8 +37,8 @@ public class LeaderboardApi {
     @GET
     @Produces("application/json")
     @Path("leaderboard")
-    public Response getTopUsers(@QueryParam("N") int count){
-        log.info("Top '{}' users by scores requested",count);
+    public Response getTopUsers(@QueryParam("N") int count) {
+        log.info("Top '{}' users by scores requested", count);
 
         //get leaders
         Map<User, Integer> leaders = ApplicationContext
@@ -57,10 +57,11 @@ public class LeaderboardApi {
         //отправляем ответ
         return Response.ok(
                 JSONHelper
-                .toJSON(ret,
-                        new TypeToken<LeaderboardApi.UserInfo>() {}
-                        .getType()
-                )
+                        .toJSON(ret,
+                                new TypeToken<LeaderboardApi.UserInfo>() {
+                                }
+                                        .getType()
+                        )
         ).build();
     }
 

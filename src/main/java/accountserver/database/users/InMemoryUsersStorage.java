@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by xakep666 on 12.10.16.
- *
+ * <p>
  * DataBase uses memory to keep user data
  */
 public class InMemoryUsersStorage implements UserDao {
@@ -20,7 +20,7 @@ public class InMemoryUsersStorage implements UserDao {
     private static Logger log = LogManager.getLogger(InMemoryUsersStorage.class);
 
     @NotNull
-    private Map<Integer,User> users = new ConcurrentHashMap<>();
+    private Map<Integer, User> users = new ConcurrentHashMap<>();
 
     public InMemoryUsersStorage() {
         log.info("Created in-memory users storage");
@@ -28,7 +28,7 @@ public class InMemoryUsersStorage implements UserDao {
 
     @Override
     public void addUser(@NotNull User user) {
-        users.put(user.getId(),user);
+        users.put(user.getId(), user);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class InMemoryUsersStorage implements UserDao {
 
     @Override
     public @Nullable User getUserByName(@NotNull String name) {
-        for(User user:users.values()) {
+        for (User user : users.values()) {
             if (user.getName().equals(name)) return user;
         }
         return null;

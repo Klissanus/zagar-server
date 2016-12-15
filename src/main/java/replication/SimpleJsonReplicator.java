@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 /**
  * Created by xakep666 on 26.11.16.
  * <p>
@@ -41,7 +42,7 @@ public class SimpleJsonReplicator implements Replicator {
     @Override
     public void replicate() {
         if (json == null) return;
-        log.debug("Sending test replic {}",json);
+        log.debug("Sending test replic {}", json);
         try {
             ApplicationContext.instance().get(ClientConnections.class)
                     .getConnections()

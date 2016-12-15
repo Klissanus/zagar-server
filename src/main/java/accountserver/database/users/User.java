@@ -17,7 +17,7 @@ import java.util.Date;
 
 /**
  * Created by xakep666 on 23.10.16.
- *
+ * <p>
  * Describes user
  */
 @Entity
@@ -60,11 +60,12 @@ public class User implements Serializable {
 
     /**
      * Create new user
-     * @param name user name
+     *
+     * @param name     user name
      * @param password user password
      */
     public User(@NotNull String name, @NotNull String password) {
-        this.id= ApplicationContext.instance().get(IDGenerator.class).next();
+        this.id = ApplicationContext.instance().get(IDGenerator.class).next();
         this.name = name;
         try {
             MessageDigest md = MessageDigest.getInstance(digestAlg);
@@ -74,7 +75,7 @@ public class User implements Serializable {
             e.printStackTrace();
             System.exit(1);
         }
-        log.info(String.format("Created new user %s, id %d",name,id));
+        log.info(String.format("Created new user %s, id %d", name, id));
     }
 
     /**
@@ -87,11 +88,12 @@ public class User implements Serializable {
 
     /**
      * Change user`s name
+     *
      * @param newName a new name
      */
     public void setName(@NotNull String newName) {
-        log.info("User "+name+" changed name to "+newName);
-        name=newName;
+        log.info("User " + name + " changed name to " + newName);
+        name = newName;
     }
 
     /**
@@ -103,6 +105,7 @@ public class User implements Serializable {
 
     /**
      * Validate given password for user
+     *
      * @param password password to check
      * @return true if password is valid for this user, false otherwise
      */
@@ -110,7 +113,7 @@ public class User implements Serializable {
         try {
             MessageDigest md = MessageDigest.getInstance(digestAlg);
             md.update(password.getBytes());
-            return MessageDigest.isEqual(passwordHash,md.digest());
+            return MessageDigest.isEqual(passwordHash, md.digest());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             System.exit(1);
@@ -120,13 +123,14 @@ public class User implements Serializable {
 
     /**
      * Set new password for user
+     *
      * @param newPassword a new password
      */
     public void updatePassword(@NotNull String newPassword) {
         try {
             MessageDigest md = MessageDigest.getInstance(digestAlg);
             md.update(newPassword.getBytes());
-            passwordHash=md.digest();
+            passwordHash = md.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             System.exit(1);
@@ -143,6 +147,7 @@ public class User implements Serializable {
 
     /**
      * Update user email
+     *
      * @param email new email
      */
     public void setEmail(@NotNull String email) {
@@ -168,13 +173,13 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("name: %s, id %d, email %s, registration date %s",name,id,email, registrationDate);
+        return String.format("name: %s, id %d, email %s, registration date %s", name, id, email, registrationDate);
     }
 
     @Override
     public boolean equals(Object o) {
-        return (this==o) || (o instanceof User) &&
-                ((User) o).id==id;
+        return (this == o) || (o instanceof User) &&
+                ((User) o).id == id;
     }
 
     @Override

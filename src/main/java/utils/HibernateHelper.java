@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 /**
  * Created by xakep666 on 03.11.16.
- *
+ * <p>
  * Helper for Hibernate
  */
 public class HibernateHelper {

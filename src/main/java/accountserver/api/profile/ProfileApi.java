@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * Created by xakep666 on 13.10.16.
- *
+ * <p>
  * Provides REST API for work with user profile
  */
 @Path("/profile")
@@ -30,6 +30,7 @@ public class ProfileApi {
 
     /**
      * Change token owner`s name to given
+     *
      * @param newName name to set
      * @return OK if name changed, NOT_ACCEPTABLE otherwise
      */
@@ -39,11 +40,11 @@ public class ProfileApi {
     @Path("name")
     public Response setNewName(@FormParam("name") String newName,
                                @Context HttpHeaders headers) {
-        if (newName==null) {
+        if (newName == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);
-        if (token==null) return Response.status(Response.Status.UNAUTHORIZED).build();
+        if (token == null) return Response.status(Response.Status.UNAUTHORIZED).build();
         log.info(String.format("User \"%s\" requested name change to \"%s\"",
                 ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token), newName));
         if (newName.equals("") || newName.equals("null") ||
@@ -57,7 +58,7 @@ public class ProfileApi {
         }
         user.setName(newName);
         ApplicationContext.instance().get(UserDao.class).updateUser(user);
-        return Response.ok("Username changed to "+newName).build();
+        return Response.ok("Username changed to " + newName).build();
 
     }
 
@@ -66,18 +67,18 @@ public class ProfileApi {
     @Path("changepass")
     public Response changePassword(@Context HttpHeaders headers,
                                    @FormParam("oldpass") String oldpass, @FormParam("newpass") String newpass) {
-        if (newpass==null || oldpass==null) {
+        if (newpass == null || oldpass == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         if (newpass.equals("") || newpass.equals("null") || oldpass.equals("") || oldpass.equals("null")) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
         Token token = AuthenticationFilter.getTokenFromHeaders(headers);
-        if (token==null) {
+        if (token == null) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         User user = ApplicationContext.instance().get(TokenDao.class).getTokenOwner(token);
-        if (user==null) {
+        if (user == null) {
             log.warn("Not found token " + token + " owner");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }

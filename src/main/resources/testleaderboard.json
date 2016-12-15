@@ -1,4 +1,10 @@
 {
-  "users":["Dog","Pig"],
-  "scores":[78,56]
+  "users": [
+    "Dog",
+    "Pig"
+  ],
+  "scores": [
+    78,
+    56
+  ]
 }
