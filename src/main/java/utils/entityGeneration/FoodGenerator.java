@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
  * @author xakep666
  *         <p>
  *         Base class for food generators.
- *         generate() method will be called every tick
  */
 public abstract class FoodGenerator extends EntityGenerator {
     FoodGenerator(@NotNull Field field) {

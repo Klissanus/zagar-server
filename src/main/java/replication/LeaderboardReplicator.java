@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by xakep666 on 28.11.16.
  * <p>
- * replicate leaderboard
+ * Replicates session leaderboard to clients
  */
 public class LeaderboardReplicator {
     public void replicate() {

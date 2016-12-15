@@ -8,6 +8,8 @@ import java.awt.*;
 
 /**
  * @author apomosov
+ *
+ * Describes game cell
  */
 public abstract class Cell {
     private int x;

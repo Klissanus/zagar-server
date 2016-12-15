@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * Created by xakep666 on 16.11.16.
  * <p>
  * Replicates only cells which fits in player window
+ * Window size stored in {@link Player} object
  */
 public class InsideWindowReplicator implements Replicator {
     private static final int widthDelta = 10;

@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by apomosov on 14.05.16.
- * <p>
- * Synchronizes services
+ *
+ * Calls tick() method for {@link Tickable} object with {@see GameConstants.TICKS_PER_SECOND} period
  */
 public class Ticker {
     private final static Logger log = LogManager.getLogger(Ticker.class);

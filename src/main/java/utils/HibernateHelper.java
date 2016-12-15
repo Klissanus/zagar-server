@@ -34,6 +34,12 @@ public class HibernateHelper {
         return sessionFactory.openSession();
     }
 
+    /**
+     * Transactional selection from database
+     * @param selectAction function will be executed in current session
+     * @param <T> object type to extract
+     * @return list of extracted objects
+     */
     public static <T> List<T> selectTransactional(Function<Session, List<T>> selectAction) {
         Transaction txn = null;
         List<T> ts = Collections.emptyList();
@@ -51,6 +57,10 @@ public class HibernateHelper {
         return ts;
     }
 
+    /**
+     * Execute transactional action in current session
+     * @param f action which will be executed
+     */
     public static void doTransactional(Function<Session, ?> f) {
         Transaction txn = null;
         try (Session session = HibernateHelper.createSession()) {

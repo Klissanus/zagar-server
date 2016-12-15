@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 /**
  * @author Alpi
  * @since 31.10.16
+ *
+ * Replicates full session state to clients
  */
 public class FullStateReplicator implements Replicator {
     @Override

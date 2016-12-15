@@ -12,11 +12,18 @@ import java.util.Random;
 
 /**
  * @author apomosov
+ *
+ * Generates and removes viruses randomly with given chance
  */
 public class RandomVirusGenerator extends VirusGenerator {
     private final int numberOfViruses;
     private final double removeChance;
 
+    /**
+     * @param field field where {@link Virus} cells will be generated/removed
+     * @param numberOfViruses total number of {@link Virus} cells on field
+     * @param removeChance random number of viruses will be removed with this probability
+     */
     public RandomVirusGenerator(@NotNull Field field, int numberOfViruses, double removeChance) {
         super(field);
         this.numberOfViruses = numberOfViruses;
@@ -24,6 +31,16 @@ public class RandomVirusGenerator extends VirusGenerator {
         assert (removeChance >= 0 && removeChance <= 1);
     }
 
+    /**
+     * Generator logic.
+     * Stages:
+     * 1) Decide remove or not remove viruses
+     * 2) Determine number of removed viruses
+     * 3) Remove viruses
+     * 4) Determine number of generated viruses to reach numberOfViruses
+     * 5) Generate viruses
+     * @param elapsed tick time interval
+     */
     @Override
     public void generate(@NotNull Duration elapsed) {
         Random random = new Random();

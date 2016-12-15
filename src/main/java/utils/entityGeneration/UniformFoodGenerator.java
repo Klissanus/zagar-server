@@ -11,12 +11,21 @@ import java.util.Random;
 
 /**
  * @author apomosov
+ *
+ * Uniform (same form) food generator
+ * Generates given number {@link Food} cells per second until treshold will be reached
  */
 public class UniformFoodGenerator extends FoodGenerator {
     private final int threshold;
     private final double foodPerSecond;
     private final double removeChance;
 
+    /**
+     * @param field field where {@link Food} cells will be generated
+     * @param foodPerSecond number of food which will be generated per second
+     * @param threshold maximum number of {@link Food} cells on field
+     * @param removeChance random number of food will be removed with this probability
+     */
     public UniformFoodGenerator(@NotNull Field field, double foodPerSecond, int threshold, double removeChance) {
         super(field);
         this.threshold = threshold;
@@ -25,6 +34,16 @@ public class UniformFoodGenerator extends FoodGenerator {
         assert (removeChance >= 0 && removeChance <= 1);
     }
 
+    /**
+     * Generator logic
+     * Stages:
+     * 1) Decide remove or not remove foods
+     * 2) Determine number of removed foods
+     * 3) Remove foods
+     * 4) Determine number of generated viruses to reach threshold
+     * 5) Generate food
+     * @param elapsed tick time interval
+     */
     @Override
     public void generate(@NotNull Duration elapsed) {
         //Remove or not?

@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 /**
  * Created by xakep666 on 15.12.16.
  * <p>
- * Quandrants tree to store cell. Simplifies collision detection
+ * Thread-safe quandrants tree implementation to store cells.
+ * Simplifies collision detection.
  */
 public class CellQuadTree {
     private static final int dims = 4;
@@ -35,6 +36,11 @@ public class CellQuadTree {
         this.level = parent.level + 1;
     }
 
+    /**
+     * @param range base field range
+     * @param maxNodes maximal number of {@link Cell} objects in one quadrant
+     * @param maxLevel maximal number of inner quadrants
+     */
     public CellQuadTree(@NotNull Rectangle range, int maxNodes, int maxLevel) {
         this.range = range;
         this.maxNodes = maxNodes;
@@ -53,6 +59,11 @@ public class CellQuadTree {
         return ret;
     }
 
+    /**
+     * Add new cell to tree
+     * @param cell cell to add
+     * @return true if cell added successfully
+     */
     public synchronized boolean add(@NotNull Cell cell) {
         return add(cell, true);
     }
@@ -75,6 +86,11 @@ public class CellQuadTree {
         }
     }
 
+    /**
+     * Add list of cells to tree
+     * @param cells list of cells which will be added to tree
+     * @return true if all cells added successfully
+     */
     public synchronized boolean add(@NotNull List<Cell> cells) {
         return add(cells, true);
     }
@@ -87,6 +103,10 @@ public class CellQuadTree {
         return result;
     }
 
+    /**
+     * Remove given cell from tree
+     * @param cell cell to remove
+     */
     public synchronized void remove(@NotNull Cell cell) {
         remove(cell, true);
     }
@@ -101,6 +121,10 @@ public class CellQuadTree {
         cell.setNode(null);
     }
 
+    /**
+     * Remove list of cells from tree
+     * @param cells list of cells which will be removed
+     */
     public void remove(@NotNull List<Cell> cells) {
         remove(cells, true);
     }
@@ -109,6 +133,11 @@ public class CellQuadTree {
         cells.forEach(c -> remove(c, merge));
     }
 
+    /**
+     * Update cell coordinates.
+     * Call if cell was moved.
+     * @param cell cell to update
+     */
     public synchronized void update(@NotNull Cell cell) {
         remove(cell, false);
         add(cell, false);
@@ -159,6 +188,12 @@ public class CellQuadTree {
         branches.clear();
     }
 
+    /**
+     * Extract cells from tree
+     * @param range region where cells will be searched
+     * @param predicate function to validate found cell, if defined as null, all cells from region will be extracted
+     * @return extracted cells
+     */
     @NotNull
     public synchronized List<Cell> query(@NotNull Rectangle range, @Nullable Function<Cell, Boolean> predicate) {
         List<Cell> cells = new ArrayList<>();
