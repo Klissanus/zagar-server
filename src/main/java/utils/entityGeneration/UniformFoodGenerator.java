@@ -37,8 +37,7 @@ public class UniformFoodGenerator extends FoodGenerator {
       }
     }
     if (getField().getCells(Food.class).size() <= threshold) {
-        int toGenerate = (int) Math.ceil(foodPerSecond * getIdleDuration().getSeconds());
-      for (int i = 0; i < toGenerate; i++) {
+        for (int i = 0; i < foodPerSecond; i++) {
         Food food = new Food(0, 0);
         food.setX(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));
         food.setY(food.getRadius() + rand.nextInt(getField().getWidth() - 2 * food.getRadius()));
