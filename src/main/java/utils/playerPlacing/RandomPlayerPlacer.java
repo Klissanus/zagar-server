@@ -1,11 +1,12 @@
 package utils.playerPlacing;
 
+import main.ApplicationContext;
 import model.Field;
 import model.Player;
 import model.PlayerCell;
 import org.jetbrains.annotations.NotNull;
+import utils.idGeneration.IDGenerator;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,12 +22,11 @@ public class RandomPlayerPlacer implements PlayerPlacer {
 
   @Override
   public void place(@NotNull Player player) {
-      List<PlayerCell> playerCells = player.getCells();
-      assert (playerCells.size() == 1); //make sure that placer used only at spawn time
-    Random random = new Random();
-      for (PlayerCell playerCell : playerCells) {
-        playerCell.setX(playerCell.getRadius() + random.nextInt(field.getWidth() - 2 * playerCell.getRadius()));
-        playerCell.setY(playerCell.getRadius() + random.nextInt(field.getHeight() - 2 * playerCell.getRadius()));
-    }
+      int id = ApplicationContext.instance().get(IDGenerator.class).next();
+      Random random = new Random();
+      PlayerCell newPlayerCell = new PlayerCell(player, id, 0, 0);
+      newPlayerCell.setX(newPlayerCell.getRadius() + random.nextInt(field.getWidth() - 2 * newPlayerCell.getRadius()));
+      newPlayerCell.setY(newPlayerCell.getRadius() + random.nextInt(field.getHeight() - 2 * newPlayerCell.getRadius()));
+      field.addCell(newPlayerCell);
   }
 }

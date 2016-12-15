@@ -1,10 +1,8 @@
 package model;
 
-import main.ApplicationContext;
 import org.jetbrains.annotations.NotNull;
 import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.VirusGenerator;
-import utils.idGeneration.IDGenerator;
 import utils.playerPlacing.PlayerPlacer;
 
 import java.time.Duration;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class GameSessionImpl implements GameSession {
   @NotNull
-  private final Field field = new Field();
+  private final Field field;
   @NotNull
   private final List<Player> players = new ArrayList<>();
   @NotNull
@@ -28,7 +26,12 @@ public class GameSessionImpl implements GameSession {
   @NotNull
   private final VirusGenerator virusGenerator;
 
-  public GameSessionImpl(@NotNull FoodGenerator foodGenerator, @NotNull PlayerPlacer playerPlacer, @NotNull VirusGenerator virusGenerator) {
+    public GameSessionImpl(
+            @NotNull Field field,
+            @NotNull FoodGenerator foodGenerator,
+            @NotNull PlayerPlacer playerPlacer,
+            @NotNull VirusGenerator virusGenerator) {
+        this.field = field;
     this.foodGenerator = foodGenerator;
     this.playerPlacer = playerPlacer;
     this.virusGenerator = virusGenerator;
@@ -37,7 +40,6 @@ public class GameSessionImpl implements GameSession {
   @Override
   public void join(@NotNull Player player) {
     player.setField(field);
-      field.addCell(new PlayerCell(player, ApplicationContext.instance().get(IDGenerator.class).next(), 0, 0));
     players.add(player);
     playerPlacer.place(player);
   }
