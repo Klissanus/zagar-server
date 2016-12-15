@@ -1,5 +1,11 @@
 package model;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import utils.CellQuadTree;
+
+import java.awt.*;
+
 /**
  * @author apomosov
  */
@@ -8,6 +14,8 @@ public abstract class Cell {
   private int y;
   private int radius;
   private int mass;
+    @Nullable
+    private CellQuadTree node;
 
   public Cell(int x, int y, int mass) {
     this.x = x;
@@ -44,6 +52,42 @@ public abstract class Cell {
     this.mass = mass;
     updateRadius();
   }
+
+    @Nullable
+    public CellQuadTree getNode() {
+        return node;
+    }
+
+    public void setNode(@Nullable CellQuadTree node) {
+        this.node = node;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cell cell = (Cell) o;
+
+        return x != cell.x &&
+                y != cell.y &&
+                radius != cell.radius &&
+                mass == cell.mass;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + radius;
+        result = 31 * result + mass;
+        return result;
+    }
+
+    @NotNull
+    public Rectangle getRange() {
+        return new Rectangle(x, y, radius, radius);
+    }
 
   private void updateRadius(){
     this.radius = (int) Math.sqrt(this.mass/Math.PI);

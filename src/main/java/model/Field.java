@@ -1,12 +1,12 @@
 package model;
 
-import net.sf.javaml.core.kdtree.KDTree;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import utils.CellQuadTree;
 import utils.EatComparator;
 
-import java.util.Arrays;
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,57 +16,43 @@ import java.util.stream.Collectors;
 public class Field {
   @NotNull
   private static final Logger log = LogManager.getLogger(Field.class);
+    private static final int width = GameConstants.FIELD_WIDTH;
+    private static final int height = GameConstants.FIELD_HEIGHT;
   @NotNull
-  private static final double[] leftTop = new double[]{0,0};
+  private static final Rectangle fieldRange = new Rectangle(0, 0, width, height);
   @NotNull
-  private static final double[] rightBottom = new double[]{GameConstants.FIELD_WIDTH, GameConstants.FIELD_HEIGHT};
-  @NotNull
-  private static final String keyMissing = "KDTree: key missing!";
-  private final int width;
-  private final int height;
-  @NotNull
-  private KDTree entities = new KDTree(2);
+  private final CellQuadTree entities = new CellQuadTree(fieldRange, 128, 12);
   @NotNull
   private EatComparator eatComparator = new EatComparator();
 
 
   public Field() {
-    this.width = GameConstants.FIELD_WIDTH;
-    this.height = GameConstants.FIELD_HEIGHT;
   }
 
   @NotNull
   public <T extends Cell> List<T> getCells(Class<T> identifier) {
-    return Arrays.stream(entities.range(leftTop, rightBottom))
-            .filter(identifier::isInstance)
+      return entities.query(fieldRange, identifier::isInstance).stream()
             .map(identifier::cast)
             .collect(Collectors.toList());
   }
 
   @NotNull
   List<PlayerCell> getPlayerCells(@NotNull Player player) {
-    return Arrays.stream(entities.range(leftTop, rightBottom))
-            .filter(PlayerCell.class::isInstance)
+      return entities.query(fieldRange,
+              c -> (c instanceof PlayerCell) && ((PlayerCell) c).getOwner().equals(player))
+              .stream()
             .map(PlayerCell.class::cast)
-            .filter(cell -> player.equals(cell.getOwner()))
             .collect(Collectors.toList());
   }
 
   public void addCell(@NotNull Cell cell) {
-    log.trace("Field:{} Added food to ({}, {})", toString(), cell.getX(), cell.getY());
-    entities.insert(new double[]{cell.getX(),cell.getY()},cell);
+      log.trace("Field:{} Added {} to ({}, {})", toString(), cell.getClass().getName(), cell.getX(), cell.getY());
+      entities.add(cell);
   }
 
   public void removeCell(@NotNull Cell cell) {
-    try {
-      entities.delete(new double[]{cell.getX(), cell.getY()});
-    } catch (RuntimeException e) {
-      if (e.getMessage().equals(keyMissing)){
-        log.warn("Field:{}, Trying to remove non-existing cell ({}, {})", toString(), cell.getX(), cell.getY());
-      } else {
-        e.printStackTrace();
-      }
-    }
+      entities.remove(cell);
+      log.trace("Removing {} from ({}, {})", cell.getClass().getName(), cell.getX(), cell.getY());
   }
 
 
@@ -78,7 +64,7 @@ public class Field {
     }
 
     public void tryToEat(@NotNull Player player){
-        player.getCells().forEach(cell -> {
+        /*player.getCells().forEach(cell -> {
             //берем 3 ближайших шарика
             //исходим из предположения, что за один тик в радиус шара не попадет больше 3 шариков
             //можно сделать проверку, входит ли 3 в радиус, если да, то взять больше ближайших
@@ -95,7 +81,7 @@ public class Field {
                             cell.explode();//todo add and remove cells in kd
                         }
                     });
-        });
+        });*/
     }
 
 
