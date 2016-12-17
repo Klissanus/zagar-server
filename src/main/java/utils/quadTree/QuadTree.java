@@ -23,6 +23,7 @@ public class QuadTree<T> {
     private final TreeNode<T> root;
 
     public QuadTree(@NotNull Rectangle2D region) {
+        assert (region.getWidth()==region.getHeight()); //make sure if region is square
         this.root = new TreeNode<>(region, null);
     }
 
