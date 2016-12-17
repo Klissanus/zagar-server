@@ -222,7 +222,7 @@ public class QuadTree<T> {
     }
 
     private void navigate(@NotNull TreeNode<T> start,
-                          Consumer<TreeNode<T>> navigateFunc,
+                          @NotNull Consumer<TreeNode<T>> navigateFunc,
                           @NotNull Rectangle2D region) {
         Stack<TreeNode<T>> navigateStack = new Stack<>();
         navigateStack.add(start);
