@@ -55,8 +55,8 @@ public class QuadTree<T> {
         pointStack.add(startPoint);
         while (!insertStack.isEmpty()) {
             TreeNode<T> node = insertStack.pop();
-            TreePoint<T> point = pointStack.pop();
             if (node == null) continue;
+            TreePoint<T> point = pointStack.pop();
             switch (node.getNodeType()) {
                 case EMPTY:
                     setPointForNode(node, point);
@@ -82,7 +82,7 @@ public class QuadTree<T> {
                         node.setNw(new TreeNode<>(new Rectangle2D.Double(x, y, w, h), node));
                         node.setNe(new TreeNode<>(new Rectangle2D.Double(x + w, y, w, h), node));
                         node.setSw(new TreeNode<>(new Rectangle2D.Double(x, y + h, w, h), node));
-                        node.setNe(new TreeNode<>(new Rectangle2D.Double(x + w, y + h, w, h), node));
+                        node.setSe(new TreeNode<>(new Rectangle2D.Double(x + w, y + h, w, h), node));
 
                         pointStack.add(oldPoint);
                         insertStack.add(node);
