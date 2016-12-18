@@ -21,6 +21,12 @@ public class PlayerCell extends Cell {
         this.owner = owner;
     }
 
+    public PlayerCell(@NotNull Player owner, int id, int x, int y, int mass) {
+        super(x, y,  mass);
+        this.id = id;
+        this.owner = owner;
+    }
+
     public int getId() {
         return id;
     }
@@ -39,6 +45,11 @@ public class PlayerCell extends Cell {
 
     public void eat(Cell cell) {
         this.setMass(this.getMass() + cell.getMass());
+        this.getOwner().updateScore(cell.getMass());
+        if (cell instanceof PlayerCell){
+            ((PlayerCell) cell).getOwner().updateScore( - cell.getMass());
+        }
+        //todo check remove last cell of another player??
     }
 
     public void explode() {
@@ -52,5 +63,22 @@ public class PlayerCell extends Cell {
     @NotNull
     public Player getOwner() {
         return owner;
+    }
+
+    public boolean ejectMass(){
+        if( this.getMass() > GameConstants.MASS_TO_EJECT) {
+            this.getOwner().updateScore(-GameConstants.FOOD_MASS);
+            this.setMass(this.getMass() - GameConstants.FOOD_MASS);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean split(){
+        if (this.getMass() > GameConstants.MASS_TO_SPLIT ){
+            this.setMass(this.getMass() / 2);
+            return true;
+        }
+        return  false;
     }
 }

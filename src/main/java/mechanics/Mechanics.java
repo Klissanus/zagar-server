@@ -7,8 +7,10 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
+import model.Food;
 import model.GameConstants;
 import model.Player;
+import model.PlayerCell;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +19,7 @@ import protocol.commands.CommandMove;
 import protocol.commands.CommandSplit;
 import ticker.Tickable;
 import ticker.Ticker;
+import utils.idGeneration.IDGenerator;
 
 import java.time.Duration;
 
@@ -53,6 +56,7 @@ public class Mechanics extends Service implements Tickable {
         matchMaker.getActiveGameSessions().forEach(gameSession -> {
             gameSession.tickRemoveAfk();
             gameSession.tickGenerators(elapsed);
+            gameSession.getPlayers().forEach(player -> gameSession.getField().tryToEat(player));
         });
 
         log.trace("Start replication");
@@ -68,6 +72,11 @@ public class Mechanics extends Service implements Tickable {
     }
 
     public void ejectMass(@NotNull Player player, @NotNull CommandEjectMass commandEjectMass) {
+        player.getCells().forEach(c -> {
+            if (c.ejectMass()){
+                player.getField().addCell(new Food(0, 0));//todo food coordinates by velocity vector
+            }
+        });
         log.debug("Mass ejected");
     }
 
@@ -101,6 +110,12 @@ public class Mechanics extends Service implements Tickable {
     }
 
     public void split(@NotNull Player player, @NotNull CommandSplit commandSplit) {
+        player.getCells().forEach(c ->{
+            if(c.split()){
+                int id = ApplicationContext.instance().get(IDGenerator.class).next();
+                player.getField().addCell(new PlayerCell(c.getOwner(), id, 0, 0, c.getMass()));// todo coords
+            }
+        });
         log.info("Split");
     }
 }

@@ -5,9 +5,12 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import utils.EatComparator;
 import utils.quadTree.QuadTree;
+import utils.quadTree.TreePoint;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,24 +77,26 @@ public class Field {
     }
 
     public void tryToEat(@NotNull Player player) {
-        /*player.getCells().forEach(cell -> {
-            //берем 3 ближайших шарика
-            //исходим из предположения, что за один тик в радиус шара не попадет больше 3 шариков
-            //можно сделать проверку, входит ли 3 в радиус, если да, то взять больше ближайших
-            Cell[] candidatesToEat = (Cell[]) entities.nearest(new double[]{cell.getX(), cell.getY()}, 3);
-            Arrays.stream(candidatesToEat)
-                    .filter(c -> Math.pow(c.getX() - cell.getX(), 2.0)
-                            + Math.pow(c.getY() - cell.getY(), 2.0)
-                            < Math.pow(cell.getRadius(), 2.0))//is in cell radius
-                    .filter( c -> eatComparator.compare(cell, c) == 1)//canEat
-                    .forEach(c -> {
-                        cell.eat(c);//todo update player score??
-                        removeCell(c);
-                        if(c instanceof Virus){
-                            cell.explode();//todo add and remove cells in kd
-                        }
-                    });
-        });*/
+        player.getCells().forEach(cell -> {
+            int upperLeftX = cell.getX() - cell.getRadius();
+            int upperLeftY = cell.getY() - cell.getRadius();
+            int diameter = 2 * cell.getRadius();
+            Rectangle2D rect = new Rectangle(upperLeftX, upperLeftY, diameter, diameter);
+            List<TreePoint<Cell>> candidatesToEat = entities.searchWithin(rect);
+            candidatesToEat.stream()
+                .filter(c -> Math.pow(c.getCoordinate().getX() - cell.getX(), 2.0)
+                + Math.pow(c.getCoordinate().getY() - cell.getY(), 2.0)
+                < Math.pow(cell.getRadius(), 2.0))//is in cell radius
+                .filter( c -> eatComparator.compare(cell, c.getItem().get()) == 1)//canEat
+                .forEach(c -> {
+                    Cell anotherCell = c.getItem().get();
+                    cell.eat(anotherCell);//todo update player score??
+                    removeCell(anotherCell);
+                    if(anotherCell instanceof Virus){
+                        cell.explode();//todo add and remove cells in kd
+                    }
+                });
+        });
     }
 
 
