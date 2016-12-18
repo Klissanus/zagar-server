@@ -17,15 +17,15 @@ public interface GameConstants {
     int EJECTED_MASS = 30;
     int VIRUS_MASS = 100;
 
-    double VIRUS_REMOVE_CHANCE = 0.3;
-    int FOOD_PER_SECOND_GENERATION = 1;
-    double FOOD_REMOVE_CHANCE = 0.3;
+    double VIRUS_REMOVE_CHANCE = 0.1;
+    int FOOD_PER_SECOND_GENERATION = 15;
+    double FOOD_REMOVE_CHANCE = 0.1;
 
     int MASS_TO_EJECT = 3 * FOOD_MASS;
     int MASS_TO_SPLIT = 5 * DEFAULT_PLAYER_CELL_MASS;
 
     int MAX_FOOD_ON_FIELD = 100;
-    int NUMBER_OF_VIRUSES = 10;
+    int NUMBER_OF_VIRUSES = 3;
 
     Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
     double MAX_COORDINATE_DELTA_MODULE = 1.5;
