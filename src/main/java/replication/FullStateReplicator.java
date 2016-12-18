@@ -25,7 +25,7 @@ public class FullStateReplicator implements Replicator {
     public void replicate() {
         for (GameSession gameSession : ApplicationContext.instance().get(MatchMaker.class).getActiveGameSessions()) {
             List<Food> food = gameSession.getField().getCells(model.Food.class).stream()
-                    .map(f -> new Food(f.getX(), f.getY()))
+                    .map(f -> new Food((int)f.getCoordinate().getX(), (int)f.getCoordinate().getY()))
                     .collect(Collectors.toList());
             List<Cell> cells = new ArrayList<>();
             gameSession.getField()
@@ -35,14 +35,20 @@ public class FullStateReplicator implements Replicator {
                                     cell.getOwner().getId(),
                                     false,
                                     cell.getMass(),
-                                    cell.getX(),
-                                    cell.getY()))
+                                    (int)cell.getCoordinate().getX(),
+                                    (int)cell.getCoordinate().getY()))
                     );
             cells.addAll(
                     gameSession.getField().getCells(model.Virus.class).stream()
                             .map(virus ->
                                     //negative IDs shows that cell not belongs to player
-                                    new Cell(-1, -1, true, virus.getMass(), virus.getX(), virus.getY()))
+                                    new Cell(
+                                            -1,
+                                            -1,
+                                            true,
+                                            virus.getMass(),
+                                            (int)virus.getCoordinate().getX(),
+                                            (int)virus.getCoordinate().getY()))
                             .collect(Collectors.toList())
             );
             ApplicationContext.instance().get(ClientConnections.class).getConnections().forEach(connection -> {

@@ -2,7 +2,8 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author apomosov
@@ -10,32 +11,36 @@ import java.awt.*;
  * Describes game cell
  */
 public abstract class Cell {
-    private int x;
-    private int y;
+    @NotNull
+    private Point2D coordinate;
+    @NotNull
+    private Point2D lastMovement;
     private int radius;
     private int mass;
 
-    public Cell(int x, int y, int mass) {
-        this.x = x;
-        this.y = y;
+    public Cell(@NotNull Point2D coordinate, int mass) {
+        this.coordinate = coordinate;
+        this.lastMovement = new Point2D.Double(0,0);
         this.mass = mass;
         updateRadius();
     }
 
-    public int getX() {
-        return x;
+    @NotNull
+    public Point2D getCoordinate() {
+        return coordinate;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setCoordinate(@NotNull Point2D coordinate) {
+        this.lastMovement = new Point2D.Double(
+                coordinate.getX()-this.coordinate.getX(),
+                coordinate.getY()-this.coordinate.getY()
+        );
+        this.coordinate = coordinate;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+    @NotNull
+    public Point2D getLastMovement() {
+        return lastMovement;
     }
 
     public int getRadius() {
@@ -51,6 +56,15 @@ public abstract class Cell {
         updateRadius();
     }
 
+    @NotNull
+    public Rectangle2D getBox() {
+        return new Rectangle2D.Double(
+                coordinate.getX()-radius/Math.cos(Math.PI/4),
+                coordinate.getY()-radius/Math.sin(Math.PI/4),
+                radius*2,
+                radius*2
+        );
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,24 +72,15 @@ public abstract class Cell {
 
         Cell cell = (Cell) o;
 
-        return x != cell.x &&
-                y != cell.y &&
-                radius != cell.radius &&
-                mass == cell.mass;
+        if (mass != cell.mass) return false;
+        return coordinate.equals(cell.coordinate);
     }
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
-        result = 31 * result + radius;
+        int result = coordinate.hashCode();
         result = 31 * result + mass;
         return result;
-    }
-
-    @NotNull
-    public Rectangle getRange() {
-        return new Rectangle(x, y, radius, radius);
     }
 
     private void updateRadius() {

@@ -7,19 +7,12 @@ import messageSystem.Message;
 import messageSystem.MessageSystem;
 import messageSystem.messages.LeaderboardMsg;
 import messageSystem.messages.ReplicateMsg;
-import model.Food;
-import model.GameConstants;
-import model.Player;
-import model.PlayerCell;
+import model.EjectedMass;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import protocol.commands.CommandEjectMass;
-import protocol.commands.CommandMove;
-import protocol.commands.CommandSplit;
 import ticker.Tickable;
 import ticker.Ticker;
-import utils.idGeneration.IDGenerator;
 
 import java.time.Duration;
 
@@ -56,8 +49,11 @@ public class Mechanics extends Service implements Tickable {
         matchMaker.getActiveGameSessions().forEach(gameSession -> {
             gameSession.tickRemoveAfk();
             gameSession.tickGenerators(elapsed);
-            gameSession.getPlayers().forEach(player -> gameSession.getField().tryToEat(player));
+            gameSession.getField()
+                    .getCells(EjectedMass.class)
+                    .forEach(em->em.tickMove(gameSession.getField().getRegion(),elapsed));
         });
+
 
         log.trace("Start replication");
         Message message = new ReplicateMsg(getAddress());
@@ -71,51 +67,4 @@ public class Mechanics extends Service implements Tickable {
         log.trace("Mechanics tick() finished");
     }
 
-    public void ejectMass(@NotNull Player player, @NotNull CommandEjectMass commandEjectMass) {
-        player.getCells().forEach(c -> {
-            if (c.ejectMass()){
-                player.getField().addCell(new Food(0, 0));//todo food coordinates by velocity vector
-            }
-        });
-        log.debug("Mass ejected");
-    }
-
-    public void move(@NotNull Player player, @NotNull CommandMove commandMove) {
-        log.trace("Moving player {}: dx {} dy {}", player, commandMove.getDx(), commandMove.getDy());
-        if (Math.abs(commandMove.getDx()) > GameConstants.MAX_COORDINATE_DELTA_MODULE ||
-                Math.abs(commandMove.getDy()) > GameConstants.MAX_COORDINATE_DELTA_MODULE) {
-            log.info("Player {} may be cheater", player);
-            return;
-        }
-        player.getCells().forEach(cell -> {
-            int newValidX = cell.getX();
-            float newX = cell.getX() + commandMove.getDx();
-            boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getWidth()) &&
-                    (newX - cell.getRadius() / 2 >= 0);
-            if (inBoundsOnX) {
-                newValidX = (int) newX;
-            }
-
-            int newValidY = cell.getY();
-            float newY = cell.getY() + commandMove.getDy();
-            boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getHeight()) &&
-                    (newX - cell.getRadius() / 2 >= 0);
-            if (inBoundsOnY) {
-                newValidY = (int) newY;
-            }
-
-            player.getField().moveCell(cell, newValidX, newValidY);
-        });
-        //TODO handle collisions
-    }
-
-    public void split(@NotNull Player player, @NotNull CommandSplit commandSplit) {
-        player.getCells().forEach(c ->{
-            if(c.split()){
-                int id = ApplicationContext.instance().get(IDGenerator.class).next();
-                player.getField().addCell(new PlayerCell(c.getOwner(), id, 0, 0, c.getMass()));// todo coords
-            }
-        });
-        log.info("Split");
-    }
 }

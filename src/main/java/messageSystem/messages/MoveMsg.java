@@ -1,12 +1,18 @@
 package messageSystem.messages;
 
+import mechanics.CollisionHandler;
 import mechanics.Mechanics;
 import messageSystem.Abonent;
 import messageSystem.Message;
+import model.Cell;
+import model.GameConstants;
 import model.Player;
 import network.ClientConnectionServer;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandMove;
+
+import java.awt.geom.Point2D;
+import java.util.List;
 
 /**
  * Created by Klissan on 28.11.2016.
@@ -29,7 +35,33 @@ public class MoveMsg extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        log.trace("MoveMsg exec() call");
-        Message.getMessageSystem().getService(Mechanics.class).move(player, command);
+        log.trace("Moving player {}: dx {} dy {}", player, command.getDx(), command.getDy());
+        if (Math.abs(command.getDx()) > GameConstants.MAX_COORDINATE_DELTA_MODULE ||
+                Math.abs(command.getDy()) > GameConstants.MAX_COORDINATE_DELTA_MODULE) {
+            log.info("Player {} may be cheater", player);
+            return;
+        }
+        player.getCells().forEach(cell -> {
+            double newValidX = cell.getCoordinate().getX();
+            double newX = cell.getCoordinate().getX() + command.getDx() * GameConstants.INITIAL_SPEED / cell.getMass();
+            boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getWidth()) &&
+                    (newX - cell.getRadius() / 2 >= 0);
+            if (inBoundsOnX) {
+                newValidX = newX;
+            }
+
+            double newValidY = cell.getCoordinate().getY();
+            double newY = cell.getCoordinate().getY() + command.getDy() * GameConstants.INITIAL_SPEED / cell.getMass();
+            boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getHeight()) &&
+                    (newX - cell.getRadius() / 2 >= 0);
+            if (inBoundsOnY) {
+                newValidY = newY;
+            }
+
+            player.getField().moveCell(cell, new Point2D.Double(newValidX,newValidY));
+            //find collisions
+            List<Cell> intersected = player.getField().findIntersected(cell);
+            intersected.forEach(cellToCheck->CollisionHandler.handleCollision(cell,cellToCheck));
+        });
     }
 }

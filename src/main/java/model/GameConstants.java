@@ -14,6 +14,7 @@ public interface GameConstants {
 
     int FOOD_MASS = 10;
     int DEFAULT_PLAYER_CELL_MASS = 40;
+    int EJECTED_MASS = 30;
     int VIRUS_MASS = 100;
 
     double VIRUS_REMOVE_CHANCE = 0.3;
@@ -28,4 +29,6 @@ public interface GameConstants {
 
     Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
     double MAX_COORDINATE_DELTA_MODULE = 1.5;
+    double INITIAL_SPEED = 500;
+    double EJECTED_MASS_ACCELERATION = -50;
 }

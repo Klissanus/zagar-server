@@ -2,6 +2,7 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.geom.Point2D;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -15,14 +16,8 @@ public class PlayerCell extends Cell {
     @NotNull
     private Player owner;
 
-    public PlayerCell(@NotNull Player owner, int id, int x, int y) {
-        super(x, y, GameConstants.DEFAULT_PLAYER_CELL_MASS);
-        this.id = id;
-        this.owner = owner;
-    }
-
-    public PlayerCell(@NotNull Player owner, int id, int x, int y, int mass) {
-        super(x, y,  mass);
+    public PlayerCell(@NotNull Player owner, int id, @NotNull Point2D coordinate, int mass) {
+        super(coordinate, mass);
         this.id = id;
         this.owner = owner;
     }
@@ -32,14 +27,8 @@ public class PlayerCell extends Cell {
     }
 
     @Override
-    public void setX(int x) {
-        super.setX(x);
-        lastMovementTime.set(System.currentTimeMillis());
-    }
-
-    @Override
-    public void setY(int y) {
-        super.setY(y);
+    public void setCoordinate(@NotNull Point2D newCoordinate) {
+        super.setCoordinate(newCoordinate);
         lastMovementTime.set(System.currentTimeMillis());
     }
 
