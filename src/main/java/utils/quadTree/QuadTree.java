@@ -84,8 +84,10 @@ public class QuadTree<T> {
                         node.setSw(new TreeNode<>(new Rectangle2D.Double(x, y + h, w, h), node));
                         node.setSe(new TreeNode<>(new Rectangle2D.Double(x + w, y + h, w, h), node));
 
-                        pointStack.add(oldPoint);
                         insertStack.add(node);
+                        pointStack.add(point);
+                        insertStack.add(node);
+                        pointStack.add(oldPoint);
                     }
                     break;
                 case POINTER:
