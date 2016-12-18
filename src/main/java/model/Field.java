@@ -91,6 +91,13 @@ public class Field {
         return fieldRange;
     }
 
+    @NotNull
+    public List<Cell> getAllCells() {
+        return entities.getAllPoints().stream()
+                .filter(tp->tp.getItem().isPresent())
+                .map(tp->tp.getItem().get())
+                .collect(Collectors.toList());
+    }
 
     public int getWidth() {
         return width;

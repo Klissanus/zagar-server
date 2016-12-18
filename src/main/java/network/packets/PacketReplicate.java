@@ -6,7 +6,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandReplicate;
 import protocol.model.Cell;
-import protocol.model.Food;
 import utils.json.JSONHelper;
 
 import java.io.IOException;
@@ -17,16 +16,14 @@ public class PacketReplicate {
     private static final Logger log = LogManager.getLogger(PacketReplicate.class);
     @NotNull
     private final List<Cell> cells;
-    private final List<Food> food;
 
-    public PacketReplicate(@NotNull List<Cell> cells, List<Food> food) {
+    public PacketReplicate(@NotNull List<Cell> cells) {
         this.cells = cells;
-        this.food = food;
     }
 
     public void write(@NotNull Session session) throws IOException {
         if (!session.isOpen()) return;
-        String msg = JSONHelper.toJSON(new CommandReplicate(food, cells));
+        String msg = JSONHelper.toJSON(new CommandReplicate(cells));
         log.trace("Sending [" + msg + "]");
         session.getRemote().sendString(msg);
     }

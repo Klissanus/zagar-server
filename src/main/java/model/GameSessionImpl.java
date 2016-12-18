@@ -57,7 +57,8 @@ public class GameSessionImpl implements GameSession {
 
     @Override
     public void tickRemoveAfk() {
-        players.removeIf(p -> System.currentTimeMillis() - p.lastMovementTime() > GameConstants.MOVEMENT_TIMEOUT.toMillis());
+        //players.removeIf(p -> !field.getPlayerCells(p).isEmpty() &&
+        //        System.currentTimeMillis() - p.lastMovementTime() > GameConstants.MOVEMENT_TIMEOUT.toMillis());
     }
 
     @Override
