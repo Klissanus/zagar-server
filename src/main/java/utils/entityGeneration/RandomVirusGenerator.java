@@ -59,8 +59,10 @@ public class RandomVirusGenerator extends VirusGenerator {
         int virusesToGenerate = numberOfViruses - onField.size() + virusesToRemove;
         for (int i = 0; i < virusesToGenerate; i++) {
             Virus virus = new Virus(new Point2D.Double(
-                    virusRadius + random.nextInt(getField().getWidth() - 2 * virusRadius),
-                    virusRadius + random.nextInt(getField().getHeight() - 2 * virusRadius)
+                    virusRadius +
+                            random.nextInt((int)getField().getSize().getWidth() - 2 * virusRadius),
+                    virusRadius +
+                            random.nextInt((int)getField().getSize().getHeight() - 2 * virusRadius)
             ));
             getField().addCell(virus);
         }
