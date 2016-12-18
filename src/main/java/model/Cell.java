@@ -59,8 +59,8 @@ public abstract class Cell {
     @NotNull
     public Rectangle2D getBox() {
         return new Rectangle2D.Double(
-                coordinate.getX()-radius/Math.cos(Math.PI/4),
-                coordinate.getY()-radius/Math.sin(Math.PI/4),
+                coordinate.getX()-radius,
+                coordinate.getY()-radius,
                 radius*2,
                 radius*2
         );
