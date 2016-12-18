@@ -237,24 +237,16 @@ public class QuadTree<T> {
                     navigateFunc.accept(node);
                     break;
                 case POINTER:
-                    if (node.getNe() != null &&
-                            node.getNe().getPoint() != null &&
-                            region.contains(node.getNe().getPoint().getCoordinate())) {
+                    if (node.getNe() != null && region.intersects(node.getNe().getRegion())) {
                         navigateStack.add(node.getNe());
                     }
-                    if (node.getNw() != null &&
-                            node.getNw().getPoint() != null &&
-                            region.contains(node.getNw().getPoint().getCoordinate())) {
+                    if (node.getNw() != null && region.intersects(node.getNw().getRegion())) {
                         navigateStack.add(node.getNw());
                     }
-                    if (node.getSe() != null &&
-                            node.getSe().getPoint() != null &&
-                            region.contains(node.getSe().getPoint().getCoordinate())) {
+                    if (node.getSe() != null && region.intersects(node.getSe().getRegion())) {
                         navigateStack.add(node.getSe());
                     }
-                    if (node.getSw() != null &&
-                            node.getSw().getPoint() != null &&
-                            region.contains(node.getSw().getPoint().getCoordinate())) {
+                    if (node.getSw() != null && region.intersects(node.getSw().getRegion())) {
                         navigateStack.add(node.getSw());
                     }
                     break;
