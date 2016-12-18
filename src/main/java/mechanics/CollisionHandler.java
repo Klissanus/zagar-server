@@ -11,9 +11,12 @@ import utils.EatComparator;
  * Created by xakep666 on 18.12.16.
  */
 public class CollisionHandler {
+    private CollisionHandler() {}
+
     public static void handleCollision(@NotNull PlayerCell playerCell, @NotNull Cell cell) {
         //check actual collision
-        if (playerCell.getCoordinate().distance(cell.getCoordinate())>playerCell.getRadius()) return;
+        if (playerCell.getCoordinate().distance(cell.getCoordinate()) >
+                playerCell.getRadius() + cell.getRadius()) return;
         EatComparator eatComparator = new EatComparator();
         if (cell instanceof Food) {
             playerCell.eat(cell);
