@@ -31,4 +31,6 @@ public interface GameConstants {
     double MAX_COORDINATE_DELTA_MODULE = 1.5;
     double INITIAL_SPEED = 500;
     double EJECTED_MASS_ACCELERATION = -50;
+
+    Duration GENERATORS_PERIOD = Duration.ofSeconds(10);
 }
