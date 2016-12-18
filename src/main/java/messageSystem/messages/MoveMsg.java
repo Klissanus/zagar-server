@@ -44,7 +44,7 @@ public class MoveMsg extends Message {
         player.getCells().forEach(cell -> {
             double newValidX = cell.getCoordinate().getX();
             double newX = cell.getCoordinate().getX() + command.getDx() * GameConstants.INITIAL_SPEED / cell.getMass();
-            boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getWidth()) &&
+            boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getSize().getWidth()) &&
                     (newX - cell.getRadius() / 2 >= 0);
             if (inBoundsOnX) {
                 newValidX = newX;
@@ -52,7 +52,7 @@ public class MoveMsg extends Message {
 
             double newValidY = cell.getCoordinate().getY();
             double newY = cell.getCoordinate().getY() + command.getDy() * GameConstants.INITIAL_SPEED / cell.getMass();
-            boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getHeight()) &&
+            boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getSize().getHeight()) &&
                     (newX - cell.getRadius() / 2 >= 0);
             if (inBoundsOnY) {
                 newValidY = newY;

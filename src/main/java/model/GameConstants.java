@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.*;
+import java.awt.geom.Dimension2D;
 import java.time.Duration;
 
 /**
@@ -9,12 +11,10 @@ public interface GameConstants {
     int TICKS_PER_SECOND = 20;
     int MAX_PLAYERS_IN_SESSION = 10;
 
-    int FIELD_WIDTH = 1000;
-    int FIELD_HEIGHT = 1000;
+    Dimension2D FIELD_SIZE = new Dimension(5_000,5_000);
 
     int FOOD_MASS = 10;
     int DEFAULT_PLAYER_CELL_MASS = 40;
-    int EJECTED_MASS = 30;
     int VIRUS_MASS = 100;
 
     double VIRUS_REMOVE_CHANCE = 0.1;

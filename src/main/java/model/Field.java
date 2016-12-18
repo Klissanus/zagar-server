@@ -7,7 +7,7 @@ import utils.EatComparator;
 import utils.quadTree.QuadTree;
 import utils.quadTree.TreePoint;
 
-import java.awt.*;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
@@ -20,17 +20,20 @@ import java.util.stream.Collectors;
 public class Field {
     @NotNull
     private static final Logger log = LogManager.getLogger(Field.class);
-    private static final int width = GameConstants.FIELD_WIDTH;
-    private static final int height = GameConstants.FIELD_HEIGHT;
     @NotNull
-    private static final Rectangle fieldRange = new Rectangle(0, 0, width, height);
+    private final Dimension2D fieldSize;
     @NotNull
-    private final QuadTree<Cell> entities = new QuadTree<>(fieldRange);
+    private final Rectangle2D fieldRange;
+    @NotNull
+    private final QuadTree<Cell> entities;
     @NotNull
     private EatComparator eatComparator = new EatComparator();
 
 
-    public Field() {
+    public Field(@NotNull Dimension2D fieldSize) {
+        this.fieldSize=fieldSize;
+        this.fieldRange = new Rectangle2D.Double(0, 0, fieldSize.getWidth(), fieldSize.getHeight());
+        this.entities = new QuadTree<>(fieldRange);
     }
 
     @NotNull
@@ -99,11 +102,8 @@ public class Field {
                 .collect(Collectors.toList());
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    @NotNull
+    public Dimension2D getSize() {
+        return fieldSize;
     }
 }

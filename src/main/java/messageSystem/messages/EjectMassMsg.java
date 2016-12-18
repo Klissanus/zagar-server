@@ -36,7 +36,7 @@ public class EjectMassMsg extends Message {
             EjectedMass ejectedMass = new EjectedMass(
                     cell.getCoordinate(),
                     cell.getLastMovement(),
-                    GameConstants.EJECTED_MASS,
+                    GameConstants.MASS_TO_EJECT,
                     GameConstants.INITIAL_SPEED,
                     GameConstants.EJECTED_MASS_ACCELERATION);
             cell.getOwner().getField().addCell(ejectedMass);
