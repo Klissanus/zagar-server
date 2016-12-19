@@ -1,5 +1,7 @@
 package model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.VirusGenerator;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
  * @author apomosov
  */
 public class GameSessionImpl implements GameSession {
+    @NotNull
+    private static final Logger log = LogManager.getLogger(GameSessionImpl.class);
     @NotNull
     private final Field field;
     @NotNull
@@ -39,6 +43,7 @@ public class GameSessionImpl implements GameSession {
 
     @Override
     public void join(@NotNull Player player) {
+        log.info("Player '{}' joined to session '{}'", player.getUser().getName(), this);
         player.setField(field);
         players.add(player);
         playerPlacer.place(player);
@@ -46,6 +51,7 @@ public class GameSessionImpl implements GameSession {
 
     @Override
     public void leave(@NotNull Player player) {
+        log.info("Player '{}' left from session '{}'", player.getUser().getName(), this);
         players.remove(player);
     }
 
@@ -57,12 +63,16 @@ public class GameSessionImpl implements GameSession {
 
     @Override
     public void tickRemoveAfk() {
-        //players.removeIf(p -> !field.getPlayerCells(p).isEmpty() &&
-        //        System.currentTimeMillis() - p.lastMovementTime() > GameConstants.MOVEMENT_TIMEOUT.toMillis());
+        log.trace("Removing AFK players");
+        List<Player> afkPlayers = players.stream()
+                .filter(player -> player.getCells().size() > 0) //remove only players who has one or more cell
+                .collect(Collectors.toList());
+        afkPlayers.forEach(this::leave);
     }
 
     @Override
     public void tickGenerators(@NotNull Duration elapsed) {
+        log.trace("Tick generators");
         foodGenerator.tick(elapsed);
         virusGenerator.tick(elapsed);
     }
