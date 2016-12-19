@@ -13,6 +13,7 @@ public interface GameConstants {
 
     Dimension2D FIELD_SIZE = new Dimension(5_000, 5_000);
 
+    double CELL_DENSITY = 0.001;
     int FOOD_MASS = 10;
     int DEFAULT_PLAYER_CELL_MASS = 40;
     int VIRUS_MASS = 100;
@@ -34,4 +35,5 @@ public interface GameConstants {
     double EJECTED_MASS_ACCELERATION = -50;
 
     Duration GENERATORS_PERIOD = Duration.ofSeconds(10);
+
 }
