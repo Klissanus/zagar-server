@@ -87,7 +87,7 @@ public class PlayerCell extends Cell {
             double y = getCoordinate().getY();
             for (int i = 0; i < size; i++) {
                 cells.add(new PlayerCell(getOwner(),getId()+i,
-                        new Point2D.Double(x+i *4*r,
+                        new Point2D.Double(x+i*6*mass,
                         y), mass));
             }
             getOwner().getCells().forEach(c->getOwner().getField().removeCell(c));
