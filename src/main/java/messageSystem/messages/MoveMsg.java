@@ -7,6 +7,7 @@ import messageSystem.Message;
 import model.Cell;
 import model.GameConstants;
 import model.Player;
+import model.PlayerCell;
 import network.ClientConnectionServer;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandMove;
@@ -41,12 +42,15 @@ public class MoveMsg extends Message {
             log.info("Player {} may be cheater", player);
             return;
         }
-        player.getCells().forEach(cell -> {
+        boolean flagX = true;
+        boolean flagY = true;
+        for (PlayerCell cell : player.getCells()) {
             double newValidX = cell.getCoordinate().getX();
             double newX = cell.getCoordinate().getX() + command.getDx() * GameConstants.INITIAL_SPEED / cell.getMass();
             boolean inBoundsOnX = (newX + cell.getRadius() / 2 <= player.getField().getSize().getWidth()) &&
                     (newX - cell.getRadius() / 2 >= 0);
-            if (inBoundsOnX) {
+            if (!inBoundsOnX) flagX = false;
+            if (inBoundsOnX && flagX) {
                 newValidX = newX;
             }
 
@@ -54,14 +58,15 @@ public class MoveMsg extends Message {
             double newY = cell.getCoordinate().getY() + command.getDy() * GameConstants.INITIAL_SPEED / cell.getMass();
             boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getSize().getHeight()) &&
                     (newY - cell.getRadius() / 2 >= 0);
-            if (inBoundsOnY) {
+            if (!inBoundsOnY) flagY = false;
+            if (inBoundsOnY && flagY) {
                 newValidY = newY;
             }
 
-            player.getField().moveCell(cell, new Point2D.Double(newValidX,newValidY));
+            player.getField().moveCell(cell, new Point2D.Double(newValidX, newValidY));
             //find collisions
             List<Cell> intersected = player.getField().findIntersected(cell);
-            intersected.forEach(cellToCheck->CollisionHandler.handleCollision(cell,cellToCheck));
-        });
+            intersected.forEach(cellToCheck -> CollisionHandler.handleCollision(cell, cellToCheck));
+        }
     }
 }

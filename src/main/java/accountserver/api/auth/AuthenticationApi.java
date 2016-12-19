@@ -41,6 +41,9 @@ public class AuthenticationApi {
         if (username.equals("") || password.equals("") ||
                 username.equals("null") || password.equals("null") ||
                 ApplicationContext.instance().get(UserDao.class).getUserByName(username) != null) {
+            log.info("FUCK" + username.equals("") + " " + password.equals("") + " " +
+                    username.equals("null") + " " + password.equals("null") + " " +
+                    ApplicationContext.instance().get(UserDao.class).getUserByName(username) != null);
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
