@@ -26,8 +26,8 @@ public interface GameConstants {
     //   int MASS_TO_SPLIT = 5 * DEFAULT_PLAYER_CELL_MASS;
     int MASS_TO_SPLIT = DEFAULT_PLAYER_CELL_MASS / 4;
 
-    int MAX_FOOD_ON_FIELD = 100;
-    int NUMBER_OF_VIRUSES = 3;
+    int MAX_FOOD_ON_FIELD = 10_000;
+    int NUMBER_OF_VIRUSES = 300;
 
     Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
     double MAX_COORDINATE_DELTA_MODULE = 20;
