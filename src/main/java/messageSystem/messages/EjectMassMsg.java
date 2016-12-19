@@ -3,9 +3,8 @@ package messageSystem.messages;
 import mechanics.Mechanics;
 import messageSystem.Abonent;
 import messageSystem.Message;
-import model.EjectedMass;
-import model.GameConstants;
 import model.Player;
+import model.PlayerCell;
 import network.ClientConnectionServer;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandEjectMass;
@@ -32,14 +31,6 @@ public class EjectMassMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.trace("EjectMassMsg exec() call");
-        player.getCells().forEach(cell-> {
-            EjectedMass ejectedMass = new EjectedMass(
-                    cell.getCoordinate(),
-                    cell.getLastMovement(),
-                    GameConstants.MASS_TO_EJECT,
-                    GameConstants.INITIAL_SPEED,
-                    GameConstants.EJECTED_MASS_ACCELERATION);
-            cell.getOwner().getField().addCell(ejectedMass);
-        });
+        player.getCells().forEach(PlayerCell::ejectMass);
     }
 }
