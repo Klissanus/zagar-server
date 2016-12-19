@@ -10,6 +10,9 @@ import network.ClientConnections;
 import network.packets.PacketReplicate;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
+import protocol.model.EjectedMass;
+import protocol.model.Food;
+import protocol.model.Virus;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -75,20 +78,20 @@ public class InsideWindowReplicator implements Replicator {
                     if (cell instanceof model.PlayerCell) {
                         model.PlayerCell c = ((model.PlayerCell) cell);
                         return new protocol.model.PlayerCell(
-                                c.getId(),c.getMass(),c.getCoordinate(),c.getOwner().getUser().getName()
+                                c.getId(), c.getMass(), c.getCoordinate(), c.getRadius(), c.getOwner().getUser().getName()
                         );
                     }
                     if (cell instanceof model.EjectedMass) {
                         model.EjectedMass c = ((model.EjectedMass) cell);
-                        return new protocol.model.EjectedMass(c.getMass(),c.getCoordinate());
+                        return new EjectedMass(c.getMass(), c.getCoordinate(), c.getRadius());
                     }
                     if (cell instanceof model.Food) {
                         model.Food c = ((model.Food) cell);
-                        return new protocol.model.Food(c.getMass(),c.getCoordinate());
+                        return new Food(c.getMass(), c.getCoordinate(), c.getRadius());
                     }
                     if (cell instanceof model.Virus) {
                         model.Virus c = ((model.Virus) cell);
-                        return new protocol.model.Virus(c.getMass(),c.getCoordinate());
+                        return new Virus(c.getMass(), c.getCoordinate(), c.getRadius());
                     }
                     return null;
                 })
