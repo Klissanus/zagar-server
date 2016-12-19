@@ -231,22 +231,33 @@ public class QuadTree<T> {
         navigateStack.add(start);
         while (!navigateStack.isEmpty()) {
             TreeNode<T> node = navigateStack.pop();
-            if (node == null) continue;
             switch (node.getNodeType()) {
                 case LEAF:
                     navigateFunc.accept(node);
                     break;
                 case POINTER:
-                    if (node.getNe() != null && region.intersects(node.getNe().getRegion())) {
+                    if (node.getNe() != null && (
+                            region.contains(node.getNe().getRegion()) ||
+                            region.intersects(node.getNe().getRegion()))
+                            ) {
                         navigateStack.add(node.getNe());
                     }
-                    if (node.getNw() != null && region.intersects(node.getNw().getRegion())) {
+                    if (node.getNw() != null && (
+                            region.contains(node.getNw().getRegion()) ||
+                            region.intersects(node.getNw().getRegion()))
+                            ) {
                         navigateStack.add(node.getNw());
                     }
-                    if (node.getSe() != null && region.intersects(node.getSe().getRegion())) {
+                    if (node.getSe() != null && (
+                            region.contains(node.getSe().getRegion()) ||
+                            region.intersects(node.getSe().getRegion()))
+                            ) {
                         navigateStack.add(node.getSe());
                     }
-                    if (node.getSw() != null && region.intersects(node.getSw().getRegion())) {
+                    if (node.getSw() != null && (
+                            region.contains(node.getSw().getRegion())) ||
+                            region.intersects(node.getSw().getRegion())
+                            ) {
                         navigateStack.add(node.getSw());
                     }
                     break;
@@ -270,7 +281,6 @@ public class QuadTree<T> {
         traverseStack.add(start);
         while(!traverseStack.isEmpty()) {
             TreeNode<T> node = traverseStack.pop();
-            if (node == null) continue;
             switch (node.getNodeType()) {
                 case LEAF:
                     traverseFunc.accept(node);
