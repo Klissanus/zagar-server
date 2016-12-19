@@ -84,6 +84,6 @@ public abstract class Cell {
     }
 
     private void updateRadius() {
-        this.radius = Math.sqrt(this.mass / Math.PI);
+        this.radius =  Math.sqrt(this.mass / Math.PI);
     }
 }

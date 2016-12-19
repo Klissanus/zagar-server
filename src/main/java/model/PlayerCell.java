@@ -78,17 +78,16 @@ public class PlayerCell extends Cell {
     }
 
     public boolean split(){
-        if (this.getMass() > GameConstants.MASS_TO_SPLIT){
-            //this.setMass(this.getMass() / 2);
+        if (this.getMass()/getOwner().getCells().size() > GameConstants.MASS_TO_SPLIT){
             int size = getOwner().getCells().size()*2;
             int mass = this.getMass()/size;
+            double r = 10*Math.sqrt(mass / Math.PI);
             List<Cell> cells = new ArrayList<>();
             double x =getCoordinate().getX();
             double y = getCoordinate().getY();
             for (int i = 0; i < size; i++) {
-                log.info("I am adding cells mass=" + mass +" size =" + size + " i=" + i);
-                cells.add(new PlayerCell(getOwner(),getId()+i+1,
-                        new Point2D.Double(x+i * 7 * mass,
+                cells.add(new PlayerCell(getOwner(),getId()+i,
+                        new Point2D.Double(x+i *4*r,
                         y), mass));
             }
             getOwner().getCells().forEach(c->getOwner().getField().removeCell(c));
