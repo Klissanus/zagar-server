@@ -38,6 +38,7 @@ public class PlayerCell extends Cell {
         if (cell instanceof PlayerCell){
             ((PlayerCell) cell).getOwner().updateScore( - cell.getMass());
         }
+        getOwner().getField().removeCell(cell);
         //todo check remove last cell of another player??
     }
 
@@ -55,16 +56,24 @@ public class PlayerCell extends Cell {
     }
 
     public boolean ejectMass(){
-        if( this.getMass() > GameConstants.MASS_TO_EJECT) {
-            this.getOwner().updateScore(-GameConstants.FOOD_MASS);
-            this.setMass(this.getMass() - GameConstants.FOOD_MASS);
+        if( getMass() > GameConstants.MASS_TO_EJECT) {
+            getOwner().updateScore(-GameConstants.MASS_TO_EJECT);
+            setMass(getMass() - GameConstants.MASS_TO_EJECT);
+            EjectedMass ejectedMass = new EjectedMass(
+                    getCoordinate(),
+                    new Point2D.Double(getCoordinate().getX()*4,getCoordinate().getY()*4),
+                    GameConstants.MASS_TO_EJECT,
+                    GameConstants.INITIAL_SPEED,
+                    GameConstants.EJECTED_MASS_ACCELERATION
+            );
+            getOwner().getField().addCell(ejectedMass);
             return true;
         }
         return false;
     }
 
     public boolean split(){
-        if (this.getMass() > GameConstants.MASS_TO_SPLIT ){
+        if (this.getMass() > GameConstants.MASS_TO_SPLIT){
             this.setMass(this.getMass() / 2);
             return true;
         }
