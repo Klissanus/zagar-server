@@ -81,7 +81,7 @@ public class PlayerCell extends Cell {
         if (this.getMass()/getOwner().getCells().size() > GameConstants.MASS_TO_SPLIT){
             int size = getOwner().getCells().size()*2;
             int mass = this.getMass()/size;
-            double r = 10*Math.sqrt(mass / Math.PI);
+            double r = getRadius();
             List<Cell> cells = new ArrayList<>();
             double x =getCoordinate().getX();
             double y = getCoordinate().getY();
