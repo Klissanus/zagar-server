@@ -61,9 +61,9 @@ public class UniformFoodGenerator extends FoodGenerator {
                 Food food = new Food(new Point2D.Double(0,0));
                 food.setCoordinate(new Point2D.Double(
                         food.getRadius() +
-                                rand.nextInt((int)getField().getSize().getWidth() - 2 * food.getRadius()),
+                                rand.nextInt((int)(getField().getSize().getWidth() - 2 * food.getRadius())),
                         food.getRadius() +
-                                rand.nextInt((int)getField().getSize().getHeight() - 2 * food.getRadius())
+                                rand.nextInt((int)(getField().getSize().getHeight() - 2 * food.getRadius()))
                 ));
                 getField().addCell(food);
             }

@@ -30,9 +30,9 @@ public class RandomPlayerPlacer implements PlayerPlacer {
                 new PlayerCell(player, id, new Point2D.Double(0,0), GameConstants.DEFAULT_PLAYER_CELL_MASS);
         Point2D coordinate = new Point2D.Double(
                 newPlayerCell.getRadius() +
-                        random.nextInt((int)field.getSize().getWidth() - 2 * newPlayerCell.getRadius()),
+                        random.nextInt((int)(field.getSize().getWidth() - 2 * newPlayerCell.getRadius())),
                 newPlayerCell.getRadius() +
-                        random.nextInt((int)field.getSize().getHeight() - 2 * newPlayerCell.getRadius())
+                        random.nextInt((int)(field.getSize().getHeight() - 2 * newPlayerCell.getRadius()))
         );
         newPlayerCell.setCoordinate(coordinate);
         field.addCell(newPlayerCell);
