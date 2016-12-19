@@ -53,7 +53,7 @@ public class MoveMsg extends Message {
             double newValidY = cell.getCoordinate().getY();
             double newY = cell.getCoordinate().getY() + command.getDy() * GameConstants.INITIAL_SPEED / cell.getMass();
             boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getSize().getHeight()) &&
-                    (newX - cell.getRadius() / 2 >= 0);
+                    (newY - cell.getRadius() / 2 >= 0);
             if (inBoundsOnY) {
                 newValidY = newY;
             }
