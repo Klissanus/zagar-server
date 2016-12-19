@@ -22,11 +22,20 @@ public class QuadTree<T> {
     @NotNull
     private final TreeNode<T> root;
 
+    /**
+     * Constructs QuadTree with given {@param region}
+     *
+     * @param region rectangular region where objects will be stored
+     */
     public QuadTree(@NotNull Rectangle2D region) {
-        assert (region.getWidth()==region.getHeight()); //make sure if region is square
         this.root = new TreeNode<>(region, null);
     }
 
+    /**
+     * Assigns {@param point} to {@param node}
+     * @param node node to store {@param point}
+     * @param point point to store in {@param node}
+     */
     private void setPointForNode(@NotNull TreeNode<T> node, @NotNull TreePoint<T> point) {
         if (node.getNodeType() == TreeNode.Type.POINTER) {
             throw new QuadTreeException("Can not set item for node type POINTER");
@@ -35,12 +44,16 @@ public class QuadTree<T> {
         node.setPoint(point);
     }
 
+    /**
+     * Search quadrant for point at {@param coordinate}
+     * Quadrant will be selected relatively to {@param parent} center
+     * @param parent node where search quadrant (subnode)
+     * @param coordinate coordinate for which quadrant will be searched
+     * @return Found quadrant (subnode), may be null (if not defined in {@param parent})
+     */
     @Nullable
     private TreeNode<T> getQuadrantForPoint(@NotNull TreeNode<T> parent, @NotNull Point2D coordinate) {
-        Point2D mPoint = new Point2D.Double(
-                parent.getRegion().getX() + parent.getRegion().getWidth() / 2,
-                parent.getRegion().getY() + parent.getRegion().getHeight() / 2
-        );
+        Point2D mPoint = new Point2D.Double(parent.getRegion().getCenterX(), parent.getRegion().getCenterY());
         if (coordinate.getX() < mPoint.getX()) {
             return coordinate.getY() < mPoint.getY() ? parent.getNw() : parent.getSw();
         } else {
@@ -48,6 +61,13 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * Inserts {@param startPoint} to free quadrant.
+     * Search starts from {@param parent}
+     * @param parent start node for free quadrant search
+     * @param startPoint point to insert
+     * @throws QuadTreeException when finds LEAF node with null TreePoint
+     */
     private void insert(@NotNull TreeNode<T> parent, @NotNull TreePoint<T> startPoint) {
         Stack<TreeNode<T>> insertStack = new Stack<>();
         insertStack.add(parent);
@@ -98,6 +118,12 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * Place {@param item} at {@param coordinate}
+     * @param coordinate where {@param item} will be placed
+     * @param item item to place at {@param coordinate}
+     * @throws QuadTreeException if coordinate not within defined region {@link QuadTree}
+     */
     public synchronized void set(@NotNull Point2D coordinate, @NotNull T item) {
         if (!root.getRegion().contains(coordinate)) {
             throw new QuadTreeException("Out of bounds " + coordinate);
@@ -105,6 +131,11 @@ public class QuadTree<T> {
         insert(root, new TreePoint<>(coordinate, item));
     }
 
+    /**
+     * Search {@link TreeNode} at {@param coordinate}.
+     * Search starts from {@param start}
+     * @return found {@link TreeNode} or null if not found.
+     */
     @Nullable
     private TreeNode<T> find(@NotNull TreeNode<T> start, @NotNull Point2D coordinate) {
         TreeNode<T> response = null;
@@ -129,6 +160,10 @@ public class QuadTree<T> {
         return response;
     }
 
+    /**
+     * Search {@param T} at given {@param coordinate}
+     * @return {@link Optional} object contains search result: empty if not found found but not contains point.
+     */
     @NotNull
     public synchronized Optional<T> find(@NotNull Point2D coordinate) {
         TreeNode<T> result = find(root, coordinate);
@@ -136,6 +171,12 @@ public class QuadTree<T> {
         return result.getPoint().getItem();
     }
 
+    /**
+     * Balances tree after removing.
+     * If in leaf {@link TreeNode} left only one busy quadrant, merge all quadrants to one.
+     * If in leaf {@link TreeNode} no quadrants with items, mark it as empty.
+     * @param start start node for balancing
+     */
     private void balance(@NotNull TreeNode<T> start) {
         Stack<TreeNode<T>> balanceStack = new Stack<>();
         balanceStack.add(start);
@@ -209,6 +250,10 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * Remove object from tree by {@param coordinate}
+     * @return removed object or null if object is not present at {@param coordinate}
+     */
     @Nullable
     public synchronized T remove(@NotNull Point2D coordinate) {
         TreeNode<T> node = find(root, coordinate);
@@ -224,6 +269,11 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * Traverse nodes, which intersects with {@param region} or {@param region} contains
+     * Applies {@param navigateFunc} to leaf node
+     * @param start start node for traversing
+     */
     private void navigate(@NotNull TreeNode<T> start,
                           @NotNull Consumer<TreeNode<T>> navigateFunc,
                           @NotNull Rectangle2D region) {
@@ -238,19 +288,19 @@ public class QuadTree<T> {
                 case POINTER:
                     if (node.getNe() != null && (
                             region.contains(node.getNe().getRegion()) ||
-                            region.intersects(node.getNe().getRegion()))
+                                    region.intersects(node.getNe().getRegion()))
                             ) {
                         navigateStack.add(node.getNe());
                     }
                     if (node.getNw() != null && (
                             region.contains(node.getNw().getRegion()) ||
-                            region.intersects(node.getNw().getRegion()))
+                                    region.intersects(node.getNw().getRegion()))
                             ) {
                         navigateStack.add(node.getNw());
                     }
                     if (node.getSe() != null && (
                             region.contains(node.getSe().getRegion()) ||
-                            region.intersects(node.getSe().getRegion()))
+                                    region.intersects(node.getSe().getRegion()))
                             ) {
                         navigateStack.add(node.getSe());
                     }
@@ -265,10 +315,14 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * Search and return all {@link TreePoint} which are within {@param region}
+     * @return list of found {@link TreePoint}
+     */
     @NotNull
     public synchronized List<TreePoint<T>> searchWithin(@NotNull Rectangle2D region) {
         List<TreePoint<T>> ret = new ArrayList<>();
-        navigate(root,node->{
+        navigate(root, node->{
             if (node.getPoint()!=null && region.contains(node.getPoint().getCoordinate())) {
                 ret.add(node.getPoint());
             }
@@ -276,6 +330,9 @@ public class QuadTree<T> {
         return ret;
     }
 
+    /**
+     * Traverse all tree starting from {@param start} and apply {@param traverseFunc} to leaf node
+     */
     private void traverse(@NotNull TreeNode<T> start, @NotNull Consumer<TreeNode<T>> traverseFunc) {
         Stack<TreeNode<T>> traverseStack = new Stack<>();
         traverseStack.add(start);
@@ -295,19 +352,25 @@ public class QuadTree<T> {
         }
     }
 
+    /**
+     * @return all {@link TreePoint} stored in tree
+     */
     @NotNull
     public synchronized List<TreePoint<T>> getAllPoints() {
         List<TreePoint<T>> ret = new ArrayList<>();
-        traverse(root,node->{
+        traverse(root, node->{
             if (node.getPoint()!=null) ret.add(node.getPoint());
         });
         return ret;
     }
 
+    /**
+     * @return all {@link TreePoint} stored in tree and satisfies {@param predicate}
+     */
     @NotNull
     public synchronized List<TreePoint<T>> getAllPointsWhere(@NotNull Predicate<TreePoint<T>> predicate) {
         List<TreePoint<T>> ret = new ArrayList<>();
-        traverse(root,node->{
+        traverse(root, node->{
             if (node.getPoint()!=null && predicate.test(node.getPoint())) {
                 ret.add(node.getPoint());
             }
