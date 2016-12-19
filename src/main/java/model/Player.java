@@ -46,9 +46,7 @@ public class Player {
         Optional<Integer> totalScore = getCells().stream()
                 .map(PlayerCell::getMass)
                 .reduce(Math::addExact);
-        return totalScore.isPresent() ?
-                totalScore.get() :
-                0;
+        return totalScore.orElse(0);
     }
 
     public int getId() {
