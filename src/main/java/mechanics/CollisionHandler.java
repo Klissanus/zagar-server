@@ -21,9 +21,15 @@ public class CollisionHandler {
         //can`t collide with itself
         if (cell.equals(playerCell)) return;
         //check actual collision
-        log.debug("Handling collison {} with {}",playerCell.toString(),cell.toString());
-        if (playerCell.getCoordinate().distance(cell.getCoordinate()) >
-                playerCell.getRadius() + cell.getRadius()) return;
+        double distance = playerCell.getCoordinate().distance(cell.getCoordinate());
+        log.debug("Handling collision {} (r{}) with {} (r{}), distance {}",
+                playerCell.toString(),
+                playerCell.getRadius(),
+                cell.toString(),
+                cell.getRadius(),
+                distance
+        );
+        if (distance > playerCell.getRadius() + cell.getRadius()) return;
         EatComparator eatComparator = new EatComparator();
         if (cell instanceof Food) {
             log.debug("Player {} ate food at ({}, {})",
