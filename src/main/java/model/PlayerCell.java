@@ -1,8 +1,12 @@
 package model;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -10,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class PlayerCell extends Cell {
     private final int id;
-
+    private static final @NotNull Logger log = LogManager.getLogger(PlayerCell.class);
     @NotNull
     private AtomicLong lastMovementTime = new AtomicLong(System.currentTimeMillis());
     @NotNull
@@ -75,9 +79,24 @@ public class PlayerCell extends Cell {
 
     public boolean split(){
         if (this.getMass() > GameConstants.MASS_TO_SPLIT){
-            this.setMass(this.getMass() / 2);
+            //this.setMass(this.getMass() / 2);
+            int size = getOwner().getCells().size()*2;
+            int mass = this.getMass()/size;
+            List<Cell> cells = new ArrayList<>();
+            double x =getCoordinate().getX();
+            double y = getCoordinate().getY();
+            for (int i = 0; i < size; i++) {
+                log.info("I am adding cells mass=" + mass +" size =" + size + " i=" + i);
+                cells.add(new PlayerCell(getOwner(),getId()+i+1,
+                        new Point2D.Double(x+i * 7 * mass,
+                        y), mass));
+            }
+            getOwner().getCells().forEach(c->getOwner().getField().removeCell(c));
+            cells.forEach(c -> getOwner().getField().addCell(c));
+            log.info("I am true");
             return true;
         }
+        log.info("I am false");
         return  false;
     }
 }

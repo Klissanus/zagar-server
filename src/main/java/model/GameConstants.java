@@ -11,7 +11,7 @@ public interface GameConstants {
     int TICKS_PER_SECOND = 20;
     int MAX_PLAYERS_IN_SESSION = 10;
 
-    Dimension2D FIELD_SIZE = new Dimension(5_000,5_000);
+    Dimension2D FIELD_SIZE = new Dimension(5_000, 5_000);
 
     int FOOD_MASS = 10;
     int DEFAULT_PLAYER_CELL_MASS = 40;
@@ -22,7 +22,8 @@ public interface GameConstants {
     double FOOD_REMOVE_CHANCE = 0.1;
 
     int MASS_TO_EJECT = 3 * FOOD_MASS;
-    int MASS_TO_SPLIT = 5 * DEFAULT_PLAYER_CELL_MASS;
+    //   int MASS_TO_SPLIT = 5 * DEFAULT_PLAYER_CELL_MASS;
+    int MASS_TO_SPLIT = DEFAULT_PLAYER_CELL_MASS / 4;
 
     int MAX_FOOD_ON_FIELD = 100;
     int NUMBER_OF_VIRUSES = 3;

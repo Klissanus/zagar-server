@@ -4,6 +4,7 @@ import mechanics.Mechanics;
 import messageSystem.Abonent;
 import messageSystem.Message;
 import model.Player;
+import model.PlayerCell;
 import network.ClientConnectionServer;
 import org.jetbrains.annotations.NotNull;
 import protocol.commands.CommandSplit;
@@ -30,5 +31,6 @@ public class SplitMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.trace("SplitMsg exec() call");
+        player.getCells().forEach(PlayerCell::split);
     }
 }

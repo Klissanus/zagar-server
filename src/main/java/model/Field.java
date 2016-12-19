@@ -62,7 +62,7 @@ public class Field {
     }
 
     public void addCell(@NotNull Cell cell) {
-        log.trace("Field:{} Added {} to ({}, {})",
+        log.info("Field:{} Added {} to ({}, {})",
                 toString(), cell.getClass().getName(), cell.getCoordinate().getX(), cell.getCoordinate().getY());
         entities.set(cell.getCoordinate(),cell);
     }
