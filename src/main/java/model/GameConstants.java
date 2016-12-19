@@ -11,9 +11,9 @@ public interface GameConstants {
     int TICKS_PER_SECOND = 20;
     int MAX_PLAYERS_IN_SESSION = 10;
 
-    Dimension2D FIELD_SIZE = new Dimension(5_000, 5_000);
+    Dimension2D FIELD_SIZE = new Dimension(50_000, 50_000);
 
-    double CELL_DENSITY = 0.001;
+    double CELL_DENSITY = 0.005;
     int FOOD_MASS = 10;
     int DEFAULT_PLAYER_CELL_MASS = 40;
     int VIRUS_MASS = 100;
