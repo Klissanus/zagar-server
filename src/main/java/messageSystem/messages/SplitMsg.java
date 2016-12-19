@@ -31,6 +31,7 @@ public class SplitMsg extends Message {
     @Override
     public void exec(Abonent abonent) {
         log.trace("SplitMsg exec() call");
+        //player.getCells().get(0).split();
         player.getCells().forEach(PlayerCell::split);
     }
 }

@@ -59,7 +59,7 @@ public class MoveMsg extends Message {
             boolean inBoundsOnY = (newY + cell.getRadius() / 2 <= player.getField().getSize().getHeight()) &&
                     (newY - cell.getRadius() / 2 >= 0);
             if (!inBoundsOnY) flagY = false;
-            if (inBoundsOnY && flagY) {
+            if (inBoundsOnY && flagY && flagX) {
                 newValidY = newY;
             }
 
