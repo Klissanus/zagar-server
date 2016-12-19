@@ -64,13 +64,13 @@ public class Field {
     public void addCell(@NotNull Cell cell) {
         log.trace("Field:{} Added {} to ({}, {})",
                 toString(), cell.getClass().getName(), cell.getCoordinate().getX(), cell.getCoordinate().getY());
-        entities.set(new Point2D.Double(cell.getCoordinate().getX(),cell.getCoordinate().getY()),cell);
+        entities.set(cell.getCoordinate(),cell);
     }
 
     public void removeCell(@NotNull Cell cell) {
         log.trace("Removing {} from ({}, {})",
                 cell.getClass().getName(), cell.getCoordinate().getX(), cell.getCoordinate().getY());
-        entities.remove(new Point2D.Double(cell.getCoordinate().getX(),cell.getCoordinate().getY()));
+        entities.remove(cell.getCoordinate());
     }
 
 
