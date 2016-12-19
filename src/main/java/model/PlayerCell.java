@@ -60,8 +60,9 @@ public class PlayerCell extends Cell {
             getOwner().updateScore(-GameConstants.MASS_TO_EJECT);
             setMass(getMass() - GameConstants.MASS_TO_EJECT);
             EjectedMass ejectedMass = new EjectedMass(
-                    getCoordinate(),
-                    new Point2D.Double(getCoordinate().getX()*4,getCoordinate().getY()*4),
+                    new Point2D.Double(getCoordinate().getX()+getLastMovement().getX()/4,
+                            getCoordinate().getY()+getLastMovement().getY()/4),
+                    new Point2D.Double(getCoordinate().getX()*3,getCoordinate().getY()*3),
                     GameConstants.MASS_TO_EJECT,
                     GameConstants.INITIAL_SPEED,
                     GameConstants.EJECTED_MASS_ACCELERATION
