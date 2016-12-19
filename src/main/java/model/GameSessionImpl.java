@@ -1,7 +1,10 @@
 package model;
 
+import main.ApplicationContext;
+import network.ClientConnections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import utils.entityGeneration.FoodGenerator;
 import utils.entityGeneration.VirusGenerator;
@@ -51,8 +54,19 @@ public class GameSessionImpl implements GameSession {
 
     @Override
     public void leave(@NotNull Player player) {
-        log.info("Player '{}' left from session '{}'", player.getUser().getName(), this);
+        log.info("Player '{}' left from session '{}', closing connection", player.getUser().getName(), this);
         players.remove(player);
+        //close connection
+        ClientConnections cc = ApplicationContext.instance().get(ClientConnections.class);
+        Session session = cc.getSessionByPlayer(player);
+        if (session == null) {
+            log.warn("Trying to close non-present session (player '{}')", player.getUser().getName());
+        } else if (!session.isOpen()) {
+            log.warn("Trying to close closed session (player '{}')", player.getUser().getName());
+        } else {
+            session.close();
+        }
+        cc.removeConnection(player);
     }
 
     @Override
@@ -64,7 +78,9 @@ public class GameSessionImpl implements GameSession {
     @Override
     public void tickRemoveAfk() {
         log.trace("Removing AFK players");
+        long currentTime = System.currentTimeMillis();
         List<Player> afkPlayers = players.stream()
+                .filter(player -> currentTime - player.lastMovementTime() > GameConstants.MOVEMENT_TIMEOUT.toMillis())
                 .filter(player -> player.getCells().size() > 0) //remove only players who has one or more cell
                 .collect(Collectors.toList());
         afkPlayers.forEach(this::leave);
