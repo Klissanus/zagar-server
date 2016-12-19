@@ -28,7 +28,7 @@ public interface GameConstants {
     int NUMBER_OF_VIRUSES = 3;
 
     Duration MOVEMENT_TIMEOUT = Duration.ofMinutes(2);
-    double MAX_COORDINATE_DELTA_MODULE = 1.5;
+    double MAX_COORDINATE_DELTA_MODULE = 20;
     double INITIAL_SPEED = 500;
     double EJECTED_MASS_ACCELERATION = -50;
 
