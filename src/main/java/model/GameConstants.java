@@ -19,7 +19,7 @@ public interface GameConstants {
     int VIRUS_MASS = 100;
 
     double VIRUS_REMOVE_CHANCE = 0.1;
-    int FOOD_PER_SECOND_GENERATION = 15;
+    int FOOD_PER_SECOND_GENERATION = 1_500;
     double FOOD_REMOVE_CHANCE = 0.1;
 
     int MASS_TO_EJECT = 3 * FOOD_MASS;
