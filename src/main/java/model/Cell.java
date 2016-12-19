@@ -15,7 +15,7 @@ public abstract class Cell {
     private Point2D coordinate;
     @NotNull
     private Point2D lastMovement;
-    private int radius;
+    private double radius;
     private int mass;
 
     public Cell(@NotNull Point2D coordinate, int mass) {
@@ -43,7 +43,7 @@ public abstract class Cell {
         return lastMovement;
     }
 
-    public int getRadius() {
+    public double getRadius() {
         return radius;
     }
 
@@ -84,6 +84,6 @@ public abstract class Cell {
     }
 
     private void updateRadius() {
-        this.radius = (int) Math.sqrt(this.mass / Math.PI);
+        this.radius = Math.sqrt(this.mass / Math.PI);
     }
 }
