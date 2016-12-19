@@ -32,10 +32,12 @@ public class CollisionHandler {
         if (distance > playerCell.getRadius() + cell.getRadius()) return;
         EatComparator eatComparator = new EatComparator();
         if (cell instanceof Food) {
-            log.debug("Player {} ate food at ({}, {})",
+            log.debug("Player {}{}{} ate food at ({}, {})",
                     playerCell.getOwner().getUser().getName(),
                     playerCell.getCoordinate().getX(),
-                    playerCell.getCoordinate().getY()
+                    playerCell.getCoordinate().getY(),
+                    cell.getCoordinate().getX(),
+                    cell.getCoordinate().getY()
             );
             playerCell.eat(cell);
         } else if (cell instanceof Virus) {
