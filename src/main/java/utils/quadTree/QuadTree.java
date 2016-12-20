@@ -53,11 +53,12 @@ public class QuadTree<T> {
      */
     @Nullable
     private TreeNode<T> getQuadrantForPoint(@NotNull TreeNode<T> parent, @NotNull Point2D coordinate) {
-        Point2D mPoint = new Point2D.Double(parent.getRegion().getCenterX(), parent.getRegion().getCenterY());
-        if (coordinate.getX() < mPoint.getX()) {
-            return coordinate.getY() < mPoint.getY() ? parent.getNw() : parent.getSw();
+        double centerX = parent.getRegion().getCenterX();
+        double centerY = parent.getRegion().getCenterY();
+        if (coordinate.getX() < centerX) {
+            return coordinate.getY() < centerY ? parent.getNw() : parent.getSw();
         } else {
-            return coordinate.getY() < mPoint.getY() ? parent.getNe() : parent.getSe();
+            return coordinate.getY() < centerY ? parent.getNe() : parent.getSe();
         }
     }
 
