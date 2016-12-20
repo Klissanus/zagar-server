@@ -32,7 +32,11 @@ public class FullStateReplicator implements Replicator {
                         if (cell instanceof model.PlayerCell) {
                             model.PlayerCell c = ((model.PlayerCell) cell);
                             return new PlayerCell(
-                                    c.getId(), c.getMass(), c.getCoordinate(), c.getRadius(), c.getOwner().getUser().getName()
+                                    c.getId(),
+                                    c.getMass(),
+                                    c.getCoordinate(),
+                                    c.getRadius(),
+                                    c.getOwner().getUser().getName()
                             );
                         }
                         if (cell instanceof model.EjectedMass) {
