@@ -2,6 +2,7 @@ package model;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -58,13 +59,10 @@ public abstract class Cell {
 
     @NotNull
     public Rectangle2D getBox() {
-        return new Rectangle2D.Double(
-                coordinate.getX()-radius,
-                coordinate.getY()-radius,
-                radius*2,
-                radius*2
-        );
+        updateRadius();
+        return new Ellipse2D.Double(coordinate.getX(), coordinate.getY(), radius, radius).getBounds2D();
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
