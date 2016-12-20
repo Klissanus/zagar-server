@@ -53,7 +53,7 @@ public class FullStateReplicator implements Replicator {
                     try {
                         new PacketReplicate(replicateCells).write(connection.getValue());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.fatal(e.getMessage());
                     }
                 }
             });

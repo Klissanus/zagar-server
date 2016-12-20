@@ -50,7 +50,7 @@ public class PacketHandlerAuth implements PacketHandler {
                 appContext.get(MatchMaker.class).joinGame(player);
             }
         } catch (JSONDeserializationException | IOException e) {
-            e.printStackTrace();
+            log.fatal(e.getMessage());
         }
     }
 }

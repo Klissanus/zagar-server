@@ -100,7 +100,7 @@ public class InsideWindowReplicator implements Replicator {
         try {
             new PacketReplicate(fitsInScreen).write(session);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.fatal(e.getMessage());
         }
     }
 

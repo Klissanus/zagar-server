@@ -94,7 +94,7 @@ public class AuthenticationApi {
             return Response.ok(token.toString()).build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.fatal(e.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
