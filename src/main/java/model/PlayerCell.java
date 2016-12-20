@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author apomosov
  */
 public class PlayerCell extends Cell {
-    private final int id;
     private static final @NotNull Logger log = LogManager.getLogger(PlayerCell.class);
+    private final int id;
     @NotNull
     private AtomicLong lastMovementTime = new AtomicLong(System.currentTimeMillis());
     @NotNull
@@ -101,5 +101,27 @@ public class PlayerCell extends Cell {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PlayerCell that = (PlayerCell) o;
+
+        if (id != that.id) return false;
+        if (!lastMovementTime.equals(that.lastMovementTime)) return false;
+        return owner.equals(that.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + id;
+        result = 31 * result + lastMovementTime.hashCode();
+        result = 31 * result + owner.hashCode();
+        return result;
     }
 }
