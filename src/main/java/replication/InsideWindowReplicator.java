@@ -8,6 +8,8 @@ import model.Player;
 import model.PlayerCell;
 import network.ClientConnections;
 import network.packets.PacketReplicate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import protocol.model.EjectedMass;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
  * Window size stored in {@link Player} object
  */
 public class InsideWindowReplicator implements Replicator {
+    @NotNull
+    private static final Logger log = LogManager.getLogger(InsideWindowReplicator.class);
     private static final int widthDelta = 10;
     private static final int heightDelta = 10;
     private static final double widthFactor = 1;
